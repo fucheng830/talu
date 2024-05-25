@@ -1,0 +1,8 @@
+version: '3.9'
+
+services:
+  web:
+    image: quchatserver:0.0.1
+    ports:
+      - "8002:8002"
+    restart: always
