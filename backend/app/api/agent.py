@@ -25,6 +25,7 @@ router = APIRouter()
 
 @router.post('/agent_edit')
 def add_agent(agent: AgentBase, current_user: dict = Depends(get_current_user), db: Session = Depends(get_db)):
+    # 添加agent
     agent_dict = agent.model_dump()
     agent_obj = Agent(**agent_dict, user_id=current_user.get('user_id'))
     # 查询是否已经存在agent
@@ -104,13 +105,6 @@ def delete_agent(agent_query: AgentQuery, db: Session = Depends(get_db), current
         raise HTTPException(status_code=400, detail="Agent not found")
 
 
-@router.post('/add_tool')
-def add_agent(agent:AgentBase, current_user: dict = Depends(get_current_user), db: Session = Depends(get_db)):
-    agent_db = Agent(**agent.dict(), user_id=current_user.get('user_id'))
-    db.add(agent_db)
-    db.commit()
-    db.refresh(agent_db)
-    return agent_db
 
 
 def load_tools(tools_config: list, db: Session):

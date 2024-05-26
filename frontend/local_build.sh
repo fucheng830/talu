@@ -1,0 +1,1 @@
+pnpm build-only && cp -rf ./dist/ ../ui

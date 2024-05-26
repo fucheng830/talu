@@ -1,8 +1,8 @@
 import sys 
 sys.path.append('/home/ubuntu/workspace/fucheng/ai_agents')
 
-from src.database import SessionLocal, engine 
-from src.models import *
+from app.database import SessionLocal, engine 
+from app.models import *
 from workspace.fucheng.ai_agents.src.application.web_browse import get_content_from_url
 import requests
 import io 

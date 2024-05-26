@@ -180,13 +180,13 @@ const data = reactive({
 			url: "/createai/createrole", // 详情url
 			data: computed(() => stateStore.$state.myAgents),
 		},
-		{
-			key: "flow",
-			title: t("createai.myFLow"),
-			desc: t("createai.myFLowDesc"),
-			url: "/createai/application/advancedFlow",
-			data: computed(() => flowStore.flowList),
-		},
+		// {
+		// 	key: "flow",
+		// 	title: t("createai.myFLow"),
+		// 	desc: t("createai.myFLowDesc"),
+		// 	url: "/createai/application/advancedFlow",
+		// 	data: computed(() => flowStore.flowList),
+		// },
 		// {
 		// 	key: "plugin",
 		// 	title: "我的插件",

@@ -1,11 +1,20 @@
-from src import load_env
-from src import router
+from app import load_env
+from app import api
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import Request
 from typing import Optional
+import os
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
+import structlog
+
+logger = structlog.get_logger(__name__)
 
 app = FastAPI()
+
+# Get root of app, used to point to directory containing static files
+ROOT = Path(__file__).parent.parent
 
 app.add_middleware(
     CORSMiddleware,
@@ -16,16 +25,15 @@ app.add_middleware(
 )
 
 
-app.include_router(router.chat_router)
-app.include_router(router.user_router)
-app.include_router(router.image_router)
-app.include_router(router.agent_router)
-app.include_router(router.auth_router)
-app.include_router(router.knowledge_router)
-app.include_router(router.wechat_router)
-app.include_router(router.order_router)
+app.include_router(api.chat_router)
+app.include_router(api.user_router)
+app.include_router(api.image_router)
+app.include_router(api.agent_router)
+app.include_router(api.auth_router)
+app.include_router(api.knowledge_router)
+app.include_router(api.order_router)
 
-@app.get("/")
+@app.get("/hello_world")
 async def wechat(request: Request):
     # 尝试从X-Forwarded-For头部获取真实IP
     x_forwarded_for: Optional[str] = request.headers.get("x-forwarded-for")
@@ -35,9 +43,17 @@ async def wechat(request: Request):
     else:
         # 如果没有X-Forwarded-For头部，直接从连接信息获取IP
         client_ip = request.client.host
-    print(client_ip)
     return "请关注微信公众号：Aibot机器人对话，获取更多信息！"
 
+ui_dir = str(ROOT / "ui")
+print(ui_dir)
+# 检查路径 ui_dir 是否存在
+if os.path.exists(ui_dir):
+    # 如果存在，则将其挂载为静态文件目录，根路径为 ""，支持 HTML 文件
+    app.mount("", StaticFiles(directory=ui_dir, html=True), name="ui")
+else:
+    # 如果不存在，则记录一条警告信息，表示仅提供 API 服务
+    logger.warn("No UI directory found, serving API only.")
 
 if __name__=="__main__":
     import uvicorn

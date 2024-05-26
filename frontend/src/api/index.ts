@@ -9,7 +9,7 @@ export async function fetchChatAPI<T = any>(
   defaultPath: string = '/v1/chat/completions',
 ): Promise<T> {
   // 使用环境变量获取 API 的基本 URL
-  const baseURL: string = import.meta.env.VITE_GLOB_API_URL || 'https://default-api-url.com';
+  const baseURL: string = import.meta.env.VITE_GLOB_API_URL;
 
   // 正确地构建 URL 来避免双斜杠问题
   const url = new URL(`${agentId}${defaultPath}`, baseURL).toString();

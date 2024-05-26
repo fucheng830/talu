@@ -325,8 +325,6 @@ def chat_with_agent(agent_config, messages, data, db, user):
 
                             
             finally:
-                # 流完毕后更新 token
-                # await manage_context.update_tokens()
                 yield json.dumps(sse_json('', finish_reason='stop'))
   
 
@@ -370,79 +368,8 @@ def chat_with_openai_gpts(agent_config, messages, data, db, user):
 
 
 
-
-@router.post('/{agent_id}/conversation')
-async def app_chat(agent_id:str, request: Request, db: Session = Depends(get_db)):
-    """问答入口"""
-    data = await request.json()
-    agent_config = db.query(Agent).filter_by(id=agent_id).first()
-    if not agent_config:
-        raise HTTPException(status_code=404, detail="Agent not found")
-    
-    data = await request.json()
-    messages = data['messages']
-
-    if not agent_config.gid:
-        input_text = messages.pop(-1)['content']
-        agent_executor = init_agent(agent_config)
-        if data.get('stream'):
-            async def stream_chat():
-                async for chunk in agent_executor.astream_log(
-                    {"input": input_text,
-                    "chat_history": [convert_dict_to_message(message) for message in messages]
-                    }
-                    ):
-                    
-                    for op in chunk.ops:
-                        if op["op"] == "add" and re.match(r"^\/logs\/ChatOpenAI(?::\d+)?\/streamed_output\/\-$", op["path"]):
-                            row_data = sse_json(op["value"].dict(exclude_unset=True)['content'])
-                            yield json.dumps(row_data)
-                        
-                
-                    # yield json.dumps(sse_json('', finish_reason='stop'))
-            return EventSourceResponse(stream_chat(), media_type="text/event-stream")
-        else:
-            
-            output = agent_executor.invoke(
-                {"input": input_text,
-                "chat_history": [convert_dict_to_message(message) for message in messages]
-                }
-                )                    
-            return sse_json(output['output'])  
-
-    else:
-        # 使用openai的api
-        llm = ChatOpenAI(model=agent_config.gid, 
-                        streaming=True,
-                        api_key='sk-2YIT9ALUSqepiChpF947A14dFb5d4bD89c54B7Fc1e755fBd'
-                     )
-        langchain_messages = convert_openai_messages(messages)
-
-
-        if data.get('stream'):
-            async def stream_chat():
-                async for chunk in llm.astream_log(
-                    langchain_messages
-                    ):
-                    for op in chunk.ops:
-                        if op["op"] == "add" and re.match(r"^\/streamed_output\/\-$", op["path"]):
-                            row_data = sse_json(op["value"].dict(exclude_unset=True)['content'])
-                            yield json.dumps(row_data)
-                
-                    # yield json.dumps(sse_json('', finish_reason='stop'))
-            return EventSourceResponse(stream_chat(), media_type="text/event-stream")
-        else:
-            output = agent_executor.invoke(
-               langchain_messages
-                )                    
-            return sse_json(output['output']) 
-
-
-
-
-
 @router.post('/conversation/gen_title')
-async def gen_title(request: Request, db: Session = Depends(get_db)):
+async def gen_title(request: Request):
     """修改对话的标题"""
     data = await request.json()
     messages = data['messages']

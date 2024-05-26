@@ -1,5 +1,5 @@
-from src.router.data_store import get_tree
-from src.database import SessionLocal
+from app.api.data_store import get_tree
+from app.database import SessionLocal
 
 
 def test_get_tree():

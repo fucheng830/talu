@@ -41,5 +41,7 @@ COPY . /app
 RUN pip install -r requirements.txt
 RUN pip install uvicorn gunicorn
 
+
+
 # 设置容器启动时执行的命令，使用uvicorn运行FastAPI应用
 CMD ["conda", "run", "-n", "quchat", "uvicorn", "main:app", "--port", "8002", "--host", "0.0.0.0"]

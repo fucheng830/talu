@@ -1,5 +1,5 @@
 *.pyc
-
+ui/
 # Logs
 logs
 *.log
