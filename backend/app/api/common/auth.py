@@ -7,10 +7,10 @@ from fastapi.security import OAuth2PasswordRequestForm
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-from ..database import get_db
-from ..models import User
+from ...database import get_db
+from ...models import User
 from fastapi import APIRouter
-from ..utils import md5
+from ...utils import md5
 from fastapi.encoders import jsonable_encoder
 
 router = APIRouter()

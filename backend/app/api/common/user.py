@@ -3,11 +3,11 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from fastapi import APIRouter
 import uuid
-from ..database import get_db, get_redis_conn, get_key, set_key
-from ..models import User, UserThirdPartyAccount
+from ...database import get_db, get_redis_conn, get_key, set_key
+from ...models import User, UserThirdPartyAccount
 from .auth import create_access_token
-from ..schemas import *
-from ..utils import md5, to_dict
+from ...schemas import *
+from ...utils import md5, to_dict
 from .send_mail import send
 import random
 import time

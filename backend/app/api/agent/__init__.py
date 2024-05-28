@@ -1,4 +1,4 @@
-# tools 
+# Agent模块# tools 
 # system_prompt
 # rag
 # llm 
@@ -11,12 +11,12 @@ from sqlalchemy.orm import Session
 from langchain.agents import Tool
 
 
-from .auth import get_current_user
-from ..schemas import AgentBase
-from ..schemas import AgentQuery
-from ..models import *
-from ..database import get_db
-from .loadlib import import_from_string
+from ..common.auth import get_current_user
+from ...schemas import AgentBase
+from ...schemas import AgentQuery
+from ...models import *
+from ...database import get_db
+
 
 
 
@@ -106,26 +106,9 @@ def delete_agent(agent_query: AgentQuery, db: Session = Depends(get_db), current
 
 
 
-
-def load_tools(tools_config: list, db: Session):
-    tools = []
-    # 查询在tools_config中的id
-    if tools_config:
-        tools_list = db.query(ToolConfig).filter(ToolConfig.id.in_(tools_config)).all()
-        for tool_config in tools_list:
-            tool_config = tool_config.__dict__
-            tool_module = import_from_string(tool_config['code'], 'default_tool')
-            func = getattr(tool_module, tool_config['func'])
-            tool_obj = Tool(
-                tool_config['name'],
-                func,
-                tool_config['description'],
-            )
-            tools.append(tool_obj)
-    return tools
-
-
 @router.post('/search_agent')
 def search_agent(query: str, db: Session = Depends(get_db)):
     agents = db.query(Agent).filter(Agent.name.ilike(f"%{query}%"), Agent.permission == 'public').all()
     return agents
+
+

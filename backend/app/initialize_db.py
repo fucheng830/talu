@@ -1,14 +1,15 @@
 # init_db.py
-import load_env
-import os
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker
-from models import Base, User  # Import your models here
+from app.models import Base, User  # Import your models here
 import uuid
 import datetime
-from utils import md5
+from app.utils import md5
+from sqlalchemy import inspect
+from sqlalchemy import text
+import sqlalchemy
 
-from database import SessionLocal, engine
+from app.database import SessionLocal, engine
 
 def create_tables():
     # Create tables defined in your models
@@ -48,9 +49,45 @@ def create_admin_user():
     db.refresh(admin_user)
     print("Admin user created successfully. User ID:", admin_user.user_id)
 
-# 执行sql语句创建初始化数据
 
+def create_vector_extension() -> None:
+    try:
+        with SessionLocal() as session:  # type: ignore[arg-type]
+            # The advisor lock fixes issue arising from concurrent
+            # creation of the vector extension.
+            # https://github.com/langchain-ai/langchain/issues/12933
+            # For more information see:
+            # https://www.postgresql.org/docs/16/explicit-locking.html#ADVISORY-LOCKS
+            statement = sqlalchemy.text(
+                """BEGIN;
+                SELECT pg_advisory_xact_lock(1573678846307946496);
+                CREATE EXTENSION IF NOT EXISTS vector;
+                CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+                COMMIT;
+                """
+            )
+            session.execute(statement)
+            session.commit()
+    except Exception as e:
+        raise Exception(f"Failed to create vector extension: {e}") from e
+
+
+# 执行sql语句创建初始化数据
+def auto_create_data():
+    # Create a session
+    db = SessionLocal()
+
+    # Create an inspector and get table names
+    inspector = inspect(engine)
+    tables = inspector.get_table_names()
+
+    if not tables:
+        create_vector_extension()
+        create_tables()
+        create_admin_user()
+    else:
+        print("Tables already exist. Skipping creation.")
 
 if __name__ == "__main__":
-    create_tables()
-    create_admin_user()
+    auto_create_data()
+    

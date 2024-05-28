@@ -1,8 +1,35 @@
 version: '3.9'
 
 services:
-  web:
-    image: quchatserver:0.0.1
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "8002:8002"
+      - "8088:8002"
     restart: always
+    environment:
+      - SQLALCHEMY_DATABASE_URL=postgresql://postgres:Fucheng830@postgres:5432/quchat
+      - SQLALCHEMY_ECHO=False
+      - SECRET_KEY=BAkeabIiyguqHC9G68T_gJcpdYZUIA2ggdaM
+      - OPENAI_API_KEY=sk-Yk0olnsQORHmF1F0F91bC1Df9b544c2e8f0c5541Bb5aE1Dd
+      - OPENAI_API_KEY_PLUS=sk-Yk0olnsQORHmF1F0F91bC1Df9b544c2e8f0c5541Bb5aE1Dd
+      - OPENAI_BASE_URL=http://192.168.2.153:9009/v1
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: ankane/pgvector
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=Fucheng830
+      - POSTGRES_DB=quchat
+    ports:
+      - "5434:5432"
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6380:6379"

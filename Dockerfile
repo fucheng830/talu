@@ -1,8 +1,10 @@
 # 使用miniconda作为基础镜像
 FROM continuumio/miniconda3
 
-# 可选：设置工作目录
-WORKDIR /app
+WORKDIR /backend
+# 使用pip安装剩余的Python依赖
+COPY ./backend /backend
+COPY ./ui /ui
 
 # 创建一个新的conda环境并激活
 RUN conda create -n quchat python=3.10
@@ -36,11 +38,9 @@ RUN conda install \
     xz=5.4.5=h5eee18b_0 \
     zlib=1.2.13=h5eee18b_0
 
-# 使用pip安装剩余的Python依赖
-COPY . /app
+
 RUN pip install -r requirements.txt
 RUN pip install uvicorn gunicorn
-
 
 
 # 设置容器启动时执行的命令，使用uvicorn运行FastAPI应用
