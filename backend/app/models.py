@@ -218,7 +218,7 @@ class Agent(Base):
     user_id = Column(String)
     permission = Column(String, default='temp')
     category = Column(String)
-    llm = Column(JSON, default={"model": None, "temperature": 0.8, "streaming": True})
+    llm = Column(JSON, default={"model": "gpt-3.5-turbo", "temperature": 0.8, "streaming": True})
     gid = Column(String)
     opening_text = Column(String)
 

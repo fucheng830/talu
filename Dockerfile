@@ -1,10 +1,31 @@
+FROM node:20 AS builder
+
+WORKDIR /frontend
+
+COPY ./frontend/package.json ./frontend/pnpm-lock.yaml ./
+
+RUN npm install -g pnpm
+
+ENV FETCH_TIMEOUT=120000
+
+RUN pnpm install --prefer-frozen-lockfile
+
+COPY ./frontend ./
+
+RUN rm -rf .env
+
+RUN pnpm run build-only
+
+
 # 使用miniconda作为基础镜像
 FROM continuumio/miniconda3
+
+# 打包前端资源
 
 WORKDIR /backend
 # 使用pip安装剩余的Python依赖
 COPY ./backend /backend
-COPY ./ui /ui
+
 
 # 创建一个新的conda环境并激活
 RUN conda create -n quchat python=3.10

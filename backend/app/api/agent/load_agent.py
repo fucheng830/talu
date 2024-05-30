@@ -36,7 +36,7 @@ def load_agent(config, db):
             return data
         
         tools.append(knowledge_tool)
-
+        
     system_prompt = config.system_prompt
 
     if tools:

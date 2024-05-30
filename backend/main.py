@@ -45,7 +45,7 @@ async def wechat(request: Request):
         client_ip = request.client.host
     return "请关注微信公众号：Aibot机器人对话，获取更多信息！"
 
-ui_dir = str(ROOT / "ui")
+ui_dir = str(ROOT / "frontend/dist")
 print(ui_dir)
 # 检查路径 ui_dir 是否存在
 if os.path.exists(ui_dir):

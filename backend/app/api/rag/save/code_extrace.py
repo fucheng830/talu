@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 # Initialize ChatOpenAI instance
 llm = ChatOpenAI(temperature=0, model='deepseek-chat', max_retries=5)
 
-def code_summary() -> PromptTemplate:
+def code_summary():
     """
     Generate a summary for a code snippet.
 
@@ -37,7 +37,7 @@ def code_summary() -> PromptTemplate:
     chain = prompt | llm | output_parser
     return chain
 
-def load_codebase_knowledge(clone_url: str, repo_path) -> List[BaseModel]:
+def load_codebase_knowledge(clone_url: str, repo_path):
     """
     Create a knowledge base from a codebase.
 
@@ -52,7 +52,7 @@ def load_codebase_knowledge(clone_url: str, repo_path) -> List[BaseModel]:
     documents = loader.load()
     return documents
 
-async def load_and_vector_codebase(url: str, user_id: str, knowledge_id: str) -> None:
+async def load_and_vector_codebase(url: str, user_id: str, knowledge_id: str):
     """
     Load a codebase and vectorize it.
 
@@ -66,17 +66,16 @@ async def load_and_vector_codebase(url: str, user_id: str, knowledge_id: str) ->
     repo_path = os.path.join(save_path, id)
    
     documents = load_codebase_knowledge(clone_url=url, repo_path=repo_path)
-    print(documents)
-    # summary_chain = code_summary()
-    # tasks = [summary_chain.invoke({'file_content': doc.page_content}) for doc in documents]
-    # summarys = await asyncio.gather(*tasks, return_exceptions=True)
+    summary_chain = code_summary()
+    summarys = await asyncio.gather(*[summary_chain.ainvoke({'file_content': doc.page_content}) for doc in documents], return_exceptions=True)
 
     # Handle exceptions
-    # for summary in summarys:
-    #     if isinstance(summary, Exception):
-    #         logger.error(f"Error generating summary: {summary}")
-    #     else:
-    #         logger.info(f"Generated summary: {summary}")
+    for summary in summarys:
+        if isinstance(summary, Exception):
+            logger.error(f"Error generating summary: {summary}")
+        else:
+            logger.info(f"Generated summary: {summary}")
+            
 
 if __name__ == '__main__':
     asyncio.run(load_and_vector_codebase('https://github.com/linyiLYi/bilibot.git', 'fucheng', 'bilibot'))

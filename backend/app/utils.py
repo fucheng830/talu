@@ -1,8 +1,6 @@
 import hashlib
 import os
 
-
-# Utility function for md5 hashing
 def md5(raw_password):
     return hashlib.md5(raw_password.encode('utf-8')).hexdigest()
 
