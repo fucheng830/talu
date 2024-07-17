@@ -152,6 +152,8 @@ class GetNodeDataParams(BaseModel):
 
 class AddUrlContentParams(BaseModel):
     url: str
+    name: Optional[str] = None 
+    source_name: Optional[str] = None
     knowledge_id: str
 
 class SearchNodeParams(BaseModel):
@@ -173,3 +175,11 @@ class PayParams(BaseModel):
 
 class OrderRequest(BaseModel):
     order_id: int
+
+
+class ContentParams(BaseModel):
+    url: str
+    knowledge_id: str
+    title: str 
+    description: str
+    markdown: str

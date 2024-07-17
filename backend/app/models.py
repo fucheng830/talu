@@ -69,6 +69,8 @@ class Node(Base):
     permission = Column(String, default='public')
     content = Column(Text)
     knowledge_id = Column(UUID(as_uuid=True))
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
     children = relationship(
         "NodeRelationship",

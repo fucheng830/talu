@@ -1,27 +1,23 @@
 FROM node:20 AS builder
 
-WORKDIR /frontend
+COPY ./frontend /frontend
 
-COPY ./frontend/package.json ./frontend/pnpm-lock.yaml ./
+WORKDIR /frontend
 
 RUN npm install -g pnpm
 
 ENV FETCH_TIMEOUT=120000
 
-RUN pnpm install --prefer-frozen-lockfile
-
-COPY ./frontend ./
+RUN pnpm install
 
 RUN rm -rf .env
 
 RUN pnpm run build-only
 
-
 # 使用miniconda作为基础镜像
 FROM continuumio/miniconda3
 
 # 打包前端资源
-
 WORKDIR /backend
 # 使用pip安装剩余的Python依赖
 COPY ./backend /backend
@@ -63,6 +59,10 @@ RUN conda install \
 RUN pip install -r requirements.txt
 RUN pip install uvicorn gunicorn
 
+# 将前端资源复制到后端 static 目录
+COPY --from=builder /frontend/dist /frontend/dist
+
+WORKDIR /backend
 
 # 设置容器启动时执行的命令，使用uvicorn运行FastAPI应用
 CMD ["conda", "run", "-n", "quchat", "uvicorn", "main:app", "--port", "8002", "--host", "0.0.0.0"]

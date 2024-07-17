@@ -78,23 +78,7 @@
 	<div
 		class="p-4 w-full max-w-screen-xl m-auto flex items-end justify-between space-x-2"
 	>
-		<!-- <div
-			class="h-[40px] flex items-center hover:cursor-pointer active:scale-95 overflow-hidden rounded-full transition-all duration-300 flex-none flex items-center justify-center px-3"
-			:style="{ backgroundColor: globalColors.btnActive }"
-		>
-			<Icon
-				icon="la:brush"
-				width="28"
-				color="white"
-				style="transform: rotate(180deg)"
-			/>
-			<span
-				class="ml-1 duration-300 transition-all text-white whitespace-nowrap overflow-hidden"
-				:class="[data.isInputing ? 'w-0' : 'w-[48px]']"
-			>
-				新话题
-			</span>
-		</div> -->
+
 		<n-button text @click="handleClear">
 			<Icon icon="ph:trash" width="24" style="margin-bottom: 0.5rem" />
 		</n-button>

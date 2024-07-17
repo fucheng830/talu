@@ -9,9 +9,39 @@ from langchain.vectorstores.pgvector import DistanceStrategy
 from langchain.retrievers import EnsembleRetriever
 from sqlalchemy.orm import Session
 
-
 embeddings_model = OpenAIEmbeddings()
+
 llm = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo-1106")
+
+def combine_retriever(embeddings_model, knowledge_id, db, **kwargs):
+    """
+    kwargs:
+        bm25_ratio: BM25检索的权重
+        embedding_ratio: 语义检索的权重
+        search_num: 检索结果数量
+        filter: 过滤条件 dict {'index_type': 'summary'}
+    """
+    
+    bm25_ratio = kwargs.get('bm25_ratio', 0.5)
+    embedding_ratio = kwargs.get('embedding_ratio', 0.5)
+
+    search_num = kwargs.get('search_num', 20)
+    filter = kwargs.get('filter', {'index_type': 'summary'})
+    
+    embedding_retriever = PGVector(
+        connection_string=os.environ['SQLALCHEMY_DATABASE_URL'], 
+        embedding_function=embeddings_model, 
+        collection_id=knowledge_id,
+        distance_strategy=DistanceStrategy.COSINE
+    ).as_retriever(search_kwargs={'k': search_num, 'filter': filter})
+    
+  
+    bm25_retriever = PostgresFullTextSearchRetriever.from_db(db, k=search_num)
+    
+    return EnsembleRetriever(
+        retrievers=[bm25_retriever, embedding_retriever], weights=[bm25_ratio, embedding_ratio]
+    )
+
 
 
 def create_doc(content: str, meta: dict):
@@ -35,26 +65,11 @@ def search(query: str, knowledge_id: str, db: Session, **kwargs):
     # 问题补全
         # 是否补齐 multiQuery,增强检索 is_complete
     # 上下文压缩
-
-    bm25_ratio = kwargs.get('bm25_ratio', 0.5)
-    embedding_ratio = kwargs.get('embedding_ratio', 0.5)
-    
-    embedding_retriever = PGVector(
-        connection_string=os.environ['SQLALCHEMY_DATABASE_URL'], 
-        embedding_function=embeddings_model, 
-        collection_id=knowledge_id,
-        distance_strategy=DistanceStrategy.COSINE
-    ).as_retriever()
-    
-  
-    bm25_retriever = PostgresFullTextSearchRetriever.from_db(db)
-    
-    combine_retriever = EnsembleRetriever(
-        retrievers=[bm25_retriever, embedding_retriever], weights=[bm25_ratio, embedding_ratio]
-    )
-
-    docs = combine_retriever.get_relevant_documents(query)
+    retriever = combine_retriever(embeddings_model, knowledge_id, db, **kwargs)
+    docs = retriever.get_relevant_documents(query)
     return docs
+
+
 
 
 

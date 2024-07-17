@@ -48,7 +48,7 @@ class PostgresFullTextSearchRetriever(BaseRetriever):
         # SQL 查询使用参数化来防止SQL注入
         sql_query = text(
             """SELECT document, cmetadata FROM langchain_pg_embedding
-            WHERE to_tsvector('english', document) @@ to_tsquery('english', :query) 
+            WHERE to_tsvector('english', document) @@ plainto_tsquery('english', :query) 
             LIMIT :limit"""
         )
         result = self.db.execute(sql_query, {'query': query, 'limit': self.k})
@@ -58,3 +58,5 @@ class PostgresFullTextSearchRetriever(BaseRetriever):
         # 将查询结果转换成Document实例列表
         documents = [Document(page_content=row[0], metadata=row[1]) for row in document_rows]
         return documents
+
+

@@ -1,3 +1,11 @@
+from dotenv import load_dotenv
+import os
+
+env_name = '.env' 
+dotenv_path = os.path.join(os.path.dirname(__file__), env_name)
+if os.path.exists(dotenv_path):
+    load_dotenv(dotenv_path, override=True)
+
 from app import api
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,6 +16,7 @@ from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 import structlog
 from app import initialize_db
+
 
 logger = structlog.get_logger(__name__)
 
@@ -55,23 +64,11 @@ else:
     # 如果不存在，则记录一条警告信息，表示仅提供 API 服务
     logger.warn("No UI directory found, serving API only.")
 
-
 initialize_db.auto_create_data()
-
-
 
 if __name__=="__main__":
     # 读取环境变量
-    from dotenv import load_dotenv
-    import os
     import uvicorn
-
-    env_name = '.env' 
-    dotenv_path = os.path.join(os.path.dirname(__file__), env_name)
-    if os.path.exists(dotenv_path):
-        load_dotenv(dotenv_path, override=True)
-
-    
     uvicorn.run(app, host="0.0.0.0", port=8003)
 
 

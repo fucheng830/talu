@@ -75,7 +75,7 @@ const refUpload = ref();
 const userStore = useUserStore();
 const KnowledgeStore = useKnowledgeStore();
 
-const upload_endpoint = "http://192.168.2.152:8003/load_file";
+const upload_endpoint = import.meta.env.VITE_GLOB_API_URL+"/load_file";
 const token = userStore.$state.userInfo?.access_token;
 
 // {

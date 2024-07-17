@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from fastapi import Depends
 from fastapi import HTTPException
+from fastapi import Query
 
 from sqlalchemy.orm import Session
 import hashlib
@@ -15,10 +16,14 @@ from ...models import Node, NodeRelationship, EmbeddingStore
 from .pgvector import PGVector
 from .summary import summary, qa_extract
 from .search import search
+from .save import save_document
+from .load_link import insert_document
+from ..tool.reader import read_url
 
 from langchain_core.documents.base import Document as LangchainDocument
 from fastapi import UploadFile, File
 import os
+import time
 
 from langchain_community.embeddings import OpenAIEmbeddings
 from sqlalchemy import text
@@ -233,7 +238,7 @@ def load_file(
 
 
 @router.post("/split_document")
-def load_file(
+def split_document(
     doc: SplitHandler,
     db: Session = Depends(get_db),
     current_user: dict = Depends(get_current_user),
@@ -280,96 +285,19 @@ def extract_document(
             )
         return docs
 
-
 @router.post("/upload_data")
 def upload_file_data(
     doc: uploadDatas,
     db: Session = Depends(get_db),
     current_user: dict = Depends(get_current_user),
 ):
-    """接收上传数据
-    doc:
-
-    """
-    from langchain_core.documents.base import Document as LangchainDocument
-    from sqlalchemy import text
+    """上传数据"""
     user_id = current_user.get("user_id")
-    texts = []
     for document in doc.data:
-        # 插入文件内容
-        if document.get("node_id"):
-            print("node_id", document["node_id"])
-            # 如果存在node_id，则更新内容
-            new_container = db.query(Node).filter(Node.node_id == document["node_id"]).first()
-            new_container.content = document["content"]
-            
-            # 删除原有向量索引
-            db.query(EmbeddingStore).filter(
-                text("cmetadata->>'doc_id' = :node_id")
-            ).params(node_id=str(document["node_id"])).delete()
-            db.commit()
-
-        else:
-            new_container = Node(
-                name=document["name"],
-                node_type=document["type"],
-                description=document.get("summary"),
-                data={},
-                knowledge_id=doc.knowledge_id, 
-                content=document["content"],
-                user_id=user_id,
-            )
-
-            db.add(new_container)
-            db.commit()
-            db.refresh(new_container)
-        # 插入向量索引
-
-        texts.append(
-            LangchainDocument(
-                page_content=f"{new_container.name} 是 {new_container.node_type}: {new_container.description}",
-                metadata={
-                    "user_id": user_id,
-                    "doc_id": str(new_container.node_id),
-                    "index_type": "summary",
-                },
-            )
-        )
-
-        for i, text in enumerate(document["content_split"]):
-            texts.append(
-                LangchainDocument(
-                    page_content=text,
-                    metadata={
-                        "user_id": user_id,
-                        "doc_id": str(new_container.node_id),
-                        "index_type": "content",
-                        "index_id": i,
-                    },
-                )
-            )
-        if document.get("qa"):
-            for qa in document['qa'].get('qa_list'):
-                texts.append(
-                    LangchainDocument(
-                        page_content=qa["question"],
-                        metadata={
-                            "user_id": user_id,
-                            "doc_id": str(new_container.node_id),
-                            "index_type": "qa",
-                            "answer": qa["answer"],
-                        },
-                    )
-                )
-
-    embeddings_model = OpenAIEmbeddings()
-    PGVector.from_documents(
-        connection_string=os.environ["SQLALCHEMY_DATABASE_URL"],
-        collection_id=doc.knowledge_id,
-        embedding=embeddings_model,
-        documents=texts,
-    )
+        document['knowledge_id'] = doc.knowledge_id
+        save_document(user_id, document, db)
     return {"status": "Success", "message": "Document created successfully"}
+
 
 
 @router.post("/add_content")
@@ -461,10 +389,7 @@ def get_node_data(
     else:
         raise HTTPException(status_code=404, detail="Node not found")
 
-def get_content_from_url(url):
-    import requests
-    res = requests.post("https://static.123qiming.com/web_browse/get_content", json={"url": url})
-    return res.json()
+
 
 @router.post("/add_url_content")
 async def add_url_content(link: AddUrlContentParams, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
@@ -496,7 +421,6 @@ async def add_url_content(link: AddUrlContentParams, db: Session = Depends(get_d
 async def search_node(params: SearchNodeParams, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     """知识库搜索
     """
-    
     search_results = search(params.query, params.knowledge_id, db, **params.search_config)
     return search_results
 
@@ -505,11 +429,87 @@ async def search_node(params: SearchNodeParams, db: Session = Depends(get_db), c
 async def create_code_knowledge(db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     """创建代码知识库
     """
-    
     return 'success'
 
 
+# def get_content_from_url(url):
+#     import requests
+#     res = requests.post("https://static.123qiming.com/web_browse/get_content", json={"url": url})
+#     if res.status_code != 200:
+#         raise HTTPException(status_code=400, detail="Failed to fetch content from the given URL")
+#     return res.json()
 
-    
+import re
 
- 
+def get_content_from_url(url, name=None, retry=3):
+    import requests
+    print(url, name)
+    for i in range(retry):
+        # 定义 URL
+        new_url = f"https://r.jina.ai/{url}"
+        response = requests.get(new_url)
+        # 检查响应状态码
+        if response.status_code == 200:
+            # 使用正则表达式匹配标题
+            markdown = response.text
+            title_match = re.search(r'Title: (.+)', markdown)
+            title = title_match.group(1) if title_match else None
+
+            # 使用正则表达式匹配URL
+            url_match = re.search(r'URL Source: (.+)', markdown)
+            url = url_match.group(1) if url_match else None
+
+            # 使用正则表达式匹配Markdown内容
+            # 假设Markdown内容是在两个换行符之间
+            markdown_content_match = re.search(r'Markdown Content:\n([\s\S]+)', markdown)
+            markdown_content = markdown_content_match.group(1).strip() if markdown_content_match else None
+            res = {'data':{'title': title, 'description': '', 'content': markdown_content}}
+            if name:
+                if name==title:
+                    return res['data']
+            else:
+                return res['data']
+            time.sleep(2)
+        elif response.status_code == 403:
+            print("Request failed with status code: 403 - Forbidden")
+        else:
+            print(f"Request failed with status code: {response.status_code}\n {response.text}")
+
+
+
+@router.post("/add_link_page")
+async def add_link_page(params: AddUrlContentParams, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    """知识库搜索
+    """
+    from .parser import split_markdown_text
+    content = read_url(params.url)
+    if not content:
+        raise HTTPException(status_code=400, detail="Failed to fetch content from the given URL")
+    else:
+        kwargs = {}
+        if params.name:
+            kwargs['name'] = params.name
+        if params.source_name:
+            kwargs['source_name'] = params.source_name
+        if content.get('head_img'):
+            kwargs['thumburl'] = content['head_img']
+
+        document = {'title': content['title'], 'content': content['content'], 'url': params.url}
+        return insert_document(document, params.knowledge_id, current_user['user_id'], db)
+
+
+
+
+@router.post("/save_share_card")
+async def save_share_card(params: ContentParams, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    """保存分享卡片
+    """
+    document = {'title': params.title, 'content': params.markdown, 'url': params.url}
+    return insert_document(document, params.knowledge_id, current_user['user_id'], db)
+
+
+@router.get("/search_knowledge/{knowledge_id}")
+async def search_knowledge(knowledge_id: str, query: str = Query(...), db: Session = Depends(get_db)):
+    """知识库搜索"""
+    search_results = search(query, knowledge_id, db)
+    return search_results
