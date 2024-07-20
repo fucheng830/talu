@@ -63,11 +63,11 @@ def read_other(url: str):
     Read the content from the url and return the content.
     """
     new_url = f"https://r.jina.ai/{url}"
-    response = requests.get(url, headers={"User-accept": "text/json"})
+    response = requests.get(new_url, headers={"Accept": "application/json"})
     if response.status_code != 200:
         raise HTTPException(status_code=response.status_code, detail=response.text)
     else:
         data = response.json()
-        return data
+        return data['data']
 
     

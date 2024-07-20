@@ -432,56 +432,11 @@ async def create_code_knowledge(db: Session = Depends(get_db), current_user: dic
     return 'success'
 
 
-# def get_content_from_url(url):
-#     import requests
-#     res = requests.post("https://static.123qiming.com/web_browse/get_content", json={"url": url})
-#     if res.status_code != 200:
-#         raise HTTPException(status_code=400, detail="Failed to fetch content from the given URL")
-#     return res.json()
-
-import re
-
-def get_content_from_url(url, name=None, retry=3):
-    import requests
-    print(url, name)
-    for i in range(retry):
-        # 定义 URL
-        new_url = f"https://r.jina.ai/{url}"
-        response = requests.get(new_url)
-        # 检查响应状态码
-        if response.status_code == 200:
-            # 使用正则表达式匹配标题
-            markdown = response.text
-            title_match = re.search(r'Title: (.+)', markdown)
-            title = title_match.group(1) if title_match else None
-
-            # 使用正则表达式匹配URL
-            url_match = re.search(r'URL Source: (.+)', markdown)
-            url = url_match.group(1) if url_match else None
-
-            # 使用正则表达式匹配Markdown内容
-            # 假设Markdown内容是在两个换行符之间
-            markdown_content_match = re.search(r'Markdown Content:\n([\s\S]+)', markdown)
-            markdown_content = markdown_content_match.group(1).strip() if markdown_content_match else None
-            res = {'data':{'title': title, 'description': '', 'content': markdown_content}}
-            if name:
-                if name==title:
-                    return res['data']
-            else:
-                return res['data']
-            time.sleep(2)
-        elif response.status_code == 403:
-            print("Request failed with status code: 403 - Forbidden")
-        else:
-            print(f"Request failed with status code: {response.status_code}\n {response.text}")
-
-
 
 @router.post("/add_link_page")
 async def add_link_page(params: AddUrlContentParams, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
-    """知识库搜索
+    """增加链接页面
     """
-    from .parser import split_markdown_text
     content = read_url(params.url)
     if not content:
         raise HTTPException(status_code=400, detail="Failed to fetch content from the given URL")

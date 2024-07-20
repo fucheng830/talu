@@ -2,6 +2,7 @@ from pydantic import BaseModel, UUID4, Field
 from typing import Optional
 from datetime import datetime
 from uuid import UUID
+import uuid
 
 class UserSchema(BaseModel):
     user_id: UUID4
@@ -183,3 +184,14 @@ class ContentParams(BaseModel):
     title: str 
     description: str
     markdown: str
+
+
+class ConversationRequest(BaseModel):
+    prompt: str
+    model: str
+    message_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    parent_message_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    conversation_id: str = None
+    stream: bool = True
+    max_context_len: int = 3
+    context_compress_strage: str = 'rag'

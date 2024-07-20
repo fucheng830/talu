@@ -218,8 +218,8 @@ const handleMenuSelect = (key: string | number, item, curBlock) => {
 		// 编辑
 		case "edit":
 			// 携带当前id进入编辑(新增)页
-			console.log(`${curBlock.url}/${item.id}`);
-			handleGo(`${curBlock.url}/${item.id}`);
+			console.log('进入'+`${curBlock.url}/${item.id}`);
+			router.push(`${curBlock?.url}/${item?.id}`);
 			break;
 
 		// 删除
@@ -233,8 +233,6 @@ const handleMenuSelect = (key: string | number, item, curBlock) => {
 
 // 新增
 const handleAdd = (curBlock) => {
-	console.log(curBlock?.url);
-	// handleGo(curBlock?.url);
 	router.push(curBlock?.url);
 };
 

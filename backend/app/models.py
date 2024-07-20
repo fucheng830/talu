@@ -55,6 +55,34 @@ class UserThirdPartyAccount(Base):
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now())
 
+# conversation
+class Conversation(Base):
+    __tablename__ = 'conversations'
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    title = Column(String, nullable=True)
+    summary = Column(String, nullable=True)
+    user_id = Column(UUID(as_uuid=True), nullable=True)
+    created_at = Column(DateTime, default=func.now(), nullable=False)
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now(), nullable=False)
+    
+    messages = relationship("Message", back_populates="conversation")
+
+class Message(Base):
+    __tablename__ = 'messages'
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    conversation_id = Column(UUID(as_uuid=True), ForeignKey('conversations.id'), nullable=False)
+    message_id = Column(UUID(as_uuid=True), default=uuid.uuid4, nullable=False)
+    parent_message_id = Column(UUID(as_uuid=True), nullable=True)
+    content = Column(String, nullable=False)
+    embedding = Column(String, nullable=True)  # Assuming `pgvector` extension, use appropriate type
+    role = Column(String, nullable=False)
+    user_id = Column(UUID(as_uuid=True), nullable=True)
+    created_at = Column(DateTime, default=func.now(), nullable=False)
+    
+    conversation = relationship("Conversation", back_populates="messages")
+
 
 # RAG
 class Node(Base):
@@ -334,3 +362,5 @@ class Withdrawal(Base):
     requested_at = Column(DateTime(timezone=True), server_default=func.now())
     processed_at = Column(DateTime(timezone=True))
     response = Column(JSONB)  # Optional: stores JSON data for responses or errors
+
+
