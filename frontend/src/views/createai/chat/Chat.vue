@@ -196,7 +196,7 @@ const { isMobile } = useBasicLayout();
 const { iconRender } = useIconRender();
 const dialog = useDialog();
 
-const defaultAvatar = "/avatar.jpg"; // replace with actual path
+const defaultAvatar = "http://images.aitop66.com/https://site.123qiming.com/image/3f40de780cb29eb51519a0ce4c7f5d08.png"; // replace with actual path
 
 const data = reactive({
 	userInfo: computed(() => userStore.$state.userInfo),
