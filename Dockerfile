@@ -22,9 +22,14 @@ WORKDIR /backend
 # 使用pip安装剩余的Python依赖
 COPY ./backend /backend
 
+RUN apt-get update && \
+    apt-get install -y build-essential gcc
+    
 # 设置channels，优先使用清华大学镜像
 RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
 RUN conda config --add channels defaults
+# 设置 pip 使用清华大学镜像源
+RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 
 RUN pip install -r requirements.txt
 RUN pip install uvicorn gunicorn
