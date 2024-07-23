@@ -1,0 +1,1 @@
+sudo docker run -d --name talu -p 8080:8080 --restart always talu

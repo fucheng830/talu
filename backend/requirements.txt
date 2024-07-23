@@ -1,5 +1,6 @@
 docx2txt
 email-validator
+fastapi
 faiss-cpu
 Flask-Cors
 GitPython

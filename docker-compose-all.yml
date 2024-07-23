@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    restart: always
+    environment:
+      - SQLALCHEMY_DATABASE_URL=postgresql://postgres:Fucheng830@postgres:5432/talu
+      - SQLALCHEMY_ECHO=False
+      - SECRET_KEY=BAkeabIiyguqHC9G68T_gJcpdYZUIA2ggdaM
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: ankane/pgvector
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=Fucheng830
+      - POSTGRES_DB=talu
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6381:6379"
+
+volumes:
+  postgres_data:
+    driver: local
