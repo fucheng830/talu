@@ -258,30 +258,40 @@ export const useChatStore = defineStore('chat-store', {
 
         },
         // 置顶会话
-        pinChat(curChat: IChat.chatList) {
+        pinChat(curChat: { id: string; isPin: boolean }) {
             // 拿到当前会话的下标
-            const curIndex = this.$state.chatList.findIndex(item => item.id == curChat.id)
-
+            console.log('执行pinChat', curChat)
+            const curIndex = this.$state.agentList.findIndex(item => item.id === curChat.id);
+        
+            if (curIndex === -1) {
+                console.error('Chat not found');
+                return;
+            }
+        
             // 已置顶则取消置顶
             if (curChat.isPin) {
-                this.$state.chatList[curIndex].isPin = false
-                this.$state.chatList.sort((a, b) => {
-                    // 将要取消的绘画移到其他已置顶的下面
-                    if (a.isPin == true && b.isPin == false) return -1
-                    // 其他不变
-                    return 0
-                })
-                return
+                this.$state.agentList[curIndex].isPin = false;
+                this.$state.agentList.sort((a, b) => {
+                    // 将要取消置顶的会话移到其他已置顶的下面
+                    if (a.isPin && !b.isPin) return -1;
+                    if (!a.isPin && b.isPin) return 1;
+                    return 0;
+                });
+            } else {
+                // 拿到当前会话，并删除原会话列表中的当前会话
+                const curTar = this.$state.agentList.splice(curIndex, 1)[0];
+        
+                // 改变置顶标记
+                curTar.isPin = true;
+        
+                // 将当前会话放到列表最前面
+                this.$state.agentList.unshift(curTar);
             }
-
-            // 拿到当前会话，并删除原会话列表中的当前
-            const curTar = this.$state.chatList.splice(curIndex, 1)[0]
-
-            // 改变置顶标记
-            curTar.isPin = true
-
-            this.$state.chatList = [curTar, ...this.$state.chatList]
+        
+            // 保存状态
+            setLocalSetting(this.$state);
         },
+        
 
         saveState() {
             setLocalSetting(this.$state)

@@ -1,19 +1,10 @@
+<!-- 最左侧导航栏 -->
 <template>
 	<div
-		class="h-full w-[88px] bg-[#F2F5F8] flex flex-col items-center py-[10px] select-none shadow-xl border-r"
+		class="h-full w-[88px] bg-[#F2F5F8] flex flex-col items-center py-[10px] select-none"
 	>
 		<div class="h-full flex flex-col items-center justify-between">
-			<!-- 头像 -->
-			<div class="flex flex-col items-center pb-[10px]">
-				<!-- <n-avatar :size="48" src="src/assets/logo.png" /> -->
-				<!-- :src="data.userInfo?.avatar || 'src/assets/avatar.jpg'" -->
-				<img src="@/assets/logo.png" alt="" class="w-[44px]" />
-				<span class="text-sm font-bold truncate max-w-[68px] mt-2">QUCHAT</span>
-
-				<!-- 分割线 -->
-				<!-- <div class="w-[85%] h-[1px] bg-[#e1e0e5] mt-[10px] mb-[20px]"></div> -->
-				<div class="h-[30px]"></div>
-
+			<div class="flex flex-col items-center">
 				<!-- 导航列表 -->
 				<nav-list />
 			</div>
@@ -52,7 +43,7 @@
 							<n-avatar
 								round
 								size="large"
-								:src=data.userInfo.avatar
+								:src="data.userInfo.avatar ?? ''"
 							/>
 						</div>
 						<!-- 头像底部 vip按钮 -->
@@ -106,17 +97,19 @@
 			</div>
 		</div>
 	</div>
+
+	
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref } from "vue";
+import { computed, reactive} from "vue";
 import { globalColors } from "@/hooks/useTheme";
 import imgBgCard from "@/assets/images/nav/bg_card.png";
 import imgIconGift from "@/assets/images/nav/icon_gift.png";
 import imgDownload from "@/assets/images/nav/icon_download.png";
 import { Icon } from "@iconify/vue";
 import NavList from "@/views/layout/components/NavList.vue";
-import { useRouter } from "vue-router";
+import { RouteLocationRaw, useRouter } from "vue-router";
 import { useAppStore, useUserStore } from "@/store";
 
 const router = useRouter();
@@ -142,7 +135,7 @@ const changeModalSettingShow = () => {
 };
 
 // 转到
-const routerGo = (path) => {
+const routerGo = (path: RouteLocationRaw) => {
 	router.push(path);
 };
 

@@ -1,13 +1,11 @@
 <template>
 	<div
 		class="w-full h-full flex-1 flex-col px-[56px]"
-		:style="{ 'background-color': globalColors.bgMain }"
 	>
 		<header class="py-[22px] flex justify-between items-center border-b">
 			<div class="flex items-center">
 				<div
 					class="w-[6px] h-[50px] rounded-[3px] mr-[24px]"
-					:class="[`bg-[${globalColors.btnActive}]`]"
 				></div>
 				<div class="flex flex-col">
 					<span class="font-bold text-[24px]"> 我的应用 </span>
@@ -16,7 +14,6 @@
 
 			<div class="mr-[20px]">
 				<n-button
-					:color="globalColors.btnActive"
 					ghost
 					:style="{ 'border-radius': globalConfig.btnRadius }"
 					@click="changeModalAddAppShow"
@@ -81,7 +78,7 @@
 						</div>
 
 						<!-- 知识库类型 -->
-						<!-- <div
+						<div
 							class="flex items-center gap-1 border bg-[#F4F4F7] border-[#E8EBF0] rounded-lg px-2 py-1 text-[12px]"
 						>
 							<Icon
@@ -91,7 +88,7 @@
 								class="pb-[2px]"
 							/>
 							<span>通用知识库</span>
-						</div> -->
+						</div>
 					</div>
 				</li>
 			</template>
@@ -129,21 +126,16 @@
 
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
-import { globalColors, globalConfig } from "@/hooks/useTheme";
+import { globalConfig } from "@/hooks/useTheme";
 import { reactive, ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import AddApp from "@/views/application/components/AddApp.vue";
-import { useBasicLayout } from "@/hooks/useBasicLayout";
-import { api } from "@/api/common";
 import { useKnowledgeStore } from "@/store";
 import { useIconRender } from "@/hooks/useIconRender";
-import { SvgIcon } from "@/components/common";
-import { useMessage } from "naive-ui";
 import { renderIcon } from "@/utils/functions";
 
 const router = useRouter();
 
-const msg = useMessage();
 const { iconRender } = useIconRender();
 const knowledgeStore = useKnowledgeStore();
 

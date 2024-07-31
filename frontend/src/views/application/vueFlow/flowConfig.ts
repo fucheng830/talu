@@ -1,5 +1,4 @@
 import { globalColors } from "@/hooks/useTheme"
-import { namespace } from "naive-ui/es/_utils/cssr"
 
 declare namespace IConfig {
   interface IGroup {

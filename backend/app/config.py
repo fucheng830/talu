@@ -1,3 +1,4 @@
+default_agent_model = 'deepseek-chat'
 lite_model_name = 'gpt-4o-mini'
 plus_model_name = 'gpt-4o'
 

@@ -9,9 +9,8 @@
 
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
-import { globalColors } from "@/hooks/useTheme";
 
-const props = defineProps({
+defineProps({
   label: {
     type: String,
     default: "AI一键生成",
@@ -22,7 +21,6 @@ const props = defineProps({
   },
   bgcolor: {
     type: String,
-    default: globalColors.btnActive,
   },
 });
 

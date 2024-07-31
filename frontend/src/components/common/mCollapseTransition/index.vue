@@ -5,11 +5,10 @@
 			<slot name="header" :changeCollapsed="changeCollapsed"></slot>
 
 			<!-- 右侧展开按钮 -->
-			<div class="flex justify-center items-center" @click="changeCollapsed">
+			<div class="flex justify-center items-center" @click="() => changeCollapsed()">
 				<Icon
 					icon="mingcute:right-fill"
 					width="44"
-					:color="data.isCollapsed ? globalColors.btnActive : undefined"
 					:style="{
 						transition: 'all .3s',
 						transform: `rotate(${data.isCollapsed ? 90 : 0}deg)`,
@@ -30,7 +29,6 @@
 import { isBoolean } from "@/utils/is";
 import { onMounted, reactive } from "vue";
 import { Icon } from "@iconify/vue";
-import { globalColors } from "@/hooks/useTheme";
 
 const props = defineProps({
 	defaultCollapsed: {

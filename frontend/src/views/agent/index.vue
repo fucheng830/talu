@@ -29,7 +29,6 @@
 			<!-- 内容区 包围 -->
 			<div
 				class="w-full mt-2 p-2"
-				:style="{ backgroundColor: globalColors.agentBg }"
 			>
 				<!-- 筛选条 -->
 				<div class="w-full flex gap-2">
@@ -56,7 +55,7 @@
 <script setup lang="ts">
 import { reactive } from "vue";
 import { Icon } from "@iconify/vue";
-import { globalConfig, globalColors } from "@/hooks/useTheme";
+import { globalConfig } from "@/hooks/useTheme";
 
 const data = reactive({
 	myList: [], // 我的 列表

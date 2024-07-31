@@ -1,6 +1,6 @@
 <template>
+
 	<div class="w-full h-full flex">
-		<!-- :style="{ 'background-color': globalColors.bgMain }" -->
 		<!-- 左侧 列表栏 -->
 		<div
 			v-if="!isMobile"
@@ -18,7 +18,7 @@
 				</n-button>
 			</div>
 
-			<!-- 聊天列表 -->
+			<!-- 聊天对象列表 -->
 			<ChatList />
 		</div>
 

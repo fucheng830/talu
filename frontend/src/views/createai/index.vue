@@ -180,21 +180,21 @@ const data = reactive({
 			url: "/createai/createrole", // 详情url
 			data: computed(() => stateStore.$state.myAgents),
 		},
-		// {
-		// 	key: "flow",
-		// 	title: t("createai.myFLow"),
-		// 	desc: t("createai.myFLowDesc"),
-		// 	url: "/createai/application/advancedFlow",
-		// 	data: computed(() => flowStore.flowList),
-		// },
-		// {
-		// 	key: "plugin",
-		// 	title: "我的插件",
-		// 	desc: "根据你的个人需求创建插件",
-		// 	// todo 替换为创建插件路由
-		// 	url: "/createai/plugins",
-		// 	data: [],
-		// },
+		{
+			key: "flow",
+			title: t("createai.myFLow"),
+			desc: t("createai.myFLowDesc"),
+			url: "/createai/application/advancedFlow",
+			data: computed(() => flowStore.flowList),
+		},
+		{
+			key: "plugin",
+			title: "我的插件",
+			desc: "根据你的个人需求创建插件",
+			// todo 替换为创建插件路由
+			url: "/createai/plugins",
+			data: [],
+		},
 	],
 	opt: {
 		dropdownMenu: [

@@ -20,7 +20,6 @@
 		<!-- 主内容 -->
 		<div
 			class="h-full flex-1"
-			:style="{ backgroundColor: globalColors.bgMain }"
 			style="width: calc(100% - 88px)"
 		>
 			<router-view />

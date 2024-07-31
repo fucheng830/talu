@@ -63,7 +63,7 @@ def agent_create_copliot(agent_id, current_user, db):
 完成上述步骤后，我们现在处于迭代细化模式。用户会提示我们进行更改，我们必须在每次互动后调用update_behavior。在这里，我们可以提出澄清问题。
 
 """
-    llm = ChatOpenAI(model="gpt-4o-mini", 
+    llm = ChatOpenAI(model="deepseek-chat", 
                      temperature=0, 
                      streaming=True,
                      api_key=os.environ.get('OPENAI_API_KEY_PLUS')

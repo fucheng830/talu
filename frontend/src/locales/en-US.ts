@@ -6,6 +6,7 @@ export default {
     added: 'added',
     remove: 'remove',
     pin: 'pin',
+    unpin: 'unpin',
     import: 'import',
     edit: 'edit',
     rename: 'rename',
@@ -36,7 +37,6 @@ export default {
     JoinVIP: 'Join VIP',
     days: 'days',
     purchase: 'purchase',
-
     type: 'Type',
   },
   chat: {

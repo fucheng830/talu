@@ -3,10 +3,8 @@
 import { NConfigProvider } from "naive-ui";
 // 引入自定义的Naive提供器
 import { NaiveProvider } from "@/components/common";
-// 引入全局主题颜色和配置
-import { globalColors, globalConfig } from "@/hooks/useTheme";
 // 使用主题
-import { useTheme } from "@/hooks/useTheme.ts";
+import { useTheme } from "@/hooks/useTheme";
 import { useLanguage } from "@/hooks/useLanguage";
 
 // 从定义的主题变量中获取主题覆盖

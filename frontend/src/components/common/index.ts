@@ -11,6 +11,7 @@ import SvgIcon from './SvgIcon/index.vue'
 import BottomNavigation from './BottomNavigation/index.vue'
 import Qrcode from './Qrcode/Qrcode.vue'
 import mCollapseTransition from './mCollapseTransition/index.vue'
+import ChatInput from './ChatInput/index.vue'
 
 // UserAvatar, Setting, PromptStore, VipBuy, AdTips, GzhTips, ConversationSetting, 
-export { HoverButton, NaiveProvider, SvgIcon, BottomNavigation, Qrcode, mCollapseTransition }
+export { HoverButton, NaiveProvider, SvgIcon, BottomNavigation, Qrcode, mCollapseTransition, ChatInput }

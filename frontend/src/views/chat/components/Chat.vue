@@ -74,65 +74,18 @@
 		</div>
 	</div>
 
-	<!-- 底部输入栏 -->
-	<div
-		class="p-4 w-full max-w-screen-xl m-auto flex items-end justify-between space-x-2"
-	>
-
-		<n-button text @click="handleClear">
-			<Icon icon="ph:trash" width="24" style="margin-bottom: 0.5rem" />
-		</n-button>
-		<div class="flex flex-col flex-1 h-full">
-			<n-input
-				v-model:value="data.txtInput"
-				type="textarea"
-				round
-				size="large"
-				:autosize="{
-					minRows: 1,
-					maxRows: 5,
-				}"
-				:placeholder="
-					isMobile ? $t('chat.placeholderMobile') : $t('chat.placeholderPC')
-				"
-				@focus="handleInputFocus"
-				@blur="handleInputBlur"
-				@keypress.prevent.enter="handleInputEnter"
-			>
-				<!-- 左侧 前缀 -->
-				<!-- <template #prefix>
-					<div
-						class="h-full border-r pr-1 cursor-pointer flex flex-col justify-center"
-						@click.stop="handleUpload"
-					>
-						
-						<Icon icon="tabler:upload" width="22" color="#7e7e7e" />
-					</div>
-				</template> -->
-
-				<!-- 发送按钮 -->
-				<template #suffix>
-					<div class="h-full flex items-center">
-						<!-- <div class="pr-2 cursor-pointer flex flex-col justify-center">
-							<Icon icon="material-symbols:mic" width="22" color="#7e7e7e" />
-						</div> -->
-						<div
-							class="pl-[2px] border-l cursor-pointer flex flex-col justify-center"
-							@click="handleSend"
-						>
-							<Icon
-								icon="entypo:paper-plane"
-								width="28"
-								:color="
-									data.txtInput.length > 0 ? globalColors.btnActive : `#d2c4fc`
-								"
-							/>
-						</div>
-					</div>
-				</template>
-			</n-input>
-		</div>
-	</div>
+  <!-- 底部输入栏 -->
+  <div class="p-4 w-full max-w-screen-xl m-auto flex items-end justify-between space-x-2">
+    <n-button text @click="handleClear">
+      <Icon icon="ph:trash" width="24" style="margin-bottom: 0.5rem" />
+    </n-button>
+    <ChatInput
+      :placeholder="data.opt.placeholderChatInput"
+      :showUpload="true"
+      :showMic="true"
+      @send="handleSend"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -141,7 +94,6 @@ import { computed, onMounted, reactive, watch } from "vue";
 import { fetchChatAPI } from "@/api";
 import { Icon } from "@iconify/vue";
 import TextComponent from "@/views/chat/components/Text.vue";
-import { globalColors } from "@/hooks/useTheme";
 import { useBasicLayout } from "@/hooks/useBasicLayout";
 import { SvgIcon } from "@/components/common";
 import { useIconRender } from "@/hooks/useIconRender";
@@ -149,8 +101,8 @@ import { copyText } from "@/utils/format";
 import { useDialog } from "naive-ui";
 import { useScroll } from "@/views/chat/hooks/useScroll.ts";
 import { useCopyCode, copyCodeBlock } from "@/views/chat/hooks/useCopyCode.ts";
-import { collapseTransitionLight } from "naive-ui/es/collapse-transition/styles";
 import { t } from "@/locales";
+import { ChatInput } from "@/components/common";
 
 const { scrollRef, scrollToBottom, scrollToBottomIfAtBottom } = useScroll();
 const decoder = new TextDecoder("utf-8");
@@ -206,15 +158,7 @@ const data = reactive({
 
 let controller = new AbortController();
 
-// 输入框激活
-const handleInputFocus = () => {
-	data.isInputing = true;
-};
 
-//输入框失焦
-const handleInputBlur = () => {
-	data.isInputing = false;
-};
 
 // 发送
 const handleSend = () => {

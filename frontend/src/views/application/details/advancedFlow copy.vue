@@ -11,7 +11,6 @@
 				>
 					<Icon
 						icon="gravity-ui:arrow-left"
-						:color="globalColors.btnActive"
 						width="18"
 					/>
 				</div>
@@ -49,7 +48,7 @@
 
 				<n-popover placement="bottom" :keep-alive-on-hover="false">
 					<template #trigger>
-						<n-button :color="globalColors.btnActive">
+						<n-button>
 							<Icon
 								icon="material-symbols:save-sharp"
 								width="18"
@@ -73,7 +72,6 @@
 					<n-button
 						circle
 						size="large"
-						:color="globalColors.btnActive"
 						@click="changeShowAddComponent"
 					>
 						<Icon
@@ -165,11 +163,9 @@
 import myFlow from "@/views/application/vueFlow/index.vue";
 import { reactive, ref } from "vue";
 import { Icon } from "@iconify/vue";
-import { globalColors } from "@/hooks/useTheme";
 import { useRoute, useRouter } from "vue-router";
 import { flowNodeType } from "@/views/application/vueFlow/flowConfig.ts";
 
-const route = useRoute();
 const router = useRouter();
 
 const refMyFlow = ref();

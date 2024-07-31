@@ -165,7 +165,10 @@ def add_file(
     current_user: dict = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """上传文件"""
+    """上传文件接口"""
+
+    # 接受文件，保存文件内容到数据库
+
     # 读取file内容
     file_content = file.file.read()
     file_type = file.filename.split(".")[-1]

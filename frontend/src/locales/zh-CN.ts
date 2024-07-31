@@ -6,6 +6,7 @@ export default {
     added: '已添加',
     remove: '移除',
     pin: '置顶',
+    unpin: '取消置顶',
     import: '导入',
     // addSuccess: '添加成功',
     edit: '编辑',

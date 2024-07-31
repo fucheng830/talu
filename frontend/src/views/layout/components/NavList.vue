@@ -3,33 +3,20 @@
 		<template v-for="(item, i) in data.navList" :key="item.label">
 			<div
 				@click.stop="setNavActive(item, i)"
-				class="relative layout-menu mb-4 hover:bg-white hover:cursor-pointer flex flex-col items-center justify-center w-[68px] h-[68px]"
+				class="relative layout-menu hover:bg-white hover:cursor-pointer flex flex-col items-center justify-center w-[50px] h-[50px] bg-white mb-4 rounded-full group"
 			>
 				<!-- 左侧导航栏按钮 -->
 				<div
-					class="flex justify-center items-center w-[40px] h-[40px] rounded-full"
-					:style="{
-						'background-color':
-							data.curActive == i ? globalColors.btnActive : '',
-					}"
+					class="flex justify-center items-center rounded-full"
 				>
 					<!-- 图标 -->
 					<Icon
-						:icon="data.curActive == i ? item.iconActive : item.icon"
-						:width="28"
-						:color="data.curActive == i ? 'white' : globalColors.btnDeactive"
+						:icon="item.icon"
+						:width="25"
+						:class="[isActive(item.path) ? active_color : '', 'group-hover:' + active_color]"
 					/>
 				</div>
-				<span
-					class="font-bold"
-					:style="{
-						color:
-							data.curActive == i
-								? globalColors.btnActive
-								: globalColors.btnDeactive,
-					}"
-					>{{ $t(`navigator.${item.label}`) }}</span
-				>
+				
 			</div>
 		</template>
 	</div>
@@ -37,41 +24,44 @@
 
 <script setup lang="ts">
 import { reactive, computed, watch } from "vue";
-import { useChatStore, useNavStore } from "@/store";
+import { useNavStore } from "@/store";
 import { Icon } from "@iconify/vue";
-import { globalColors } from "@/hooks/useTheme";
 import { useRoute, useRouter } from "vue-router";
-import { useBasicLayout } from "@/hooks/useBasicLayout";
 
 const route = useRoute();
 const router = useRouter();
 const navStore = useNavStore();
-const chatStore = useChatStore();
+
+const active_color = "text-blue-500";
 
 const data = reactive({
-	curActive: computed(() => navStore.curActive),
-	navList: computed(() => navStore.navList),
+  curActive: computed(() => navStore.curActive),
+  navList: computed(() => navStore.navList),
 });
 
-const setNavActive = (item, i: number): void => {
-	navStore.setNavActive(i);
-	if (item.path == "/chat") return chatStore.gotoChat(router);
-	router.push(data.navList[data.curActive].path);
+const setNavActive = (item: any, i: number): void => {
+  navStore.setNavActive(i);
+  router.push(data.navList[data.curActive].path);
+};
+
+// 判断当前路由是否为激活状态
+const isActive = (path: string): boolean => {
+  return route.path === path;
 };
 
 // 实时更新导航栏 激活状态，刷新页面时
 watch(
-	() => route.fullPath,
-	(val) => {
-		// 根据路由路径，找到当前的下标
-		const curNavIndex = data.navList.findIndex((item) => {
-			// 不止一层路由时只取第一层，chat路由带id
-			const basePath = val.split("/")[1];
-			return `/${basePath}` == item.path;
-		});
-		curNavIndex >= 0 && navStore.setNavActive(curNavIndex);
-	},
-	{ immediate: true, deep: true }
+  () => route.fullPath,
+  (val) => {
+    // 根据路由路径，找到当前的下标
+    const curNavIndex = data.navList.findIndex((item) => {
+      // 不止一层路由时只取第一层，chat路由带id
+      const basePath = val.split("/")[1];
+      return `/${basePath}` == item.path;
+    });
+    curNavIndex >= 0 && navStore.setNavActive(curNavIndex);
+  },
+  { immediate: true, deep: true }
 );
 </script>
 

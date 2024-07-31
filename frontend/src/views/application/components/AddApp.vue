@@ -76,7 +76,6 @@
 import mModal from "@/components/common/mModal/index.vue";
 import { reactive, ref } from "vue";
 import { Icon } from "@iconify/vue";
-import { globalColors } from "@/hooks/useTheme";
 
 const refModal = ref();
 const data = reactive({
