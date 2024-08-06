@@ -3,11 +3,11 @@
 		<template v-for="(item, i) in data.navList" :key="item.label">
 			<div
 				@click.stop="setNavActive(item, i)"
-				class="relative layout-menu hover:bg-white hover:cursor-pointer flex flex-col items-center justify-center w-[50px] h-[50px] bg-white mb-4 rounded-full group"
+				class="relative layout-menu hover:bg-white hover:cursor-pointer flex flex-col items-center justify-center w-[50px] h-[50px] bg-white mb-4 group rounded-lg"
 			>
 				<!-- 左侧导航栏按钮 -->
 				<div
-					class="flex justify-center items-center rounded-full"
+					class="flex justify-center items-center"
 				>
 					<!-- 图标 -->
 					<Icon

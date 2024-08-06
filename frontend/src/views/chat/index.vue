@@ -31,36 +31,59 @@
 			<div
 				class="sticky top-0 left-0 right-0 px-5 justify-between relative flex items-center min-w-0 overflow-hidden h-[56px] border-b"
 			>
-				<!-- 折叠按钮 -->
-				<div class="flex items-center gap-4">
+				<!-- 左侧 -->
+				<div class="flex items-center">
+				 <!-- 折叠按钮 -->
+				 <div class="flex items-center gap-4 mr-4">
 					<n-button text @click="changeCollapseLeft">
 						<Icon
-							icon="oi:collapse-left"
+							icon="mdi:arrow-collapse-left"
 							width="18"
-							class="duration-500"
+							:color="btnDeactiveColor"
 							:class="[data.opt.collapseLeft || isMobile ? 'rotate-180' : '']"
 						/>
 					</n-button>
 				</div>
-				<!-- 标题 -->
-				<h1
-					class="text-[16px] flex-1 pl-4 pr-[3rem] font-bold overflow-hidden cursor-pointer select-none text-ellipsis whitespace-nowrap flex items-center justify-center"
-				>
-					<span class="text-ellipsis overflow-hidden">
-						{{ data.curChatInfo.agent?.name }}
-					</span>
-				</h1>
+				<!-- Agent展示 -->
+				<div class="flex items-center space-x-2">
+					<!-- 头像 -->
+					<div class="rounded-full overflow-hidden w-10 h-10">
+						<img :src=data.curChatInfo.agent?.avatar alt="Avatar" class="w-full h-full object-cover">
+					</div>
+					<!-- 名称和描述 -->
+					<div>
+						<div class="flex items-center space-x-1">
+						<span class="font-semibold">{{ data.curChatInfo.agent?.name }}</span>
+						<DropdownMenu />
+						</div>
+						<p class="text-xs">{{ data.curChatInfo.agent?.description }}</p>
+					</div>
+				</div>
+				 </div>
+
+
 				<!-- 右侧按钮栏 -->
 				<div class="flex items-center space-x-4">
 					<!-- 分享 -->
-					<Icon icon="ph:share" width="24" @click="changeModalShareChatShow" />
-					<!-- 详情区 展开 -->
+					<Icon icon="ic:outline-share" 
+							width="18" 
+							:color="btnDeactiveColor"
+							@click="changeModalShareChatShow" />
+					<!-- 配置区 -->
 					<Icon
-						icon="mdi:weather-history"
-						width="24"
-						:color="data.isCollapseRight ? '#000000' : globalColors.btnActive"
+						icon="icon-park-outline:setting-config"
+						width="18"
+						:color="btnDeactiveColor"
 						@click="changeCollapseRight"
 					/>
+					<!-- 详情区 展开 -->
+					<Icon
+						icon="mdi:arrow-collapse-right"
+						width="18"
+						:color="btnDeactiveColor"
+						@click="changeCollapseRight"
+					/>
+					
 				</div>
 			</div>
 
@@ -83,16 +106,18 @@
 </template>
 
 <script setup lang="ts">
-import { globalColors, globalConfig } from "@/hooks/useTheme";
+import { globalConfig } from "@/hooks/useTheme";
 import { computed, reactive, ref } from "vue";
 import { Icon } from "@iconify/vue";
 import { useBasicLayout } from "@/hooks/useBasicLayout";
 import { useChatStore, useNavStore, useUserStore } from "@/store";
 import { useRoute, useRouter } from "vue-router";
 import Chat from "@/views/chat/components/Chat.vue";
+import DropdownMenu from "@/components/common/DropdownMenu.vue";
 import ChatList from "@/views/chat/components/ChatList.vue";
 import ChatDetail from "@/views/chat/components/ChatDetail.vue";
 import ShareChat from "@/views/chat/components/ShareChat.vue";
+import { useThemeVars } from "naive-ui";
 
 import { watch } from "vue";
 import { onMounted } from "vue";
@@ -100,6 +125,9 @@ import { onMounted } from "vue";
 
 // const { scrollRef, scrollToBottom, scrollToBottomIfAtBottom } = useScroll();
 const { isMobile } = useBasicLayout();
+
+const theme = useThemeVars();
+const btnDeactiveColor = computed(() => theme.value.btnDeative || '#D4D4D4'); // 添加默认值
 
 const chatStore = useChatStore();
 const navStore = useNavStore();

@@ -128,7 +128,7 @@ export const globalColors = {
 // 定义全局颜色常量
 export const lightThemeColors = {
   btnActive: '#0653FF', // 激活按钮颜色
-  btnDeactive: '#4D79AB', // 未激活按钮颜色
+  btnDeactive: '#f4f4f4', // 未激活按钮颜色
   bgMain: '#f5f7fa', // 主背景颜色
   bgChatActive: '#F4F4F4', // 活跃聊天背景颜色
   txtDeep: '#333639', // 深色文字颜色
