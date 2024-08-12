@@ -376,13 +376,19 @@ const data = reactive({
 	// },
 	// ],
 	opt: {
-		// 测试类型
+		// 搜索类型，name，description，content
 		testType: [
 			{
-				label: t("knowledge.singleTextTest"),
-				value: "singleText",
-				// !bug 报错，无法渲染
-				// render(({node,option})=>h(Icon,{icon:'subway:file-13',color:globalColors.btnActive})),
+				label: "name",
+				value: "name",
+			},
+			{
+				label: "description",
+				value: "description",
+			},
+			{
+				label: "content",
+				value: "content",
 			},
 		],
 		// 搜索类型

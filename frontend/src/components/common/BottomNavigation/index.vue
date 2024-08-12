@@ -2,9 +2,10 @@
 import { reactive, computed } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useRouter } from 'vue-router';
-import { emit } from 'process';
 import { useTheme } from '@/hooks/useTheme';
 import { lineThemeColorDark, lineThemeColorLight } from '@/styles/env/theme';
+
+// 这个组件可以作为应用程序的底部导航栏，提供导航和主题切换功能。
 
 // 获取路由实例
 const router = useRouter();

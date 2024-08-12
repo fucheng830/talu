@@ -161,6 +161,8 @@ export default {
     placeholderCreateLink: 'Please type in the link',
 
     singleTextTest: 'Single text test',
+    searchType: 'Search type',
+    defaultSearchType: 'name',
 
     semantic: 'Semantic',
     semanticDesc: 'Using vectors for text relevance queries',

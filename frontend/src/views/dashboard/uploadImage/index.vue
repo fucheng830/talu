@@ -17,6 +17,9 @@ import { defineComponent, ref, reactive } from 'vue';
 import { UploadFileInfo } from 'naive-ui';
 import axios from 'axios';
 
+
+const actionUrl = '/upload_image';
+
 // 变量来跟踪上传的文件列表
 const fileList = ref<UploadFileInfo[]>([]);
 

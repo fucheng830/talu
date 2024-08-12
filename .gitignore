@@ -27,3 +27,4 @@ dist-ssr
 vite.config.ts.timestamp*
 .env
 .env.development
+script/*
