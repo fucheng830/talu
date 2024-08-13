@@ -121,12 +121,12 @@ import { useThemeVars } from "naive-ui";
 
 import { watch } from "vue";
 import { onMounted } from "vue";
-// import { useScroll } from "./hooks/useScroll";
 
-// const { scrollRef, scrollToBottom, scrollToBottomIfAtBottom } = useScroll();
+
 const { isMobile } = useBasicLayout();
 
 const theme = useThemeVars();
+// @ts-ignore
 const btnDeactiveColor = computed(() => theme.value.btnDeative || '#D4D4D4'); // 添加默认值
 
 const chatStore = useChatStore();
@@ -193,7 +193,7 @@ watch(
 			} else {
 				// 获取聊天记录
 				console.log("id1212", newVal);
-				chatStore.setCurrentAgent(newVal);
+				chatStore.setCurrentAgent(String(newVal));
 			}
 		}
 	},

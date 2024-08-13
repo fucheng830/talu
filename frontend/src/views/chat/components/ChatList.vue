@@ -7,7 +7,7 @@
 					<div
 						@click="setChatActive(item)"
 						class="chat-item-wrap w-full overflow-hidden grid grid-cols-[minmax(0,1fr)_1rem] px-[12px] py-[10px] rounded-md hover:cursor-pointer mb-1 items-center relative"
-						:class="[item.id == data.curActiveChat ? `bg-[${data.btnActiveColor}]`: '']"
+						:class="[item.id == data.curActiveChat ? `bg-[#F4F4F4]`: '']"
 					>
 						<div class="relative w-full flex">
 							<n-avatar
@@ -113,7 +113,8 @@ const data = reactive({
 	},
 	// todo: 忽略ts类型检查
 	// @ts-ignore
-	btnActiveColor: computed(() => theme.value.bgChatActive),
+	btnActiveColor: '#F4F4F4'
+	// computed(() => theme.value.bgChatActive),
 });
 
 

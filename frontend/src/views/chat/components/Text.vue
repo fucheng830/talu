@@ -31,7 +31,6 @@ const { isMobile } = useBasicLayout();
 const textRef = ref<HTMLElement>();
 
 // 初始化Markdown解析器实例，配置链接自动识别和代码高亮功能
-// 初始化Markdown解析器实例，配置链接自动识别和代码高亮功能
 const mdi = new MarkdownIt({
     linkify: true,
     highlight(code, language) {
@@ -67,7 +66,7 @@ const wrapClass = computed(() => {
         "min-w-[20px]",
         "rounded-md",
         isMobile.value ? "p-2" : "px-3 py-2",
-        props.inversion ? `bg-[#0653FF] text-[#fff]` : "bg-[#f4f6f8] text-[black]",
+        props.inversion ? `bg-[#f4f6f8] text-[black]` : "text-[black]",
         props.inversion ? "dark:bg-[#a1dc95]" : "dark:bg-[#1e1e20]",
         props.inversion ? "message-request" : "message-reply",
         { "text-red-500": props.error },

@@ -223,7 +223,7 @@ const handleCreateChat = () => {
 };
 
 // 删除话题
-const handleDeleteChat = (item) => {
+const handleDeleteChat = (item: { id: string; }) => {
 	chatStore.deleteChat(item.id);
 };
 
@@ -233,7 +233,7 @@ const handleSelectMultiple = () => {
 };
 
 // 修改当前激活历史
-const handleCurHistoryChange = (curHistory) => {
+const handleCurHistoryChange = (curHistory: { id: any; }) => {
 	data.agentHistory.curActiveChat = curHistory.id;
 };
 

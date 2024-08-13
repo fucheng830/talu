@@ -3,6 +3,7 @@
 		<div
 			class="w-full max-w-screen-xl m-auto dark:bg-[#101014] py-[24px] px-[36px]"
 		>
+		    <!-- 消息列表 -->
 			<template v-for="(item, index) in data.messages" :key="item.time">
 				<div
 					class="flex w-full mb-6 overflow-hidden items-start"
@@ -17,10 +18,6 @@
 					</div>
 					<!-- 聊天区 -->
 					<div class="overflow-hidden text-[15px] items-start">
-						<!-- 日期 时间 -->
-						<span class="text-xs text-[#b4bbc4] text-left">{{
-							item.time
-						}}</span>
 						<!-- 聊天内容 -->
 						<div
 							class="flex items-end gap-1 mt-2"
@@ -76,6 +73,7 @@
 
   <!-- 底部输入栏 -->
   <div class="p-4 w-full max-w-screen-xl m-auto flex items-end justify-between space-x-2">
+	<!-- 清空上下文 -->
     <n-button text @click="handleClear">
       <Icon icon="ph:trash" width="24" style="margin-bottom: 0.5rem" />
     </n-button>
@@ -83,6 +81,7 @@
       :placeholder="data.opt.placeholderChatInput"
       :showUpload="true"
       :showMic="true"
+	  :data=data
       @send="handleSend"
     />
   </div>
@@ -99,7 +98,7 @@ import { SvgIcon } from "@/components/common";
 import { useIconRender } from "@/hooks/useIconRender";
 import { copyText } from "@/utils/format";
 import { useDialog } from "naive-ui";
-import { useScroll } from "@/views/chat/hooks/useScroll.ts";
+import { useScroll } from "../hooks/useScroll";
 import { useCopyCode, copyCodeBlock } from "@/views/chat/hooks/useCopyCode.ts";
 import { t } from "@/locales";
 import { ChatInput } from "@/components/common";
@@ -157,12 +156,9 @@ const data = reactive({
 });
 
 let controller = new AbortController();
-
-
-
 // 发送
 const handleSend = () => {
-	if (!data.txtInput) return;
+	if (data.txtInput.trim() === "") return;
 	if (data.loading) return;
 	if (data.messages == null) {
 		chatStore.addChat();
@@ -301,25 +297,6 @@ const readStream = async (
 			appendLastMessageContent(content, index);
 		}
 	}
-};
-
-// 聊天输入框 按回车时
-const handleInputEnter = (event: KeyboardEvent) => {
-	// 移动端
-	if (isMobile.value) {
-		if (event.key === "Enter" && event.ctrlKey) {
-			handleSend();
-		}
-		return;
-	}
-
-	// 非移动端
-	// shift + enter 换行
-	if (event.key === "Enter" && event.shiftKey) {
-		data.txtInput += "\n";
-		return;
-	}
-	handleSend();
 };
 
 const appendLastMessageContent = (content: string, index: number) => {
