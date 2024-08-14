@@ -84,3 +84,6 @@ talu 是一款先进的 AI agents 工具🧰，它配备了完备的管理后台
 - Http📱
 - sendbox📦
 
+## 加入我们
+[加入我们的 Discord 社区](https://discord.gg/Kg4uWv5D) 🎮
+

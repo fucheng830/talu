@@ -8,6 +8,8 @@
 				<div
 					class="flex w-full mb-6 overflow-hidden items-start"
 					:class="[item.role == 'assistant' ? 'flex-row' : 'flex-row-reverse']"
+					@mouseenter="handleMouseEnter(index)"
+					@mouseleave="handleMouseLeave(index)"
 				>
 					<!-- 头像 -->
 					<div
@@ -20,7 +22,7 @@
 					<div class="overflow-hidden text-[15px] items-start">
 						<!-- 聊天内容 -->
 						<div
-							class="flex items-end gap-1 mt-2"
+							class="flex flex-col gap-1"
 							:class="[item.role == 'user' ? 'flex-row-reverse' : '']"
 						>
 							<TextComponent
@@ -31,29 +33,46 @@
 								:loading="item.loading"
 								:as-raw-text="!item.isShowRaw"
 							/>
-
+							 <!-- 占位符 -->
+					
 							<!-- 右下角工具栏 -->
-							<div class="flex flex-col">
+							<div
+    class="ml-3 space-x-2 h-5 transition-opacity duration-300"
+    :class="{ 'opacity-0 invisible': !(index === data.messages.length - 1 || item.showTools), 'opacity-100': index === data.messages.length - 1 || item.showTools }"
+							>
 								<button
-									v-if="item.role != 'user'"
+								class="mb-2 transition text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-300"
+								@click="handleCopy(index)"
+							>
+								<SvgIcon icon="ri:clipboard-line" />
+								</button>
+								<button
 									class="mb-2 transition text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-300"
-									@click="handleRegenerate(index)"
+									@click="handleFavorite(index)"
 								>
-									<SvgIcon icon="ri:restart-line" />
+									<SvgIcon icon="ep:collection-tag" />
+								</button>
+								<button
+								v-if="item.role != 'user'"
+								class="mb-2 transition text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-300"
+								@click="handleRegenerate(index)"
+								>
+								<SvgIcon icon="ri:restart-line" />
 								</button>
 								<NDropdown
-									:trigger="isMobile ? 'click' : 'hover'"
-									:placement="item.role != 'user' ? 'right' : 'left'"
-									:options="data.opt.options(item)"
-									@select="(val) => handleSelect(val, item, index)"
+								:trigger="isMobile ? 'click' : 'hover'"
+								:placement="item.role != 'user' ? 'right' : 'left'"
+								:options="data.opt.options(item)"
+								@select="(val) => handleSelect(val, item, index)"
 								>
-									<button
-										class="transition text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-200"
-									>
-										<SvgIcon icon="ri:more-2-fill" />
-									</button>
+								<button
+									class="transition text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-200"
+								>
+									<SvgIcon icon="lucide:ellipsis" />
+								</button>
 								</NDropdown>
 							</div>
+
 						</div>
 					</div>
 				</div>
@@ -99,7 +118,7 @@ import { useIconRender } from "@/hooks/useIconRender";
 import { copyText } from "@/utils/format";
 import { useDialog } from "naive-ui";
 import { useScroll } from "../hooks/useScroll";
-import { useCopyCode, copyCodeBlock } from "@/views/chat/hooks/useCopyCode.ts";
+import { useCopyCode, copyCodeBlock } from "../hooks/useCopyCode";
 import { t } from "@/locales";
 import { ChatInput } from "@/components/common";
 
@@ -120,7 +139,13 @@ const data = reactive({
 	txtInput: "",
 	isInputing: false,
 	loading: false,
-	messages: computed(() => chatStore.getMessages()),
+	messages: computed(() => {
+		const messages = chatStore.getMessages();
+		messages.forEach((message: { showTools: boolean; }) => {
+			message.showTools = false; // 初始化每个消息的 showTools 属性
+		});
+		return messages;
+	}),
 	agent: computed(() => chatStore.currentAgent()),
 	opt: {
 		placeholderChatInput: computed(() =>
@@ -171,6 +196,7 @@ const handleSend = () => {
 		error: false,
 		loading: false,
 		avatar: data.userInfo?.avatar || defaultAvatar,
+		showTools: false,
 	};
 	// 添加到消息列表
 	data.messages.push(message);
@@ -195,6 +221,7 @@ async function generate(index: number) {
 		loading: true,
 		avatar: data.agent?.avatar,
 		isShowRaw: true,
+		showTools: false,
 	};
 
 	// 显示加载中
@@ -373,6 +400,16 @@ const handleClear = () => {
 	});
 };
 
+const handleMouseEnter = (index: number) => {
+	data.messages[index].showTools = true;
+};
+
+const handleMouseLeave = (index: number) => {
+	if (index !== data.messages.length - 1) {
+		data.messages[index].showTools = false;
+	}
+};
+
 onMounted(() => {
 	scrollToBottom();
 });
@@ -386,4 +423,5 @@ watch(
 );
 </script>
 
-<style lang="less"></style>
+<style lang="less">
+</style>

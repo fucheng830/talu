@@ -11,6 +11,7 @@ import mila from "markdown-it-link-attributes";
 import hljs from "highlight.js";
 // 引入自定义的Hook，用于获取基础布局信息
 import { useBasicLayout } from "@/hooks/useBasicLayout";
+import { t } from "@/locales";
 
 // 定义组件的Props类型
 interface Props {
@@ -20,6 +21,10 @@ interface Props {
     loading?: boolean;
     asRawText?: boolean;
 }
+
+
+
+const copyText = t('common.copy');
 
 // 定义组件的Props
 const props = defineProps<Props>();
@@ -35,9 +40,9 @@ const mdi = new MarkdownIt({
     linkify: true,
     highlight(code, language) {
         // 如果代码块的语言是HTML，则直接返回HTML代码
-        if (language === 'html') {
-            return `<div class="html-block">${code}</div>`;
-        }
+        // if (language === 'html') {
+        //     return `<div class="html-block">${code}</div>`;
+        // }
         // 其他语言的处理保持不变
         const validLang = !!(language && hljs.getLanguage(language));
         if (validLang) {
@@ -82,7 +87,8 @@ const text = computed(() => {
 
 // 定义代码高亮的函数
 function highlightBlock(str: string, lang?: string) {
-    return `<pre class="code-block-wrapper"><div class="code-block-header"><span class="code-block-header__lang">${lang}</span><span class="code-block-header__copy">{{$t('common.copy')}}</span></div><code class="hljs code-block-body ${lang}">${str}</code></pre>`;
+    
+    return `<pre class="code-block-wrapper"><div class="code-block-header"><span class="code-block-header__lang">${lang}</span><span class="code-block-header__copy">${copyText}</span></div><code class="hljs code-block-body ${lang}">${str}</code></pre>`;
 }
 
 // 定义组件暴露的属性
