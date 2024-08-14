@@ -42,7 +42,7 @@
 							>
 								<button
 								class="mb-2 transition text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-300"
-								@click="handleCopy(index)"
+								@click="copyText({ text: item.content})"
 							>
 								<SvgIcon icon="ri:clipboard-line" />
 								</button>
@@ -153,11 +153,6 @@ const data = reactive({
 		),
 		options: computed(() => (item: any) => {
 			const common = [
-				{
-					label: t("common.copy"),
-					key: "copyText",
-					icon: iconRender({ icon: "ri:file-copy-2-line" }),
-				},
 				{
 					label: t("common.delete"),
 					key: "delete",
@@ -364,7 +359,7 @@ const handleDelete = (index: number) => {
 
 // 点击下拉列表 (更多操作)
 const handleSelect = (
-	key: "copyText" | "delete" | "toggleRenderType",
+	key: "delete" | "toggleRenderType",
 	item: any,
 	index: number
 ) => {
@@ -374,12 +369,6 @@ const handleSelect = (
 			if (item.isShowRaw == undefined) return (item.isShowRaw = true);
 			item.isShowRaw = !item.isShowRaw;
 			return;
-
-		// 复制
-		case "copyText":
-			copyText({ text: item.content ?? "" });
-			return;
-
 		// 删除
 		case "delete":
 			handleDelete(index);
