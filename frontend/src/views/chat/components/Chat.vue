@@ -24,7 +24,42 @@
 						<div
 							class="flex flex-col gap-1"
 							:class="[item.role == 'user' ? 'flex-row-reverse' : '']"
-						>
+						>   
+                           <!-- 展示输入的附件 -->
+							<div v-if="item.fileData" class="flex items-center gap-2">
+								<template v-for="(file, index) in item.fileData">
+									<div
+										v-if="file.type.startsWith('image/')"
+										class="w-[100px] h-[100px] relative"
+									>
+										<img
+											:src="file.url"
+											class="w-full h-full object-cover rounded-md"
+										/>
+									</div>
+									<div
+										v-else-if="file.type.startsWith('video/')"
+										class="w-[100px] h-[100px] relative"
+									>
+										<video
+											:src="file.url"
+											class="w-full h-full object-cover rounded-md"
+											controls
+										/>
+									</div>
+									<div
+										v-else-if="file.type.startsWith('audio/')"
+										class="w-[100px] h-[100px] relative"
+									>
+										<audio
+											:src="file.url"
+											class="w-full h-full object-cover rounded-md"
+											controls
+										/>
+									</div>
+								</template>
+							</div>
+
 							<TextComponent
 								ref="textRef"
 								:inversion="item.role == 'user'"
@@ -100,7 +135,6 @@
       :placeholder="data.opt.placeholderChatInput"
       :showUpload="true"
       :showMic="true"
-	  :data=data
       @send="handleSend"
     />
   </div>
@@ -108,7 +142,7 @@
 
 <script setup lang="ts">
 import { useUserStore, useChatStore } from "@/store";
-import { computed, onMounted, reactive, watch } from "vue";
+import { computed, onMounted, reactive, watch, ref } from "vue";
 import { fetchChatAPI } from "@/api";
 import { Icon } from "@iconify/vue";
 import TextComponent from "@/views/chat/components/Text.vue";
@@ -177,26 +211,24 @@ const data = reactive({
 
 let controller = new AbortController();
 // 发送
-const handleSend = () => {
-	if (data.txtInput.trim() === "") return;
-	if (data.loading) return;
+const handleSend = (txtInput:string, fileData: Chat.FileData) => {
+	if (data.loading) return
 	if (data.messages == null) {
 		chatStore.addChat();
 	}
 	// 消息内容
-	const message = {
+	const message: Chat.Message = {
 		dateTime: new Date().toLocaleString(),
-		content: data.txtInput,
+		content: txtInput,
 		role: "user",
 		error: false,
 		loading: false,
 		avatar: data.userInfo?.avatar || defaultAvatar,
 		showTools: false,
+		fileData: fileData,
 	};
 	// 添加到消息列表
 	data.messages.push(message);
-	// 清空输入框
-	data.txtInput = "";
 	const index = data.messages.length;
 
 	scrollToBottom();

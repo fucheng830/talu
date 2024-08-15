@@ -46,4 +46,22 @@ declare namespace Chat {
 		role: string
 		text: string
 	}
+
+	interface FileData {
+		url: string | null; // 文件预览 URL
+		type: string; // 文件类型
+		progress: number; // 上传进度
+		file_id?: string; // 服务器返回的文件 ID
+	}
+	
+	interface Message {
+		dateTime: string = new Date().toLocaleString();
+		content: string;
+		role: string;
+		error: boolean;
+		loading: boolean;
+		avatar: string;
+		showTools: boolean = false; // 这里设置了默认值为 false
+		fileData: FileData | null;
+	  }
 }

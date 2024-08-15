@@ -2,19 +2,20 @@
   <div class="flex flex-col flex-1 h-full" @paste="handlePaste">
     <!-- 缩略图展示区域 -->
     <div class="mb-1 flex flex-item"> <!-- 使用 grid 布局支持多图展示 -->
-      <div v-for="(img, index) in imageData" :key="index" class="upload-preview mr-1">
-        <img :src="img.url" class="thumbnail w-12 h-12 object-cover rounded" />
-        <div class="w-12 h-1 bg-gray-200 relative bottom-2" v-if="img.progress < 100">
-          <div class="h-full bg-green-500 transition-all duration-200" :style="{ width: `${img.progress}%` }"></div>
+      <div v-for="(item, index) in fileData" :key="index" class="upload-preview mr-1">
+        <img v-if="item.type.startsWith('image/')" :src="item.url ?? ''" class="thumbnail w-12 h-12 object-cover rounded" />
+        <video v-else-if="item.type.startsWith('video/')" :src="item.url ?? ''" class="thumbnail w-12 h-12 object-cover rounded" controls />
+        <audio v-else-if="item.type.startsWith('audio/')" :src="item.url ?? ''" class="thumbnail w-12 h-12 object-cover rounded" controls />
+        <div class="w-12 h-1 bg-gray-200 relative bottom-2" v-if="item.progress < 100">
+          <div class="h-full bg-green-500 transition-all duration-200" :style="{ width: `${item.progress}%` }"></div>
         </div>
-          <!-- 删除按钮 -->
-          <div class="absolute top-0 right-0">
-          <Icon icon="mdi:close-circle" class="text-red-500 cursor-pointer" width="18" @click="removeImage(index)" />
+        <div class="absolute top-0 right-0">
+          <Icon icon="mdi:close-circle" class="text-red-500 cursor-pointer" width="18" @click="removeFile(index)" />
         </div>
       </div>
     </div>
     <n-input
-      v-model:value="data.txtInput"
+      v-model:value="txtInput"
       type="textarea"
       round
       size="large"
@@ -60,31 +61,33 @@
 
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
-import { defineProps, defineEmits, ref } from "vue";
+import { defineProps, defineEmits, ref, withDefaults } from "vue";
 import { useBasicLayout } from "@/hooks/useBasicLayout";
 import { useUserStore } from "@/store/modules/user";
 import axios from 'axios';
 
-// 定义组件的 Props 接口
 interface Props {
   placeholder: string; // 输入框的占位符文本
   showUpload: boolean; // 是否显示上传按钮
   showMic: boolean; // 是否显示麦克风按钮
-  data: any; // 传入的数据
-  imgData: any; // 图片数据
+  fileTypes: string[]; // 可接受的文件类型
 }
+
+// 使用 defineProps 和 withDefaults 设置默认值
+const props = withDefaults(defineProps<Props>(), {
+  fileTypes: ['image/png', 'image/jpeg', 'image/gif', 'application/pdf', 'video/mp4', 'audio/mpeg'] // 默认支持的文件类型
+});
 
 const userStore = useUserStore();
 const { isMobile } = useBasicLayout();
-// 使用 defineProps 定义组件的 Props
-const props = defineProps<Props>();
-
-// 定义组件的 emits
 const emit = defineEmits(["send"]);
+
+// 组件内的状态
+const txtInput = ref('');
+const fileData = ref<Chat.FileData[]>([]);
 
 // 输入框回车处理函数
 const handleInputEnter = (event: KeyboardEvent) => {
-  // 移动端
   if (isMobile.value) {
     if (event.key === "Enter" && event.ctrlKey) {
       handleSend();
@@ -92,10 +95,8 @@ const handleInputEnter = (event: KeyboardEvent) => {
     return;
   }
 
-  // 非移动端
-  // shift + enter 换行
   if (event.key === "Enter" && event.shiftKey) {
-    props.data.txtInput += "\n";
+    txtInput.value += "\n";
     return;
   }
   handleSend();
@@ -103,7 +104,11 @@ const handleInputEnter = (event: KeyboardEvent) => {
 
 // 发送按钮点击处理函数
 const handleSend = () => {
-  emit("send");
+  if (txtInput.value.trim() === "") return;
+  emit("send", txtInput.value, fileData.value);
+  // 清空输入框数据
+  txtInput.value = "";
+  fileData.value = [];
 };
 
 // 上传按钮点击处理函数
@@ -115,34 +120,39 @@ const handleUpload = () => {
 const handlePaste = (event: ClipboardEvent) => {
   const items = event.clipboardData?.items;
   if (items) {
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i];
-      if (item.type.indexOf("image") !== -1) {
+    for (const item of items) {
+      const type = item.type;
+      if (props.fileTypes.includes(type)) { // 检查文件类型
         const file = item.getAsFile();
         if (file) {
-          showImagePreview(file);
-          uploadImage(file);
+          showFilePreview(file);
         }
       }
     }
   }
 };
 
-// 显示图像预览
-const imageData = ref<{ url: string | null, progress: number }[]>([]);
-const showImagePreview = (file: File) => {
+// 显示文件预览并上传文件
+const showFilePreview = (file: File) => {
   const reader = new FileReader();
   reader.onload = (e) => {
-    imageData.value.push({
+    const newFileData = {
       url: e.target?.result as string,
-      progress: 0
-    });
+      type: file.type,
+      progress: 0,
+      file_id: '',
+    };
+    const currentIndex = fileData.value.length; // 新文件的索引
+    fileData.value.push(newFileData);
+    
+    // 上传文件并传递索引
+    uploadFile(file, currentIndex); 
   };
   reader.readAsDataURL(file);
 };
 
-// 上传图片到服务
-const uploadImage = async (file: File) => {
+// 上传文件到服务
+const uploadFile = async (file: File, currentIndex: number) => {
   try {
     const formData = new FormData();
     formData.append('file', file);
@@ -150,32 +160,41 @@ const uploadImage = async (file: File) => {
     const baseURL: string = import.meta.env.VITE_GLOB_API_URL;
     const url = new URL('/upload_file', baseURL).toString();
     const token = userStore.$state.userInfo?.access_token;
-    
+
     const response = await axios.post(url, formData, {
       headers: {
         Authorization: token ? `Bearer ${token}` : '',
       },
       onUploadProgress: (event) => {
-      console.log(event); // 添加调试输出
-      const index = imageData.value.length - 1;
-      
-      imageData.value[index].progress = (Math.round((event.loaded ) / event.total))*100;
-      console.log(imageData.value[index].progress)
-    }
-
+        // 更新上传进度
+        if (currentIndex >= 0 && currentIndex < fileData.value.length) {
+          fileData.value[currentIndex].progress = Math.round((event.loaded / event.total) * 100);
+        }
+      }
     });
-    
+
     if (response.status !== 200) {
       throw new Error(`上传失败: ${response.statusText}`);
     }
 
     const result = response.data;
-    console.log('上传成功:', result);
-    // 在这里你可以处理服务器返回的数据，例如将图片 URL 添加到输入框内容中
+
+    // 在这里检查当前索引的有效性
+    if (currentIndex >= 0 && currentIndex < fileData.value.length) {
+      fileData.value[currentIndex].file_id = result.data.file_id; // 处理服务器返回的数据
+    } else {
+      console.warn('文件已被移除，无法设置 file_id');
+    }
   } catch (error) {
-    console.error('图片上传失败:', error);
+    console.error('文件上传失败:', error);
   }
 };
+
+// 移除文件函数
+const removeFile = (index: number) => {
+  fileData.value.splice(index, 1);
+};
+
 </script>
 
 <style scoped lang="less">
@@ -183,9 +202,9 @@ const uploadImage = async (file: File) => {
   position: relative;
 }
 .ellipsis {
-      width: 200px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+  width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

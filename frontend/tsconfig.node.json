@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
-    "composite": true,
-    "skipLibCheck": true,
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "allowSyntheticDefaultImports": true
+    "composite": true, // 启用项目引用，允许构建工具引用其他 TypeScript 项目
+    "skipLibCheck": true, // 跳过库文件的类型检查，加快编译速度
+    "module": "ESNext", // 使用 ESNext 模块系统
+    "moduleResolution": "bundler", // 使用 bundler 模块解析策略，适用于现代打包工具
+    "allowSyntheticDefaultImports": true // 允许合成默认导入，即使模块没有默认导出
   },
-  "include": ["vite.config.ts"]
+  "include": ["vite.config.ts"] // 包含的文件，这里只包含 vite.config.ts 文件
 }

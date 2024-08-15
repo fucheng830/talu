@@ -1,23 +1,23 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "module": "ESNext",
-    "target": "ESNext",
-    "lib": ["DOM", "ESNext"],
-    "strict": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "jsx": "preserve",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "noUnusedLocals": true,
-    "strictNullChecks": true,
-    "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,
+    "baseUrl": ".", // 设置基础路径为当前目录
+    "module": "ESNext", // 使用 ESNext 模块系统
+    "target": "ESNext", // 编译目标为 ESNext
+    "lib": ["DOM", "ESNext"], // 包含的库，这里包含 DOM 和 ESNext
+    "strict": true, // 启用所有严格类型检查选项
+    "esModuleInterop": true, // 允许 CommonJS 和 ES 模块之间的互操作
+    "allowSyntheticDefaultImports": true, // 允许合成默认导入，即使模块没有默认导出
+    "jsx": "preserve", // 保留 JSX 语法，不进行转换
+    "moduleResolution": "node", // 使用 Node.js 模块解析策略
+    "resolveJsonModule": true, // 允许导入 JSON 模块
+    "noUnusedLocals": true, // 报告未使用的局部变量
+    "strictNullChecks": true, // 启用严格的空值检查
+    "forceConsistentCasingInFileNames": true, // 强制文件名一致的大小写
+    "skipLibCheck": true, // 跳过库文件的类型检查，加快编译速度
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"] // 路径别名，将 @ 映射到 src 目录
     },
-    "types": ["vite/client", "node", "naive-ui/volar"]
+    "types": ["vite/client", "node", "naive-ui/volar"] // 包含的类型定义文件
   },
-  "exclude": ["node_modules", "dist", "service"]
+  "exclude": ["node_modules", "dist", "service"] // 排除的目录
 }
