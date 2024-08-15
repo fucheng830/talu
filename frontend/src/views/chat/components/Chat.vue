@@ -142,7 +142,7 @@
 
 <script setup lang="ts">
 import { useUserStore, useChatStore } from "@/store";
-import { computed, onMounted, reactive, watch, ref } from "vue";
+import { computed, onMounted, reactive, watch } from "vue";
 import { fetchChatAPI } from "@/api";
 import { Icon } from "@iconify/vue";
 import TextComponent from "@/views/chat/components/Text.vue";
@@ -170,17 +170,11 @@ const defaultAvatar = "/avatar.jpg"; // replace with actual path
 
 const data = reactive({
 	userInfo: computed(() => userStore.$state.userInfo),
-	txtInput: "",
 	isInputing: false,
 	loading: false,
-	messages: computed(() => {
-		const messages = chatStore.getMessages();
-		messages.forEach((message: { showTools: boolean; }) => {
-			message.showTools = false; // 初始化每个消息的 showTools 属性
-		});
-		return messages;
-	}),
+	messages: computed(() => chatStore.getMessages()),
 	agent: computed(() => chatStore.currentAgent()),
+	// 左边下拉菜单
 	opt: {
 		placeholderChatInput: computed(() =>
 			isMobile.value ? t("chat.placeholderMobile") : t("chat.placeholderPC")
@@ -209,13 +203,13 @@ const data = reactive({
 	},
 });
 
+
+
 let controller = new AbortController();
 // 发送
 const handleSend = (txtInput:string, fileData: Chat.FileData) => {
 	if (data.loading) return
-	if (data.messages == null) {
-		chatStore.addChat();
-	}
+
 	// 消息内容
 	const message: Chat.Message = {
 		dateTime: new Date().toLocaleString(),
@@ -288,7 +282,7 @@ async function generate(index: number) {
 		data.messages[index].loading = false;
 		controller.abort();
 		data.loading = false;
-		chatStore.setMessages();
+		chatStore.saveState();
 	}
 }
 

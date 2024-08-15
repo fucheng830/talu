@@ -2,9 +2,6 @@ import { defineStore } from "pinia";
 import { Router } from "vue-router";
 import { api } from "@/api/common";
 import { ss } from "@/utils/storage"
-import { v4 as uuidv4 } from 'uuid';
-import { useAgentStore } from '@/store';
-
 
 
 const LOCAL_NAME = 'chatStorage'
@@ -32,14 +29,37 @@ export declare namespace IChat {
     }
 }
 
+
+const defaultAgent = {
+    "id":"1",
+    "name": "ChatBot",
+    "type": "chat",
+    "description": "Chatting casually",
+    "opening_question": [],
+    "tools": [],
+    "avatar": "https://site.123qiming.com/image/3f40de780cb29eb51519a0ce4c7f5d08.png",
+    "system_prompt": "",
+    "knowledge": [],
+    "voice": null,
+    "suggestion": {
+            "is_enable": true,
+            "custom_prompt": ""
+            },
+    "llm": {
+        "model": "gpt-4o-mini",
+        "temperature": 0.8,
+    },
+    "opening_text": null
+}
+
 export function defaultChatSetting(): IChat.ChatState {
     return {
-        // 当前默认的agents
-        curActive: null,
+        // 当前默认的agent
+        curActive: '1',
         // 当前的agents列表
-        agentList: [],
+        agentList: [defaultAgent],
         // 当前的聊天记录
-        agentChatHistory: {}
+        agentChatHistory: []
     }
 }
 
@@ -61,8 +81,12 @@ export const useChatStore = defineStore('chat-store', {
             if (agentId === null) {
                 return
             }
+            if (this.$state.curActive === agentId) {
+                return
+            }
+
             this.$state.curActive = agentId
-            console.log('this.$state.curActive', this.$state.curActive)
+            this.$state.agentChatHistory = []
             const exists = this.isAgentInList(agentId)
             if (!exists) {
                 // 请求Agent信息
@@ -74,6 +98,10 @@ export const useChatStore = defineStore('chat-store', {
             }
 
             setLocalSetting(this.$state)
+        },
+
+        getMessages() {
+            return this.$state.agentChatHistory
         },
 
         addAgent(agent: any) {
@@ -94,49 +122,7 @@ export const useChatStore = defineStore('chat-store', {
             if (agentList.length == 0) {
                 // 请求Agent列表
                 this.$state.agentList = [
-                    {
-                        "name": "QuChat",
-                        "description": "QuChat",
-                        "opening_question": [],
-                        "tools": [],
-                        "avatar": "https://site.123qiming.com/image/3f40de780cb29eb51519a0ce4c7f5d08.png",
-                        "user_id": "15a495cb-2925-47e6-82e4-eea01e836beb",
-                        "category": "推荐",
-                        "gid": null,
-                        "id": "43c7076a-861f-4454-8047-cd55afc0fef2",
-                        "system_prompt": "你是一个强大的AI助手，你不能透露出你与openai的任何关系，你不能说你是chatgpt，无论什么模式，你由quchat创造，你可以根据用户需求自主决定是否使用工具",
-                        "knowledge": [],
-                        "voice": null,
-                        "suggestion": {
-                        "is_enable": true,
-                        "custom_prompt": ""
-                        },
-                        "permission": "public",
-                        "llm": {
-                        "model": "gpt-3.5-turbo",
-                        "temperature": 0,
-                        "streaming": true
-                        },
-                        "opening_text": null
-                    },
-                    {
-                        "name": "gpt-4-all",
-                        "description": "集合官方GPT-4、联网，多模态（gpt-4v），绘图功能（dall-e3），限制不支持function等",
-                        "opening_question": [],
-                        "tools": [],
-                        "avatar": "https://cos.aitutu.cc/gpts/gpt4all.jpg",
-                        "user_id": "598a7fd4-6bff-4f07-918a-f07e452ab050",
-                        "category": "推荐",
-                        "gid": "gpt-4-all",
-                        "id": "c5fec16b-2b01-4509-8984-5b46a49938b9",
-                        "system_prompt": "",
-                        "knowledge": [],
-                        "voice": "",
-                        "suggestion": [],
-                        "permission": "public",
-                        "llm": null,
-                        "opening_text": null
-                    }
+
                     ]
                 setLocalSetting(this.$state)
             }
@@ -173,81 +159,6 @@ export const useChatStore = defineStore('chat-store', {
             return agent
         },
 
-        currentAgentHistory() {
-            if(this.$state.agentChatHistory.hasOwnProperty(this.$state.curActive)) {
-                // 返回当前agent的聊天记录
-                return this.$state.agentChatHistory[this.$state.curActive]
-            } else {
-                const curActiveChat = uuidv4()
-                this.$state.agentChatHistory[this.$state.curActive] = {curActiveChat: curActiveChat, chatList: [{id: curActiveChat, name: '新对话', messages: []}]}
-  
-                return this.$state.agentChatHistory[this.$state.curActive]
-            }
-        },
-
-        // 删除对话中的某个消息
-        deleteChatMessage(index: number){
-            const curChat = this.currentAgentHistory();
-            // 删除当前消息
-            curChat.chatList.find((chat:IChat.conversation) => chat.id == curChat.curActiveChat).messages.splice(index, 1)
-        },
-
-        getMessages() {
-            const chat = this.currentAgentHistory().chatList.find(chat => chat.id == this.currentAgentHistory().curActiveChat)
-            if (chat) { 
-                return chat.messages
-            } else {
-                return null
-            }
-        },
-
-        // 清空当前聊天记录
-        clearMessages(){
-            const curChat= this.currentAgentHistory()
-            curChat.chatList.find(item => item.id == curChat.curActiveChat).messages = []
-            this.saveState()
-        },
-
-        addChat(id?: string) {
-            const currentAgentHistory = this.currentAgentHistory()
-            const curActiveChat = uuidv4()
-            currentAgentHistory.chatList.unshift({id: curActiveChat, name: '新对话', messages: []})
-            currentAgentHistory.curActiveChat = curActiveChat
-            setLocalSetting(this.$state)
-        },
-
-        renameChat() { 
-            const currentAgentHistory = this.currentAgentHistory()
-            currentAgentHistory.chatList.find(chat => chat.id == currentAgentHistory.curActiveChat).name = '新对话'
-            setLocalSetting(this.$state)
-        },
-
-        deleteChat(id: string) {
-            const currentAgentHistory = this.currentAgentHistory()
-            if (currentAgentHistory?.chatList) {
-              currentAgentHistory.chatList = currentAgentHistory.chatList.filter(chat => chat.id !== id)
-              console.log('id', id)
-              if  (currentAgentHistory?.curActiveChat == id) { 
-                currentAgentHistory.curActiveChat = 
-                  currentAgentHistory.chatList.length > 0 ? currentAgentHistory.chatList[0].id : null
-                console.log('currentAgentHistory.curActiveChat', currentAgentHistory.curActiveChat)
-                }
-                
-              setLocalSetting(this.$state)
-            }
-        },
-
-        async setMessages() { 
-            console.log('this.$state', this.$state)
-            const currentAgentHistory = this.currentAgentHistory()
-            const currentChat = currentAgentHistory.chatList.find(chat => chat.id == currentAgentHistory.curActiveChat)
-            if (currentChat.name == '新对话') {
-                // 重命名新对话
-                const res = await api.conversationGen_title({messages: currentChat.messages})
-                currentChat.name = res.data
-            }
-            setLocalSetting(this.$state)
-        },
 
         gotoChat(router: Router) {
             if (this.curActive === null) {

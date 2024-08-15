@@ -120,8 +120,6 @@ const data = reactive({
 
 // 动态生成下拉菜单选项
 const getDropdownMenu = (item: any) => {
-  console.log('getDropdownMenu', item); // 调试信息
-//   data.curActionTarget = item;
   return [
     {
       label: item.isPin ? t("common.unpin") : t("common.pin"),
@@ -139,13 +137,11 @@ const getDropdownMenu = (item: any) => {
 // 激活标签
 const setChatActive = (item: { id: string; }): void => {
 	chatStore.setCurrentAgent(item.id);
-	router.push(`/chat/${item.id}`);
 	if (isMobile.value) navStore.changeNavCollapsed();
 };
 
 // 预处理 打开下拉菜单时
 const prehandlemenuSelect = (item: any) => {
-  console.log('prehandlemenuSelect executed', item); // 调试信息
   // 保存当前操作对象
   data.curActionTarget = item;
   console.log('data.curActionTarget', data.curActionTarget); // 调试信息

@@ -118,8 +118,6 @@ import ChatList from "@/views/chat/components/ChatList.vue";
 import ChatDetail from "@/views/chat/components/ChatDetail.vue";
 import ShareChat from "@/views/chat/components/ShareChat.vue";
 import { useThemeVars } from "naive-ui";
-
-import { watch } from "vue";
 import { onMounted } from "vue";
 
 
@@ -140,16 +138,16 @@ const route = useRoute();
 const refModalShareChat = ref();
 // 这是一个用于存储聊天详情的变量
 const refChatDetail = ref();
-// 当前页面智能体id
-const id = route.params.id || "43c7076a-861f-4454-8047-cd55afc0fef2";
-console.log("初始化的agentId", id);
+
+
+
 
 // 当前页面数据
 const data = reactive({
 	isCollapseRight: computed(() => refChatDetail.value?.collapseRight), // 显示 右侧信息栏
 	curChatInfo: {
 		agent: computed(() => chatStore.currentAgent()),
-		agentHistory: computed(() => chatStore.currentAgentHistory()),
+		agentHistory: computed(() => chatStore.getMessages()),
 	},
 	opt: {
 		collapseLeft: false,
@@ -174,31 +172,12 @@ const changeModalShareChatShow = () => {
 };
 
 onMounted(() => {
-	// 监听当前页面智能体id的变化
-	if (!id) {
-		// 获取聊天记录
-		console.log("没有id");
+	// 当前页面智能体id
+	const id = route.params.id;
+	if (id) {
+		chatStore.setCurrentAgent(String(id));
 	}
 });
-
-watch(
-	() => id,
-	(newVal) => {
-		if (newVal) {
-			// 获取聊天记录
-			console.log("id", newVal);
-			if (newVal == null) {
-				// 获取聊天记录
-				console.log("ids", newVal);
-			} else {
-				// 获取聊天记录
-				console.log("id1212", newVal);
-				chatStore.setCurrentAgent(String(newVal));
-			}
-		}
-	},
-	{ immediate: true }
-);
 </script>
 
 <style lang="less" scoped>

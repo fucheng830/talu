@@ -43,7 +43,7 @@
 							</n-tag>
 						</div>
 						<!-- 总对话信息 -->
-						<!-- <div class="text-regular text-[12px] line-height-[17px] h-[17px]">
+						<div class="text-regular text-[12px] line-height-[17px] h-[17px]">
 							<n-tag :bordered="false">
 								<div class="flex items-center">
 									<Icon icon="et:chat" :width="12" />
@@ -52,7 +52,7 @@
 									</span>
 								</div>
 							</n-tag>
-						</div> -->
+						</div>
 					</div>
 				</div>
 
@@ -69,13 +69,11 @@
 									type="primary"
 									:bordered="false"
 									size="large"
-									@click="handleCreateChat"
 									color="white"
 									text-color="black"
 									class="hover:text-[#0000ff] text-[black] flex-1"
 								>
-									<!-- class="hover:text-[#0000ff]" -->
-									<!-- :style="{ background: 'white'}" -->
+
 									<Icon
 										icon="la:brush"
 										width="22"
@@ -99,85 +97,7 @@
 							<!-- <n-scrollbar> -->
 							<div class="h-full overflow-auto max-h-[40vh] my-[6px]">
 								<div class="flex flex-col gap-[8px] text-sm py-[16px]">
-									<!-- 历史选项 单个 -->
-									<template
-										v-for="item in data.agentHistory.chatList"
-										:key="item.id"
-									>
-										<div
-											class="relative chat-item flex items-center mx-[8px]"
-											@click="handleCurHistoryChange(item)"
-										>
-											<div
-												class="px-[12px] flex-1 overflow-hidden h-[40px] flex hover:bg-[#ebeaed] items-center rounded-full text-base active:scale-100"
-												:class="[
-													item.id == data.agentHistory.curActiveChat
-														? 'bg-[#ebeaed]'
-														: '',
-												]"
-											>
-												<div
-													class="flex-1 overflow-hidden h-full flex items-center break-all cursor-pointer group"
-												>
-													<Icon
-														:icon="
-															item.id == data.agentHistory.curActiveChat
-																? 'heroicons-solid:chat'
-																: 'heroicons-outline:chat'
-														"
-														width="22"
-														:color="
-															item.id == data.agentHistory.curActiveChat
-																? globalColors.btnActive
-																: 'black'
-														"
-													/>
-													<!-- 标题 -->
-													<div
-														class="ml-1 relative flex-1 overflow-hidden break-all text-ellipsis whitespace-nowrap text-sm select-none"
-														:style="{
-															color:
-																item.id == data.agentHistory.curActiveChat
-																	? globalColors.btnActive
-																	: '',
-														}"
-													>
-														{{ item.name }}
-													</div>
-												</div>
 
-												<!-- 右侧 按钮组 -->
-												<div
-													class="flex gap-x-2 visible more-icon hover-visible"
-												>
-													<!-- 编辑按钮 -->
-													<Icon
-														icon="carbon:edit"
-														width="18"
-														:color="
-															item.id == data.agentHistory.curActiveChat
-																? globalColors.btnActive
-																: 'black'
-														"
-														@click="handleEditChat(item)"
-														class="cursor-pointer"
-													/>
-													<!-- 删除按钮 -->
-													<Icon
-														icon="fluent:delete-28-regular"
-														width="18"
-														:color="
-															item.id == data.agentHistory.curActiveChat
-																? globalColors.btnActive
-																: 'black'
-														"
-														@click="handleDeleteChat(item)"
-														class="cursor-pointer"
-													/>
-												</div>
-											</div>
-										</div>
-									</template>
 								</div>
 							</div>
 							<!-- </n-scrollbar> -->
@@ -185,10 +105,10 @@
 					</div>
 
 					<!-- 提示词 -->
-					<!-- <div class="h-[45vh] border-t">
+					<div class="h-[45vh] border-t">
 						<div class="font-bold text-[18px] py-2 px-4">提示词</div>
 						<div class=""></div>
-					</div> -->
+					</div>
 				</div>
 			</div>
 		</div>
@@ -198,7 +118,6 @@
 <script setup lang="ts">
 import { computed, reactive, watch } from "vue";
 import { Icon } from "@iconify/vue";
-import { globalColors } from "@/hooks/useTheme";
 import { useBasicLayout } from "@/hooks/useBasicLayout";
 import { useChatStore } from "@/store";
 
@@ -206,7 +125,6 @@ const { isMobile } = useBasicLayout();
 const chatStore = useChatStore();
 
 const data = reactive({
-	agentHistory: computed(() => chatStore.currentAgentHistory()),
 	chatInfo: computed(() => chatStore.currentAgent()),
 	isCheckingMultiple: false, // 历史话题 多选状态
 	opt: {
@@ -214,28 +132,11 @@ const data = reactive({
 	},
 });
 
-console.log("当前的agentHistory", data.agentHistory);
-
-// 创建 新话题
-const handleCreateChat = () => {
-	console.log("创建新话题");
-	chatStore.addChat();
-};
-
-// 删除话题
-const handleDeleteChat = (item: { id: string; }) => {
-	chatStore.deleteChat(item.id);
-};
-
 // 切换选择状态
 const handleSelectMultiple = () => {
 	data.isCheckingMultiple = !data.isCheckingMultiple;
 };
 
-// 修改当前激活历史
-const handleCurHistoryChange = (curHistory: { id: any; }) => {
-	data.agentHistory.curActiveChat = curHistory.id;
-};
 
 // 改变右侧栏 折叠
 const changeCollapseRight = () => {
