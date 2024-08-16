@@ -41,7 +41,7 @@ app.include_router(api.agent_router)
 app.include_router(api.auth_router)
 app.include_router(api.knowledge_router)
 app.include_router(api.order_router)
-app.include_router(api.conversation_router)
+# app.include_router(api.conversation_router)
 
 @app.get("/hello_world")
 async def wechat(request: Request):

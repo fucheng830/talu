@@ -4,7 +4,7 @@
 			class="w-full max-w-screen-xl m-auto dark:bg-[#101014] py-[24px] px-[36px]"
 		>
 		    <!-- 消息列表 -->
-			<template v-for="(item, index) in data.messages" :key="item.time">
+			<template v-for="(item, index) in messages" :key="item.time">
 				<div
 					class="flex w-full mb-6 overflow-hidden items-start"
 					:class="[item.role == 'assistant' ? 'flex-row' : 'flex-row-reverse']"
@@ -73,7 +73,7 @@
 							<!-- 右下角工具栏 -->
 							<div
     class="ml-3 space-x-2 h-5 transition-opacity duration-300"
-    :class="{ 'opacity-0 invisible': !(index === data.messages.length - 1 || item.showTools), 'opacity-100': index === data.messages.length - 1 || item.showTools }"
+    :class="{ 'opacity-0 invisible': !(index === messages.length - 1 || item.showTools), 'opacity-100': index === messages.length - 1 || item.showTools }"
 							>
 								<button
 								class="mb-2 transition text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-300"
@@ -142,7 +142,7 @@
 
 <script setup lang="ts">
 import { useUserStore, useChatStore } from "@/store";
-import { computed, onMounted, reactive, watch } from "vue";
+import { computed, onMounted, reactive, watch, ref, defineProps } from "vue";
 import { fetchChatAPI } from "@/api";
 import { Icon } from "@iconify/vue";
 import TextComponent from "@/views/chat/components/Text.vue";
@@ -155,6 +155,17 @@ import { useScroll } from "../hooks/useScroll";
 import { useCopyCode, copyCodeBlock } from "../hooks/useCopyCode";
 import { t } from "@/locales";
 import { ChatInput } from "@/components/common";
+
+const props = defineProps({
+	messages: {
+		type: Array as () => Chat.Message[],
+		required: true,
+	},
+	conversation_id: {
+		type: String,
+		required: true,
+	}
+});
 
 const { scrollRef, scrollToBottom, scrollToBottomIfAtBottom } = useScroll();
 const decoder = new TextDecoder("utf-8");
@@ -172,7 +183,6 @@ const data = reactive({
 	userInfo: computed(() => userStore.$state.userInfo),
 	isInputing: false,
 	loading: false,
-	messages: computed(() => chatStore.getMessages()),
 	agent: computed(() => chatStore.currentAgent()),
 	// 左边下拉菜单
 	opt: {
@@ -203,12 +213,10 @@ const data = reactive({
 	},
 });
 
-
-
 let controller = new AbortController();
 // 发送
-const handleSend = (txtInput:string, fileData: Chat.FileData) => {
-	if (data.loading) return
+const handleSend = (txtInput: string, fileData: Chat.FileData) => {
+	if (data.loading) return;
 
 	// 消息内容
 	const message: Chat.Message = {
@@ -222,8 +230,8 @@ const handleSend = (txtInput:string, fileData: Chat.FileData) => {
 		fileData: fileData,
 	};
 	// 添加到消息列表
-	data.messages.push(message);
-	const index = data.messages.length;
+	props.messages.push(message);
+	const index = props.messages.length;
 
 	scrollToBottom();
 
@@ -234,7 +242,7 @@ const handleSend = (txtInput:string, fileData: Chat.FileData) => {
 async function generate(index: number) {
 	if (data.loading) return;
 
-	data.messages[index] = {
+	props.messages[index] = {
 		dateTime: new Date().toLocaleString(),
 		content: `${t("chat.thinking")}...`,
 		role: "assistant",
@@ -250,39 +258,39 @@ async function generate(index: number) {
 	// 添加可中断控制
 	controller = new AbortController();
 	// 滚动到到底部
-	// scrollToBottom();
+	scrollToBottom();
 	scrollToBottomIfAtBottom();
 	// 获取数据
-	// Add the object to the dataSources array
 	const access_token = userStore.$state.userInfo?.access_token;
 	if (!access_token) {
-		data.messages[index].content = t("common.unlogin");
-		data.messages[index].loading = false;
+		props.messages[index].content = t("common.unlogin");
+		props.messages[index].loading = false;
 		data.loading = false;
-		chatStore.setMessages();
 		return;
 	}
 
-	console.log(access_token);
 	try {
 		const { body, status } = await fetchChatAPI(
-			{ messages: data.messages.slice(0, index), stream: true },
+			{ messages: props.messages.slice(0, index), stream: true, conversation_id: props.conversation_id },
 			data.agent.id,
 			access_token,
 			controller.signal
 		);
-
-		if (body) {
-			const reader = body.getReader();
+		if (status === 200) {
+			const reader = body?.getReader();
 			await readStream(reader, status, index);
+		} else {
+			console.log("error", status);
+			// const json = await body
+			// const content = json.error?.message ?? "";
+			// props.messages[index].content = content;
 		}
 	} catch (error: any) {
 		console.log(error);
 	} finally {
-		data.messages[index].loading = false;
+		props.messages[index].loading = false;
 		controller.abort();
 		data.loading = false;
-		chatStore.saveState();
 	}
 }
 
@@ -294,11 +302,11 @@ const readStream = async (
 	let partialLine = "";
 
 	while (true) {
-		// eslint-disable-next-line no-await-in-loop
 		const { value, done } = await reader.read();
 		if (done) break;
 
 		const decodedText = decoder.decode(value, { stream: true });
+
 		if (status !== 200) {
 			const json = JSON.parse(decodedText);
 			const content = json.error?.message ?? decodedText;
@@ -307,11 +315,7 @@ const readStream = async (
 			requestAnimationFrame(() => {
 				//
 			});
-
-			// 弹出付费框
-
-			// 添加到消息列表
-			data.messages[index].content = content;
+			props.messages[index].content = content;
 
 			return;
 		}
@@ -327,11 +331,10 @@ const readStream = async (
 			if (line === "data: [DONE]") return; //
 			const json = JSON.parse(line.substring(6)); // start with "data: "
 
-			// 有内容返回后，取消输入中状态，否则不会渲染内容
 			if (json.choices[0].delta.content.length > 0)
-				if (data.messages[index].loading == true) {
-					data.messages[index].loading = false;
-					data.messages[index].content = "";
+				if (props.messages[index].loading == true) {
+					props.messages[index].loading = false;
+					props.messages[index].content = "";
 				}
 
 			const content =
@@ -348,9 +351,7 @@ const readStream = async (
 };
 
 const appendLastMessageContent = (content: string, index: number) => {
-	data.messages[index].content += content;
-	// 在这里执行依赖于 DOM 更新的操作，比如滚动
-	// scrollToBottom();
+	props.messages[index].content += content;
 	scrollToBottomIfAtBottom();
 };
 
@@ -377,8 +378,7 @@ const handleDelete = (index: number) => {
 		positiveText: t("common.confirm"),
 		negativeText: t("common.cancel"),
 		onPositiveClick: () => {
-			// 删除当前消息
-			chatStore.deleteChatMessage(index);
+			props.messages.splice(index, 1);
 		},
 	});
 };
@@ -409,19 +409,18 @@ const handleClear = () => {
 		positiveText: t("common.confirm"),
 		negativeText: t("common.cancel"),
 		onPositiveClick: () => {
-			// 删除当前消息
-			chatStore.clearMessages();
+			props.messages.splice(0, props.messages.length);
 		},
 	});
 };
 
 const handleMouseEnter = (index: number) => {
-	data.messages[index].showTools = true;
+	props.messages[index].showTools = true;
 };
 
 const handleMouseLeave = (index: number) => {
-	if (index !== data.messages.length - 1) {
-		data.messages[index].showTools = false;
+	if (index !== props.messages.length - 1) {
+		props.messages[index].showTools = false;
 	}
 };
 

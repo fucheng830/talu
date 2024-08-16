@@ -77,19 +77,16 @@
 <script setup lang="ts">
 import { useChatStore, useNavStore } from "@/store";
 import { reactive, computed, ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
 import { useBasicLayout } from "@/hooks/useBasicLayout";
 import { Icon } from "@iconify/vue";
 import { renderIcon } from "@/utils/functions/index";
-import { useMessage, useThemeVars } from "naive-ui";
+import { useThemeVars } from "naive-ui";
 import mModal from "@/components/common/mModal/index.vue";
 import { t } from "@/locales";
 
 const { isMobile } = useBasicLayout();
-const router = useRouter();
 const navStore = useNavStore();
 const chatStore = useChatStore();
-const msg = useMessage();
 const theme = useThemeVars();
 
 const refDeleteChat = ref();

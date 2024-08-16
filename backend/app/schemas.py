@@ -187,10 +187,6 @@ class ContentParams(BaseModel):
 
 
 class ConversationRequest(BaseModel):
-    prompt: str
-    model: str
-    message_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    parent_message_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     conversation_id: str = None
     stream: bool = True
     max_context_len: int = 3

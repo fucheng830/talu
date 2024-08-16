@@ -88,7 +88,7 @@
 			</div>
 
 			<!-- 内容区 -->
-			<Chat />
+			<Chat :messages="data.curChatInfo.agentHistory" :conversation_id="data.curChatInfo.conversation_id"/>
 		</div>
 
 		<!-- 右侧 详情区 -->
@@ -119,7 +119,7 @@ import ChatDetail from "@/views/chat/components/ChatDetail.vue";
 import ShareChat from "@/views/chat/components/ShareChat.vue";
 import { useThemeVars } from "naive-ui";
 import { onMounted } from "vue";
-
+import { v4 as uuidv4 } from 'uuid';
 
 const { isMobile } = useBasicLayout();
 
@@ -136,18 +136,17 @@ const route = useRoute();
 
 // 这是一个用于存储模态邀请链接的变量
 const refModalShareChat = ref();
+
 // 这是一个用于存储聊天详情的变量
 const refChatDetail = ref();
-
-
-
 
 // 当前页面数据
 const data = reactive({
 	isCollapseRight: computed(() => refChatDetail.value?.collapseRight), // 显示 右侧信息栏
 	curChatInfo: {
 		agent: computed(() => chatStore.currentAgent()),
-		agentHistory: computed(() => chatStore.getMessages()),
+		agentHistory: [],
+		conversation_id: uuidv4(),
 	},
 	opt: {
 		collapseLeft: false,
@@ -171,11 +170,17 @@ const changeModalShareChatShow = () => {
 	refModalShareChat.value.changeModalShow();
 };
 
+function changeAgent(id: string) {
+	chatStore.setCurrentAgent(id);
+	data.curChatInfo.agentHistory = [],
+	data.curChatInfo.conversation_id = uuidv4();
+}
+
 onMounted(() => {
 	// 当前页面智能体id
 	const id = route.params.id;
 	if (id) {
-		chatStore.setCurrentAgent(String(id));
+		changeAgent(String(id));
 	}
 });
 </script>
