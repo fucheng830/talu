@@ -38,7 +38,7 @@ const defaultAgent = {
     "opening_question": [],
     "tools": [],
     "avatar": "https://site.123qiming.com/image/3f40de780cb29eb51519a0ce4c7f5d08.png",
-    "system_prompt": "",
+    "system_prompt": "你是一个聊天机器人，请根据用户的问题，提供简洁明了的回答。",
     "knowledge": [],
     "voice": null,
     "suggestion": {
@@ -48,6 +48,14 @@ const defaultAgent = {
     "llm": {
         "model": "gpt-4o-mini",
         "temperature": 0.8,
+        "top_p": 1,
+        "max_tokens": 2048,
+        "presence_penalty": 0.0,
+        "frequency_penalty": 0.0
+    },
+    'context': {
+        'memory_recall': 'keep_last',
+        'n': 3,
     },
     "opening_text": null
 }

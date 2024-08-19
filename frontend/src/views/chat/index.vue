@@ -19,7 +19,7 @@
 			</div>
 
 			<!-- 聊天对象列表 -->
-			<ChatList />
+			<ChatList @changeAgent="changeAgent"/>
 		</div>
 
 		<!-- 中间聊天区 -->
@@ -171,6 +171,8 @@ const changeModalShareChatShow = () => {
 };
 
 function changeAgent(id: string) {
+	console.log('changeAgent', id);
+	// 修改当前智能体
 	chatStore.setCurrentAgent(id);
 	data.curChatInfo.agentHistory = [],
 	data.curChatInfo.conversation_id = uuidv4();

@@ -137,7 +137,7 @@ def check_vip_limit(user_id, limit=100):
             return False
     return True
 
-@router.post('/{agent_id}/v1/chat/{agent_type}')
+
 async def app_chat(agent_id:str, 
                    agent_type:str, 
                    request: Request, 

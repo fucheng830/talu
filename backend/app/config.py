@@ -18,3 +18,15 @@ defaiult_model = {
 text_to_image_model = ''
 lite_model = ''
 plus_model = ''
+
+memory_config = {
+    "vector_store": {
+        "provider": "pgvector",
+        "config": {
+            "user": "postgres",
+            "password": ":Fucheng830",
+            "host": "192.168.1.9",
+            "port": "5433",
+        }
+    }
+}

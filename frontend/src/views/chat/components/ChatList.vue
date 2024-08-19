@@ -76,7 +76,7 @@
 
 <script setup lang="ts">
 import { useChatStore, useNavStore } from "@/store";
-import { reactive, computed, ref, onMounted } from "vue";
+import { reactive, computed, ref, onMounted, defineEmits } from "vue";
 import { useBasicLayout } from "@/hooks/useBasicLayout";
 import { Icon } from "@iconify/vue";
 import { renderIcon } from "@/utils/functions/index";
@@ -88,6 +88,8 @@ const { isMobile } = useBasicLayout();
 const navStore = useNavStore();
 const chatStore = useChatStore();
 const theme = useThemeVars();
+// 定义 emit 事件
+const emit = defineEmits(['changeAgent']);
 
 const refDeleteChat = ref();
 const data = reactive({
@@ -134,6 +136,8 @@ const getDropdownMenu = (item: any) => {
 // 激活标签
 const setChatActive = (item: { id: string; }): void => {
 	chatStore.setCurrentAgent(item.id);
+    //使用emit 发送给父组件 
+	emit('changeAgent', item.id);
 	if (isMobile.value) navStore.changeNavCollapsed();
 };
 

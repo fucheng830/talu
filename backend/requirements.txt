@@ -40,3 +40,4 @@ watchdog
 watchfiles
 websockets
 wheel
+mem0ai

@@ -1,3 +1,4 @@
+import json
 from langchain.agents import create_openai_tools_agent
 from langchain_openai import ChatOpenAI
 from langchain.agents import tool
@@ -5,6 +6,7 @@ from langchain.agents import AgentExecutor
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 from .load_tools import load_tools
+from ..sse_format import sse_json
 
 def load_agent(config, db):
     """初始化agent"""
@@ -13,6 +15,7 @@ def load_agent(config, db):
     llm = ChatOpenAI(**config.llm)
 
     tools = load_tools(config.tools, db)
+
     # 查看是否有知识库，如果有则加知识库tool
     if config.knowledge:
         @tool
@@ -67,4 +70,58 @@ def load_agent(config, db):
         )
         agent_executor = prompt | llm
 
-    return agent_executor
+    return agent_executor 
+
+
+
+async def stream_agent(agent_executor, messages, input_text, callback):
+    try:
+        async for event in agent_executor.astream_events(
+            {"input_text": input_text,
+            "msgs": messages}, version="v1"
+        ):  
+            final_output = ''
+            if event:
+                kind = event["event"]
+                if kind == "on_chain_start":
+                    if (
+                        event["name"] == "Agent"
+                    ):  # Was assigned when creating the agent with `.with_config({"run_name": "Agent"})`
+                        print(event)
+                        print(
+                            f"Starting agent: {event['name']} with input: {event['data'].get('input')}"
+                        )
+                elif kind == "on_chain_end":
+                    if (
+                        event["name"] == "AgentExecutor"
+                    ):  # Was assigned when creating the agent with `.with_config({"run_name": "Agent"})`
+                        print(event)
+                        print()
+                        print("--")
+                        print(
+                            f"Done agent: {event['name']} with output: {event['data'].get('output')['output']}"
+                        )
+                        final_output+=event['data'].get('output')['output']
+                    
+                if kind == "on_chat_model_stream":
+                    content = event["data"]["chunk"].content
+                    if content:
+                        # Empty content in the context of OpenAI means
+                        # that the model is asking for a tool to be invoked.
+                        # So we only print non-empty content
+                        row_data = sse_json(content)
+                        yield json.dumps(row_data)
+                elif kind == "on_tool_start":
+                    yield json.dumps(event)
+
+                elif kind == "on_tool_end":
+                    yield json.dumps(event)
+
+           
+    finally:
+        yield json.dumps(sse_json('', finish_reason='stop'))
+                # 在流结束后将回答存入数据库
+        callback(final_output)
+
+
+

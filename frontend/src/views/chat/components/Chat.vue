@@ -271,7 +271,7 @@ async function generate(index: number) {
 
 	try {
 		const { body, status } = await fetchChatAPI(
-			{ messages: props.messages.slice(0, index), stream: true, conversation_id: props.conversation_id },
+			{ messages: [props.messages[index-1]], stream: true, conversation_id: props.conversation_id },
 			data.agent.id,
 			access_token,
 			controller.signal
