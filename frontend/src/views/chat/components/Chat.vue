@@ -156,6 +156,8 @@ import { useCopyCode, copyCodeBlock } from "../hooks/useCopyCode";
 import { t } from "@/locales";
 import { ChatInput } from "@/components/common";
 
+
+
 const props = defineProps({
 	messages: {
 		type: Array as () => Chat.Message[],
@@ -271,7 +273,11 @@ async function generate(index: number) {
 
 	try {
 		const { body, status } = await fetchChatAPI(
-			{ messages: [props.messages[index-1]], stream: true, conversation_id: props.conversation_id },
+			{ messages: [props.messages[index-1]], 
+			 stream: true, 
+			 conversation_id: props.conversation_id,
+			 config: data.agent
+			},
 			data.agent.id,
 			access_token,
 			controller.signal

@@ -38,7 +38,7 @@
 				</div>
 			
 				<!-- 模型设置 -->
-				<div class="flex items-start justify-start py-4 px-3 mx-2 mb-2">
+				<div class="flex items-start justify-start py-4 px-3 mx-2 mb-2" v-if="data.chatInfo.llm">
 					<!-- 模型设置内部 -->
 					<div class="flex flex-col gap-y-1 text-xs ml-2 flex-1">
 						<!-- 名称 -->
@@ -92,7 +92,7 @@
 					</div>
 				</div>
 
-				<div class="flex items-start justify-start py-4 px-3 mx-2 mb-2 border-b">
+				<div class="flex items-start justify-start py-4 px-3 mx-2 mb-2 border-b" v-if="data.chatInfo.context">
 					<!-- 上下文设置 -->
 					<div class="flex flex-col gap-y-1 text-xs ml-2 flex-1">
 						<!-- 名称 -->

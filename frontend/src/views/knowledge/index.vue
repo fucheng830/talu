@@ -6,7 +6,6 @@
 				:class="[
 					isMobile ? 'pt-[10px] px-[16px] shadow-inner' : 'pt-[1rem] px-[56px]',
 				]"
-				:style="{ 'background-color': globalColors.bgMain }"
 			>
 				<div
 					class="grow shrink-0 flex justify-between items-center mr-4"
@@ -152,11 +151,9 @@ import { reactive, ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import KnowledgeSetting from "@/views/knowledge/components/KnowledgeSetting.vue";
 import { useBasicLayout } from "@/hooks/useBasicLayout";
-import unSupport from "@/views/unSupport/index.vue";
 import { api } from "@/api/common";
 import { useKnowledgeStore } from "@/store";
 import { useIconRender } from "@/hooks/useIconRender";
-import { SvgIcon } from "@/components/common";
 import { useMessage } from "naive-ui";
 import { renderIcon } from "@/utils/functions";
 import BgTopBar from "@/views/layout/BgTopBar.vue";

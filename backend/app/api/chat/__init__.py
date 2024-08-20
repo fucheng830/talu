@@ -37,8 +37,10 @@ async def chat(id:str,
     params = await request.json()
     user_id = current_user['user_id']
     
+    # agent配置
+    agent_config = params.get('config', {})
     # 上下文配置
-    context = params.get('context', {})
+    context = agent_config.get('context', {})
     context_compress_strage = context.get('memory_recall', 'keep_last')
     max_context_len = context.get('n', 3)
 
@@ -46,7 +48,7 @@ async def chat(id:str,
     # 对agent进行路由
     if id == '1':
         # 调用chat_chain 
-        agent_executor = load_executor()
+        agent_executor = load_executor(**agent_config)
     elif id == '2':
         # 调用create_agent助手
         pass

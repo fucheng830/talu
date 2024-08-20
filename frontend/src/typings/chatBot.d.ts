@@ -43,4 +43,6 @@ declare namespace ChatBot {
 		role: string
 		text: string
 	}
+
+	
 }

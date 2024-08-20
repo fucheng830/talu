@@ -7,8 +7,6 @@ from sse_starlette.sse import EventSourceResponse
 from ..sse_format import sse_json
 
 
-
-
 def load_executor(**config):
     """通过配置加载执行器
     config = {
@@ -44,6 +42,7 @@ def load_executor(**config):
     'prompt': '{input}',
 }
     """
+
     system_prompt = config.get("system_prompt", "")
 
     llm_config = config.get("llm", {'model': 'gpt-4o-mini', 'temperature': 0.5})

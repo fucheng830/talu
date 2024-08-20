@@ -3,6 +3,7 @@ import { ss } from '@/utils/storage'
 const LOCAL_NAME = 'knowledgeStorage'
 
 export declare namespace IKnowledge {
+  // 知识状态接口
   interface KnowledgeState {
     listKnowledge: ListKnowledge[]
     searchPattern: OptSearchPattern  // 搜索测试 配置项
@@ -12,6 +13,7 @@ export declare namespace IKnowledge {
     docList: any[]
   }
 
+  // 知识列表项接口
   interface ListKnowledge {
     cmetadata: {
       type: string
@@ -21,18 +23,19 @@ export declare namespace IKnowledge {
     uuid: string
   }
 
-  // 搜索模式
+  // 搜索模式接口
   interface OptSearchPattern {
     curSearchType: string
     resultResort: boolean
   }
 
-  // 搜索过滤
+  // 搜索过滤接口
   interface OptSearchFilter {
     referenceLimit: number | string
     minRelevancy: number | string
   }
 
+  // 问题补全接口
   interface OptQuestionComplement {
     useQuestionComplement: boolean
     curAIModel: string
@@ -42,26 +45,27 @@ export declare namespace IKnowledge {
     }
   }
 
+  // AI模型列表项类型
   type AIList = {
     label: string
     value: string
   }
 
-  // 搜索历史
-  type ListHistory = {
-    curHistory: string
-    list: singleHistory[]
-  }
-
-  // 单个历史
+  // 单个历史记录类型
   type SingleHistory = {
     id: string
     content: string
     type: 'summary' | 'qa' | 'content'
   }
 
+  // 搜索历史记录类型
+  type ListHistory = {
+    curHistory: string
+    list: SingleHistory[]
+  }
 }
 
+// 默认设置函数
 export function defaultSetting(): IKnowledge.KnowledgeState {
   return {
     listKnowledge: [],
@@ -95,11 +99,13 @@ export function defaultSetting(): IKnowledge.KnowledgeState {
   }
 }
 
+// 获取本地设置函数
 export function getLocalSetting(): IKnowledge.KnowledgeState {
   const localSetting: IKnowledge.ListKnowledge | undefined = ss.get(LOCAL_NAME)
   return { ...defaultSetting(), ...localSetting }
 }
 
+// 设置本地设置函数
 export function setLocalSetting(state: IKnowledge.KnowledgeState): void {
   ss.set(LOCAL_NAME, state)
 }

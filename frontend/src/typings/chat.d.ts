@@ -64,4 +64,46 @@ declare namespace Chat {
 		showTools: boolean = false; // 这里设置了默认值为 false
 		fileData: FileData | null;
 	  }
+
+	  interface ChatModel {
+		icon: string;
+		name: string;
+		maxToken: number;
+		supportsVision: boolean;
+		supportsFunctionCall: boolean;
+	}
+
+	 interface Tool {
+		id: string; // UUID represented as a string
+		name: string; // Variable character string
+		description: string; // Variable character string
+		func: string; // Variable character string
+		user_id: string; // Variable character string
+		code: string; // Text
+		permission: string; // Variable character string
+		avatar: string; // Variable character string
+	 }
+
+	 interface Agent {
+		id: string; // 主键，不能为空
+		name?: string; // 可选字段
+		description?: string; // 可选字段
+		system_prompt?: string; // 可选字段
+		opening_question?: any; // JSON 类型字段，使用 any
+		knowledge?: any; // JSON 类型字段，使用 any
+		tools?: any; // JSON 类型字段，使用 any
+		voice?: string; // 可选字段
+		avatar?: string; // 可选字段
+		suggestion?: any; // JSON 类型字段，使用 any
+		user_id?: string; // 可选字段
+		permission?: string; // 可选字段
+		category?: string; // 可选字段
+		llm?: any; // JSON 类型字段，使用 any
+		gid?: string; // 可选字段
+		opening_text?: string; // 可选字段
+		isplus?: boolean; // 布尔类型字段
+	}
+
+
+
 }
