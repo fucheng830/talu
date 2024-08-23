@@ -8,13 +8,13 @@
 		<div class="mb-2 text-[16px]">
 			{{ $t("share.invite") }}
 			<!-- 邀请数 -->
-			<span :style="{ color: globalColors.btnActive }">
+			<span :style="{ color: theme.primaryColor }">
 				{{ data.opt.inviteCount }}
 			</span>
 			{{ $t("share.invite2") }}
 
 			<!-- 对话奖励 -->
-			<span :style="{ color: globalColors.btnActive }">
+			<span :style="{ color: theme.primaryColor }">
 				{{ data.opt.chatAward }}
 			</span>
 			{{ $t("share.invite3") }}
@@ -32,9 +32,11 @@
 
 <script setup lang="ts">
 import mModal from "@/components/common/mModal/index.vue";
-import { computed, onMounted, reactive, ref } from "vue";
-import { globalColors } from "@/hooks/useTheme";
+import { computed, reactive, ref } from "vue";
 import { useMessage } from "naive-ui";
+import { useThemeVars } from "naive-ui";
+
+const theme = useThemeVars();
 
 const props = defineProps({
 	title: {

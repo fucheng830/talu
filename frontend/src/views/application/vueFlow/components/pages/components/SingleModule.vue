@@ -10,7 +10,7 @@
 						style="padding: 0.4rem"
 						@click.stop="emits('add')"
 					>
-						<Icon icon="ph:plus" width="24" :color="globalColors.btnActive" />
+						<Icon icon="ph:plus" width="24" :color="theme.primaryColor" />
 					</n-button>
 				</slot>
 			</template>
@@ -32,9 +32,10 @@
 <script setup lang="ts">
 import { defineProps } from "vue";
 import mCollapse from "@/components/common/mCollapse/index.vue";
-import { globalColors } from "@/hooks/useTheme";
 import { Icon } from "@iconify/vue";
+import { useThemeVars } from "naive-ui";
 
+const theme = useThemeVars();
 const emits = defineEmits(["add"]);
 const props = defineProps({
 	title: {

@@ -15,7 +15,7 @@
 						<!-- 标签左侧标线 -->
 						<div
 							class="w-[6px] h-[50px] rounded-[3px] mr-[24px]"
-							:class="[`bg-[${globalColors.btnActive}]`]"
+							:class="[`bg-[${theme.primaryColor}]`]"
 						></div>
 						<div class="flex flex-col">
 							<!-- 标题 -->
@@ -38,7 +38,7 @@
 
 					<!-- 新增按钮 -->
 					<n-button
-						:color="globalColors.btnActive"
+						:color="theme.primaryColor"
 						ghost
 						@click.stop="changeUploadModalShow"
 					>
@@ -146,7 +146,6 @@
 
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
-import { globalColors } from "@/hooks/useTheme";
 import { reactive, ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import KnowledgeSetting from "@/views/knowledge/components/KnowledgeSetting.vue";
@@ -158,7 +157,9 @@ import { useMessage } from "naive-ui";
 import { renderIcon } from "@/utils/functions";
 import BgTopBar from "@/views/layout/BgTopBar.vue";
 import { t } from "@/locales";
+import { useThemeVars } from "naive-ui";
 
+const theme = useThemeVars();
 const router = useRouter();
 
 const msg = useMessage();

@@ -57,7 +57,7 @@
 			<template #extra>
 				<n-button
 					quaternary
-					:color="globalColors.btnActive"
+					:color="theme.primaryColor"
 					@click.stop="generateSQL"
 				>
 					<div class="flex items-center gap-1">
@@ -102,12 +102,14 @@ import { h, nextTick, onMounted, reactive, ref, watch } from "vue";
 import MyHandle from "@/views/application/vueFlow/components/MyHandle.vue";
 import IconTip from "@/components/common/IconTip/index.vue";
 import { Icon } from "@iconify/vue";
-import { globalColors } from "@/hooks/useTheme";
 import SingleModule from "@/views/application/vueFlow/components/pages/components/SingleModule.vue";
 import { NInput, NSelect } from "naive-ui";
 import CodeAction from "@/views/application/vueFlow/components/pages/components/code/Action.vue";
 import ModalGenerateSQL from "@/views/application/vueFlow/components/pages/components/database/ModalGenerateSQL.vue";
 import { useVueFlow } from "@vue-flow/core";
+import { useThemeVars } from "naive-ui";
+
+const theme = useThemeVars();
 
 const { updateNodeData } = useVueFlow();
 

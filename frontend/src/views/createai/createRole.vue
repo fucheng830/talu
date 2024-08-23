@@ -50,7 +50,7 @@
 				<!-- 更多 -->
 				<n-popover :overlap="overlap" placement="bottom-end" trigger="click">
 					<template #trigger>
-						<n-button :color="globalColors.btnActive">
+						<n-button :color="theme.primaryColor">
 							<div class="flex gap-1 items-center">
 								{{ $t("common.save") }}
 								<Icon icon="mingcute:down-fill" width="18" />
@@ -612,7 +612,7 @@ import {
 	useDialog,
 	useMessage,
 } from "naive-ui";
-import { globalColors, globalConfig } from "@/hooks/useTheme";
+import { globalConfig } from "@/hooks/useTheme";
 import SaveAgent from "@/views/createai/components/SaveAgent.vue";
 import { useStateStore, useUserStore } from "@/store";
 import IconTip from "@/components/common/IconTip/index.vue";
@@ -626,6 +626,9 @@ import { api } from "@/api/common";
 import { v4 as uuidv4 } from "uuid";
 import SelectKnowledge from "@/views/createai/components/SelectKnowledge.vue";
 import { t } from "@/locales";
+import { useThemeVars } from "naive-ui";
+
+const theme = useThemeVars();
 
 const { iconRender } = useIconRender();
 const { isMobile } = useBasicLayout();

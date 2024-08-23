@@ -84,14 +84,14 @@
 				<div
 					@click="changeModalSettingShow"
 					class="w-[40px] h-[40px] bg-white rounded-full m-button flex justify-center items-center cursor-pointer"
-					:class="`hover:text-[${globalColors.btnActive}]`"
+					:class="`hover:text-[${theme.baseColor}]`"
 				>
 					<Icon icon="uiw:setting-o" :width="20" />
 				</div>
 			</div>
 			<!-- 登录 -->
 			<div v-else class="p-2">
-				<n-button :color="globalColors.btnActive" @click="showModalLogin">
+				<n-button :color="theme.baseColor" @click="showModalLogin">
 					{{ $t("common.login") }}
 				</n-button>
 			</div>
@@ -103,7 +103,6 @@
 
 <script setup lang="ts">
 import { computed, reactive} from "vue";
-import { globalColors } from "@/hooks/useTheme";
 import imgBgCard from "@/assets/images/nav/bg_card.png";
 import imgIconGift from "@/assets/images/nav/icon_gift.png";
 import imgDownload from "@/assets/images/nav/icon_download.png";
@@ -111,6 +110,9 @@ import { Icon } from "@iconify/vue";
 import NavList from "@/views/layout/components/NavList.vue";
 import { RouteLocationRaw, useRouter } from "vue-router";
 import { useAppStore, useUserStore } from "@/store";
+import { useThemeVars } from "naive-ui";
+
+const theme = useThemeVars();
 
 const router = useRouter();
 

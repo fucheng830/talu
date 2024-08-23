@@ -97,7 +97,7 @@
 							:color="
 								data.mode == 'BatchProcessing'
 									? '#1c1f2359'
-									: globalColors.btnActive
+									: theme.primaryColor
 							"
 						/>
 					</n-button>
@@ -137,14 +137,15 @@ import { computed, h, nextTick, onMounted, reactive, watch } from "vue";
 import MyHandle from "@/views/application/vueFlow/components/MyHandle.vue";
 import IconTip from "@/components/common/IconTip/index.vue";
 import { Icon } from "@iconify/vue";
-import { globalColors } from "@/hooks/useTheme";
 import SingleModule from "@/views/application/vueFlow/components/pages/components/SingleModule.vue";
 import { useChatStore } from "@/store";
 import VariableList from "@/views/application/vueFlow/components/pages/components/VariableList.vue";
 import { NInput, NSelect } from "naive-ui";
 import CodeAction from "@/views/application/vueFlow/components/pages/components/code/Action.vue";
 import { useVueFlow } from "@vue-flow/core";
+import { useThemeVars } from "naive-ui";
 
+const theme = useThemeVars();
 const chatStore = useChatStore();
 const { updateNodeData } = useVueFlow();
 

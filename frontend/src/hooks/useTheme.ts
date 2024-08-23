@@ -110,19 +110,6 @@ import { useAppStore } from '@/store'
 // }
 
 
-export const globalColors = {
-  btnActive: '#0653FF',
-  btnDeactive: '#4D79AB',
-  bgMain: '#f5f7fa',
-  bgChatActive: '#ebeaed',
-  txtDeep: '#333639',
-  txtMainColor: '#111824',
-  agentBg: '#F7F7F8',
-  borderColor: '#4b9e5f',
-  bgNeutral: '#f5f5f5',
-  textColor: '#4b9e5f',
-  darkBg: '#24272e',
-};
 
 
 // 定义全局颜色常量

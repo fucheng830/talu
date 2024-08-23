@@ -63,7 +63,7 @@
 							<Icon
 								icon="nimbus:stop"
 								width="18"
-								:color="globalColors.btnActive"
+								:color="theme.primaryColor"
 							/>
 						</n-button>
 					</div>
@@ -134,12 +134,13 @@ import { computed, h, nextTick, onMounted, reactive, watch } from "vue";
 import MyHandle from "@/views/application/vueFlow/components/MyHandle.vue";
 import SingleModule from "@/views/application/vueFlow/components/pages/components/SingleModule.vue";
 import { Icon } from "@iconify/vue";
-import { globalColors } from "@/hooks/useTheme";
 import { useKnowledgeStore } from "@/store";
 import IconTip from "@/components/common/IconTip/index.vue";
 import OutputTree from "@/views/application/vueFlow/components/pages/components/OutputTree.vue";
 import { useVueFlow } from "@vue-flow/core";
+import { useThemeVars } from "naive-ui";
 
+const theme = useThemeVars();
 const konwledgeStore = useKnowledgeStore();
 const { updateNodeData } = useVueFlow();
 

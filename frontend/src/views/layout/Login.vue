@@ -19,7 +19,7 @@
 			tabindex="-1"
 			style="position: absolute; left: -9999px"
 		></div>
-		<div class="text-center" :style="{ color: globalColors.txtDeep }">
+		<div class="text-center" :style="{ color: theme.textColor1 }">
 			<h3 class="text-[24px] font-bold pb-3">
 				{{ $t("common.welcome") }}
 			</h3>
@@ -112,23 +112,23 @@
 							</n-button>
 						</n-form>
 
-						<p :style="{ color: globalColors.txtDeep }">
+						<p :style="{ color: theme.textColor1 }">
 							{{ $t("login.AgreeWhenLogin") }}
-							<n-button text :color="globalColors.btnActive">
+							<n-button text :color="theme.primaryColor">
 								{{ $t("login.serviceAgreement", { msg: "Quchat" }) }}
 							</n-button>
 						</p>
 
 						<p
 							class="mt-[20px] cursor-pointer text-center"
-							:style="{ color: globalColors.btnActive }"
+							:style="{ color: theme.primaryColor }"
 						>
 							{{ $t("login.forgetPwd") }}
 						</p>
 
 						<div class="flex items-center justify-center mt-[20px]">
 							<div class="w-1/4 h-[1px] bg-gray-300 mr-2"></div>
-							<p class="text-center" :style="{ color: globalColors.txtDeep }">
+							<p class="text-center" :style="{ color: theme.textColor1 }">
 								{{ $t("login.thirdPartyLogin") }}
 							</p>
 							<div class="w-1/4 h-[1px] bg-gray-300 ml-2"></div>
@@ -243,7 +243,6 @@
 import mModal from "@/components/common/mModal/index.vue";
 import { computed, reactive, ref } from "vue";
 import { Icon } from "@iconify/vue";
-import { globalColors } from "@/hooks/useTheme";
 import { FormItemRule, useMessage } from "naive-ui";
 import { api } from "@/api/common";
 import { useAppStore, useUserStore } from "@/store";
@@ -251,6 +250,9 @@ import { onMounted } from "vue";
 import { isWeChatBrowser } from "@/utils/is";
 import { nextTick } from "vue";
 import { t } from "@/locales";
+import { useThemeVars } from "naive-ui";
+
+const theme = useThemeVars();
 
 const msg = useMessage();
 const userStore = useUserStore();

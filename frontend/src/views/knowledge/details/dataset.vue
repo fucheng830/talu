@@ -23,7 +23,7 @@
 
 					<n-dropdown :options="data.opt.menuAdd" @select="handleAdd">
 						<n-button
-							:color="globalColors.btnActive"
+							:color="theme.primaryColor"
 							:style="{ 'border-radius': '8px' }"
 						>
 							<Icon icon="lucide:import" width="18" />
@@ -64,7 +64,7 @@
 <script setup lang="ts">
 import { h, reactive, ref } from "vue";
 import { Icon } from "@iconify/vue";
-import { globalColors, globalConfig } from "@/hooks/useTheme";
+import { globalConfig } from "@/hooks/useTheme";
 import { renderIcon } from "@/utils/functions";
 import { DropdownOption, NDropdown } from "naive-ui";
 import ModalDatasetAdd from "@/views/knowledge/details/components/ModalDatasetAdd.vue";
@@ -74,7 +74,9 @@ import { api } from "@/api/common";
 import { datasetTypeIcon } from "@/views/knowledge/knowledgeConfig.ts";
 import { useBasicLayout } from "@/hooks/useBasicLayout";
 import { t } from "@/locales";
+import { useThemeVars } from "naive-ui";
 
+const theme = useThemeVars();
 const route = useRoute();
 const router = useRouter();
 const { isMobile } = useBasicLayout();

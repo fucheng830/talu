@@ -41,14 +41,14 @@
 							<!-- 菜单图标 -->
 							<Icon
 								:icon="item.icon"
-								:color="item.key == data.curMenu ? globalColors.btnActive : ``"
+								:color="item.key == data.curMenu ? theme.primaryColor : ``"
 								width="18"
 							/>
 							<!-- 菜单文本 -->
 							<span
 								:class="[item.key == data.curMenu && 'font-bold']"
 								:style="{
-									color: item.key == data.curMenu ? globalColors.btnActive : '',
+									color: item.key == data.curMenu ? theme.primaryColor : '',
 								}"
 							>
 								{{ item.label }}
@@ -69,7 +69,7 @@
 					>
 						<Icon
 							icon="gravity-ui:arrow-left"
-							:color="globalColors.btnActive"
+							:color="theme.primaryColor"
 							width="22"
 						/>
 					</div>
@@ -86,11 +86,13 @@
 </template>
 
 <script setup lang="ts">
-import { globalColors } from "@/hooks/useTheme";
 import { useKnowledgeStore } from "@/store";
 import { computed, onMounted, reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { Icon } from "@iconify/vue";
+import { useThemeVars } from "naive-ui";
+
+const theme = useThemeVars();
 
 const route = useRoute();
 const router = useRouter();

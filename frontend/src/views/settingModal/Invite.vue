@@ -6,11 +6,11 @@
 		>
 			<div class="pb-2">
 				{{ $t("share.invite") }}
-				<span :style="{ color: globalColors.btnActive }">
+				<span :style="{ color: theme.primaryColor }">
 					{{ data.opt.inviteCount }}
 				</span>
 				{{ $t("share.invite2") }}
-				<span :style="{ color: globalColors.btnActive }">
+				<span :style="{ color: theme.primaryColor }">
 					{{ data.opt.inviteChat }}
 				</span>
 				{{ $t("share.invite3") }}
@@ -31,10 +31,11 @@
 
 <script setup lang="ts">
 import { reactive } from "vue";
-import { globalColors } from "@/hooks/useTheme";
 import { useMessage } from "naive-ui";
 import { t } from "@/locales";
+import { useThemeVars } from "naive-ui";
 
+const theme = useThemeVars();
 const msg = useMessage();
 
 const data = reactive({

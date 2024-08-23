@@ -26,7 +26,7 @@
 		</div>
 
 		<div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-			<n-button block :color="globalColors.btnActive" @click="changeModalShow">
+			<n-button block :color="theme.primaryColor" @click="changeModalShow">
 				<Icon icon="mage:mouse-pointer" />
 				<span>选择</span>
 			</n-button>
@@ -45,9 +45,10 @@ import IconPopover from "@/components/common/IconPopover/index.vue";
 import MyHandle from "@/views/application/vueFlow/components/MyHandle.vue";
 import { Icon } from "@iconify/vue";
 import { reactive, ref } from "vue";
-import { globalColors } from "@/hooks/useTheme.ts";
 import ModalKnowledgeSelect from "@/views/application/vueFlow/components/pages/components/ModalKnowledgeSelect.vue";
+import { useThemeVars } from "naive-ui";
 
+const theme = useThemeVars();
 const refModalSelect = ref();
 const data = reactive({
 	knowledgeList: [], // 选中的知识库

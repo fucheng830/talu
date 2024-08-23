@@ -23,7 +23,7 @@
             >
               拖拽文件至此 /
             </span>
-            <span class="font-bold" :style="{ color: globalColors.btnActive }">
+            <span class="font-bold" :style="{ color: theme.primaryColor }">
               点击上传文件
             </span>
           </n-text>
@@ -97,7 +97,7 @@
         <n-form>
           <div
             class="flex border-base mt-[12px] border rounded-[8px] bg-white pt-[20px] px-[24px]"
-            :style="{ border: `1px solid ${globalColors.btnActive}` }"
+            :style="{ border: `1px solid ${theme.primaryColor}` }"
           >
             <n-grid x-gap="12" :cols="2">
               <n-gi>
@@ -148,7 +148,6 @@
 import mModal from "@/components/common/mModal/index.vue";
 import { reactive, ref } from "vue";
 import { Icon } from "@iconify/vue";
-import { globalColors } from "@/hooks/useTheme";
 
 const refModal = ref();
 

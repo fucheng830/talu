@@ -6,7 +6,7 @@
 			width: data.nodeType?.width || flowConfig.width,
 			borderRadius: flowConfig.borderRadius,
 			borderColor:
-				data.opt.curActive == props.node?.id ? globalColors.btnActive : '',
+				data.opt.curActive == props.node?.id ? theme.primaryColor : '',
 		}"
 		@click.stop="handleActive"
 	>
@@ -88,11 +88,13 @@ import {
 } from "@/views/application/vueFlow/flowConfig.ts";
 import { Icon } from "@iconify/vue";
 import { reactive, defineEmits, onMounted, ref, nextTick, computed } from "vue";
-import { Handle, useVueFlow } from "@vue-flow/core";
+import { useVueFlow } from "@vue-flow/core";
 import { setDraggable, stopDraggable } from "@/utils/flow";
 import { useDialog } from "naive-ui";
 import { useFlowStore } from "@/store";
-import { globalColors } from "@/hooks/useTheme";
+import { useThemeVars } from "naive-ui";
+
+const theme = useThemeVars();
 
 const { iconRender } = useIconRender();
 const { updateNode } = useVueFlow();

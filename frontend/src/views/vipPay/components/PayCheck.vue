@@ -49,8 +49,5 @@ const emit = defineEmits(['close']);
 </script>
 
 <style scoped>
-.completed-payment {
-  font-weight: bold;
-  color: #007bff; /* Bootstrap's default blue */
-}
+
 </style>

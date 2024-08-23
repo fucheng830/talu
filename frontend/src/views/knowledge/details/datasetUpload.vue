@@ -16,7 +16,7 @@
 					<div class="flex justify-center">
 						<Icon
 							icon="ion:cloud-upload"
-							:color="globalColors.btnActive"
+							:color="theme.primaryColor"
 							width="32"
 						/>
 					</div>
@@ -40,7 +40,7 @@
 			<div class="flex justify-end">
 				<n-button
 					:disabled="data.btnNextDisabled"
-					:color="globalColors.btnActive"
+					:color="theme.primaryColor"
 					style="border-radius: 8px"
 					@click="handleNext"
 				>
@@ -62,13 +62,14 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { globalColors } from "@/hooks/useTheme";
 import { Icon } from "@iconify/vue";
 import { UploadFileInfo } from "naive-ui";
 import { useUserStore } from "@/store";
 import { api } from "@/api/common";
 import { useKnowledgeStore } from "@/store";
+import { useThemeVars } from "naive-ui";
 
+const theme = useThemeVars();
 const route = useRoute();
 const router = useRouter();
 const refUpload = ref();

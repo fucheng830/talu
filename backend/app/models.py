@@ -266,6 +266,23 @@ class ToolConfig(Base):
     avatar = Column(String, nullable=False)
 
 
+class LLMConfig(Base):
+    __tablename__ = 'llm_config'  # 表名
+
+    id = Column(Integer, primary_key=True, autoincrement=True)  # 配置ID，自动递增的主键
+    model_provider = Column(String(50), nullable=False)  # 模型提供者名称
+    model_name = Column(String(100), nullable=False)  # 模型名称
+    module_name = Column(String(100), nullable=False)  # 模块名称
+    icon_url = Column(String(255))  # 图标URL
+    supports_tool_calling = Column(Boolean, nullable=False)  # 是否支持工具调用
+    supports_structured_output = Column(Boolean, nullable=False)  # 是否支持结构化输出
+    supports_json_mode = Column(Boolean, nullable=False)  # 是否支持JSON模式
+    is_local = Column(Boolean, nullable=False)  # 是否为本地模型
+    supports_multimodal = Column(Boolean, nullable=False)  # 是否支持多模态
+    library_package = Column(String(100), nullable=False)  # 库包名称
+
+
+
 
 
 

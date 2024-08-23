@@ -55,6 +55,7 @@
 						<div class="flex items-center space-x-1">
 						<span class="font-semibold">{{ data.curChatInfo.agent?.name }}</span>
 						<DropdownMenu />
+
 						</div>
 						<p class="text-xs">{{ data.curChatInfo.agent?.description }}</p>
 					</div>
@@ -76,14 +77,6 @@
 						:color="btnDeactiveColor"
 						@click="changeCollapseRight"
 					/>
-					<!-- 详情区 展开 -->
-					<Icon
-						icon="mdi:arrow-collapse-right"
-						width="18"
-						:color="btnDeactiveColor"
-						@click="changeCollapseRight"
-					/>
-					
 				</div>
 			</div>
 
@@ -106,7 +99,6 @@
 </template>
 
 <script setup lang="ts">
-import { globalConfig } from "@/hooks/useTheme";
 import { computed, reactive, ref } from "vue";
 import { Icon } from "@iconify/vue";
 import { useBasicLayout } from "@/hooks/useBasicLayout";
@@ -142,7 +134,6 @@ const refChatDetail = ref();
 
 // 当前页面数据
 const data = reactive({
-	isCollapseRight: computed(() => refChatDetail.value?.collapseRight), // 显示 右侧信息栏
 	curChatInfo: {
 		agent: computed(() => chatStore.currentAgent()),
 		agentHistory: [],
@@ -153,6 +144,8 @@ const data = reactive({
 		userInfo: computed(() => userStore.$state.userInfo),
 	},
 });
+
+
 
 // 改变左侧栏 折叠
 const changeCollapseLeft = () => {
@@ -187,8 +180,4 @@ onMounted(() => {
 });
 </script>
 
-<style lang="less" scoped>
-.btn-radius {
-	border-radius: v-bind("globalConfig.btnRadius");
-}
-</style>
+

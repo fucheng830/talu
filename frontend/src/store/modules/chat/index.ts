@@ -164,9 +164,21 @@ export const useChatStore = defineStore('chat-store', {
 
         currentAgent() {
             const agent = this.$state.agentList.find(agent => agent.id == this.$state.curActive)
+            console.log('store currentAgent', agent)
             return agent
         },
 
+        uploadLocalAgentSetting(agent: any) {
+            const idx = this.$state.agentList.findIndex(item => item.id === agent.id)
+            if (idx === -1) {
+                console.error('Chat not found');
+                return;
+            } else {
+                console.log('uploadLocalAgentSetting', agent)
+                this.$state.agentList[idx] = agent
+            }
+            setLocalSetting(this.$state)
+        },
 
         gotoChat(router: Router) {
             if (this.curActive === null) {

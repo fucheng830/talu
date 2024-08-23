@@ -6,7 +6,7 @@
 				:class="[
 					isMobile ? 'pt-[10px] px-[16px] shadow-inner' : 'pt-[1rem] px-[56px]',
 				]"
-				:style="{ 'background-color': globalColors.bgMain }"
+				:style="{ 'background-color': theme.baseColor }"
 			>
 				<div class="h-full flex flex-col gap-4">
 					<!-- 单个板块 角色、工作流、插件 -->
@@ -22,7 +22,7 @@
 											<!-- 标签左侧标线 -->
 											<div
 												class="w-[6px] h-[50px] rounded-[3px] mr-[24px]"
-												:class="[`bg-[${globalColors.btnActive}]`]"
+												:class="[`bg-[${theme.primaryColor}]`]"
 											></div>
 											<div class="flex flex-col">
 												<!-- 标题 -->
@@ -45,7 +45,7 @@
 
 										<!-- 新增按钮 -->
 										<n-button
-											:color="globalColors.btnActive"
+											:color="theme.primaryColor"
 											ghost
 											@click.stop="handleAdd(curBlock)"
 										>
@@ -150,7 +150,6 @@
 
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
-import { globalColors } from "@/hooks/useTheme";
 import { onMounted, computed, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import UpgradeVip from "./components/UpgradeVip.vue";
@@ -161,7 +160,9 @@ import { useIconRender } from "@/hooks/useIconRender";
 import { useFlowStore, useKnowledgeStore, useStateStore } from "@/store";
 import { api } from "@/api/common";
 import { t } from "@/locales";
+import { useThemeVars } from "naive-ui";
 
+const theme = useThemeVars();
 const knowledgeStore = useKnowledgeStore();
 const stateStore = useStateStore();
 const flowStore = useFlowStore();

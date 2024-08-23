@@ -35,7 +35,7 @@
 									:style="{
 										'border-color':
 											data.formDataHandle.curSplitType == item.value
-												? globalColors.btnActive
+												? theme.primaryColor
 												: '',
 										'box-shadow':
 											data.formDataHandle.curSplitType == item.value
@@ -171,7 +171,7 @@
 									:style="{
 										'border-color':
 											data.formDataHandle.curDrillMode == item.value
-												? globalColors.btnActive
+												? theme.primaryColor
 												: '',
 										'box-shadow':
 											data.formDataHandle.curDrillMode == item.value
@@ -313,7 +313,7 @@
 					</n-button>
 
 					<n-button
-						:color="globalColors.btnActive"
+						:color="theme.primaryColor"
 						style="border-radius: 8px"
 						@click="handleNextStep"
 					>
@@ -340,7 +340,7 @@
 								width="12"
 								:color="
 									data.formDataHandle.curPreview === 'segment'
-										? globalColors.btnActive
+										? theme.primaryColor
 										: ''
 								"
 							/>
@@ -349,7 +349,7 @@
 								:style="{
 									color:
 										data.formDataHandle.curPreview === 'segment'
-											? globalColors.btnActive
+											? theme.primaryColor
 											: '',
 								}"
 								>{{ $t("knowledge.segmentedPreview") }}</span
@@ -362,7 +362,7 @@
 								width="12"
 								:color="
 									data.formDataHandle.curPreview === 'source'
-										? globalColors.btnActive
+										? theme.primaryColor
 										: ''
 								"
 							/>
@@ -371,7 +371,7 @@
 								:style="{
 									color:
 										data.formDataHandle.curPreview === 'source'
-											? globalColors.btnActive
+											? theme.primaryColor
 											: '',
 								}"
 								>{{ $t("knowledge.extractPreview") }}</span
@@ -492,13 +492,14 @@
 <script setup lang="ts">
 import { reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { globalColors } from "@/hooks/useTheme";
 import { Icon } from "@iconify/vue";
 import { api } from "@/api/common";
 import { useKnowledgeStore } from "@/store";
 import { onMounted } from "vue";
 import { t } from "@/locales";
+import { useThemeVars } from "naive-ui";
 
+const theme = useThemeVars();
 const route = useRoute();
 const router = useRouter();
 const KnowledgeStore = useKnowledgeStore();

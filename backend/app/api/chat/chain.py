@@ -71,6 +71,8 @@ async def stream_chat(agent_executor, messages, input_text, callback):
                 row_data = sse_json(chunk.content)
                 final_output += chunk.content
                 yield json.dumps(row_data)
+    except Exception as e:
+        yield json.dumps(sse_json(str(e), finish_reason="error"))
     finally:
         yield json.dumps(sse_json("", finish_reason="stop"))
         callback(final_output)

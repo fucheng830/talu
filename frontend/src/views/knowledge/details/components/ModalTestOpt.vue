@@ -40,7 +40,7 @@
 												: '',
 										'border-color':
 											data.searchPattern.curSearchType == item.value
-												? globalColors.btnActive
+												? theme.primaryColor
 												: '',
 									}"
 								>
@@ -48,7 +48,7 @@
 										<!-- 图标 类型 -->
 										<Icon
 											:icon="item.icon"
-											:color="globalColors.btnActive"
+											:color="theme.primaryColor"
 											width="18"
 										/>
 										<div class="flex flex-col">
@@ -72,7 +72,7 @@
 						class="flex justify-between items-center border p-2 rounded-lg cursor-pointer select-none"
 						:style="{
 							'border-color': data.searchPattern.resultResort
-								? globalColors.btnActive
+								? theme.primaryColor
 								: '',
 						}"
 					>
@@ -80,7 +80,7 @@
 							<!-- 图标 类型 -->
 							<Icon
 								icon="tabler:exchange"
-								:color="globalColors.btnActive"
+								:color="theme.primaryColor"
 								width="18"
 							/>
 							<div class="flex flex-col">
@@ -219,10 +219,12 @@
 import mModal from "@/components/common/mModal/index.vue";
 import { computed, onActivated, onMounted, reactive, ref } from "vue";
 import { Icon } from "@iconify/vue";
-import { globalColors } from "@/hooks/useTheme";
 import { useKnowledgeStore } from "@/store";
 import { useMessage } from "naive-ui";
 import { t } from "@/locales";
+import { useThemeVars } from "naive-ui";
+
+const theme = useThemeVars();
 
 const knowledgeStore = useKnowledgeStore();
 const msg = useMessage();

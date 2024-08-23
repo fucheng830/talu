@@ -41,12 +41,13 @@ import { nextTick, onMounted, reactive, watch } from "vue";
 import MyHandle from "@/views/application/vueFlow/components/MyHandle.vue";
 import IconTip from "@/components/common/IconTip/index.vue";
 import { Icon } from "@iconify/vue";
-import { globalColors } from "@/hooks/useTheme";
 import mCollapse from "@/components/common/mCollapse/index.vue";
 import SingleModule from "@/views/application/vueFlow/components/pages/components/SingleModule.vue";
 import { debounce, watchDebounce } from "@/utils/functions/debounce";
 import { useVueFlow } from "@vue-flow/core";
+import { useThemeVars } from "naive-ui";
 
+const theme = useThemeVars();
 const { updateNodeData } = useVueFlow();
 
 const emits = defineEmits(["saveForm"]);

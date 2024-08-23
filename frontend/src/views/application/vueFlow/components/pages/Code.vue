@@ -21,7 +21,7 @@
 					style="padding: 0.4rem"
 					@click.stop="handleAddOutput"
 				>
-					<Icon icon="ph:plus" width="24" :color="globalColors.btnActive" />
+					<Icon icon="ph:plus" width="24" :color="theme.primaryColor" />
 				</n-button>
 			</template>
 
@@ -46,7 +46,6 @@ import { h, nextTick, onMounted, reactive, watch } from "vue";
 import MyHandle from "@/views/application/vueFlow/components/MyHandle.vue";
 import IconTip from "@/components/common/IconTip/index.vue";
 import { Icon } from "@iconify/vue";
-import { globalColors } from "@/hooks/useTheme";
 import mCollapse from "@/components/common/mCollapse/index.vue";
 import CodeEditor from "@/components/common/CodeEditor/index.vue";
 import { NButton, NInput, NSelect } from "naive-ui";
@@ -54,7 +53,9 @@ import CodeAction from "@/views/application/vueFlow/components/pages/components/
 import VariableList from "@/views/application/vueFlow/components/pages/components/VariableList.vue";
 import SingleModule from "@/views/application/vueFlow/components/pages/components/SingleModule.vue";
 import { useVueFlow } from "@vue-flow/core";
+import { useThemeVars } from "naive-ui";
 
+const theme = useThemeVars();
 const { updateNodeData } = useVueFlow();
 
 const emits = defineEmits(["saveForm"]);

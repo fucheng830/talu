@@ -8,7 +8,7 @@
 			<div
 				class="mx-4 p-2 border-2"
 				:style="{
-					'border-color': globalColors.btnActive,
+					'border-color': theme.primaryColor,
 					'border-radius': globalConfig.btnRadius,
 				}"
 			>
@@ -33,7 +33,7 @@
 					>
 						<Icon
 							:icon="data.curTestSearchType.icon"
-							:color="globalColors.btnActive"
+							:color="theme.primaryColor"
 						/>
 						<span></span>
 						<span class="ml-2">{{ data.curTestSearchType.label }}</span>
@@ -55,7 +55,7 @@
 				<div class="flex justify-end items-center mt-2 px-2">
 					<n-button
 						:loading="data.isSearching"
-						:color="globalColors.btnActive"
+						:color="theme.primaryColor"
 						:style="{
 							'border-radius': globalConfig.btnRadius,
 						}"
@@ -90,7 +90,7 @@
 									:icon="
 										data.opt.searchType.find((e) => e.value == item.type)?.icon
 									"
-									:color="globalColors.btnActive"
+									:color="theme.primaryColor"
 								/>
 								<!-- 类型 -->
 								<span>{{
@@ -165,7 +165,7 @@
 							<td class="flex justify-center items-center gap-1">
 								<Icon
 									:icon="getSearchType().icon"
-									:color="globalColors.btnActive"
+									:color="theme.primaryColor"
 									width="14"
 								/>
 								{{ getSearchType().label }}
@@ -183,7 +183,7 @@
 												? `noto-v1:check-mark`
 												: `streamline-emojis:cross-mark`
 										"
-										:color="globalColors.btnActive"
+										:color="theme.primaryColor"
 										width="16"
 									/>
 								</div>
@@ -197,7 +197,7 @@
 												? `noto-v1:check-mark`
 												: `streamline-emojis:cross-mark`
 										"
-										:color="globalColors.btnActive"
+										:color="theme.primaryColor"
 										width="16"
 									/>
 								</div>
@@ -233,7 +233,7 @@
 							<span
 								class="py-1 px-3 rounded-lg bg-[#f0f4ff] border border-[#c5d7ff] text-[13px]"
 								:style="{
-									color: globalColors.btnActive,
+									color: theme.primaryColor,
 								}"
 							>
 								#{{ i + 1 }} | {{ getSearchType().label }}
@@ -312,7 +312,7 @@
 </template>
 
 <script setup lang="ts">
-import { globalColors, globalConfig } from "@/hooks/useTheme";
+import { globalConfig } from "@/hooks/useTheme";
 import { Icon } from "@iconify/vue";
 import { computed, reactive, ref } from "vue";
 import ModalTestOpt from "@/views/knowledge/details/components/ModalTestOpt.vue";
@@ -327,7 +327,9 @@ import {
 import { useDialog } from "naive-ui";
 import { useBasicLayout } from "@/hooks/useBasicLayout";
 import { t } from "@/locales";
+import { useThemeVars } from "naive-ui";
 
+const theme = useThemeVars();
 const { isMobile } = useBasicLayout();
 const knowledgeStore = useKnowledgeStore();
 const route = useRoute();
@@ -578,7 +580,7 @@ table {
 
 /* 测试历史 鼠标悬浮 */
 .history-item:hover {
-	border-color: v-bind("globalColors.btnActive");
+	border-color: v-bind("theme.primaryColor");
 }
 
 /* 测试历史 删除按钮 */

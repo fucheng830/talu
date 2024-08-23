@@ -1,4 +1,6 @@
-import { globalColors } from "@/hooks/useTheme"
+import { useThemeVars } from "naive-ui";
+
+const theme = useThemeVars();
 
 declare namespace IConfig {
   interface IGroup {
@@ -28,7 +30,7 @@ export const flowNodeType: IConfig.INode[] = [
     key: "LLM",
     desc: "调用大型语言模型使用变量和提示词生成回答。",
     icon: "mdi:robot",
-    iconColor: globalColors.btnActive,
+    iconColor: theme.primaryColor,
     width: '700px',
   },
   {
@@ -36,7 +38,7 @@ export const flowNodeType: IConfig.INode[] = [
     key: "code",
     desc: "编写代码以处理输入变量并生成返回值。",
     icon: "ph:code-duotone",
-    iconColor: globalColors.btnActive,
+    iconColor: theme.primaryColor,
     width: '500px',
   },
   {
@@ -44,7 +46,7 @@ export const flowNodeType: IConfig.INode[] = [
     key: "knowledge",
     desc: "在所选知识中，匹配信息并基于输入变量重新收集信息，最后作为数组返回。",
     icon: "icon-park-outline:tree",
-    iconColor: globalColors.btnActive,
+    iconColor: theme.primaryColor,
     width: '500px',
   },
   {
@@ -52,7 +54,7 @@ export const flowNodeType: IConfig.INode[] = [
     key: "condition",
     desc: "连接两个下游分支。如果满足设置的条件，则仅运行“if”分支；否则，只运行'else'分支。",
     icon: "icon-park-outline:branch",
-    iconColor: globalColors.btnActive,
+    iconColor: theme.primaryColor,
     width: '1000px',
   },
   {
@@ -60,7 +62,7 @@ export const flowNodeType: IConfig.INode[] = [
     key: "variable",
     desc: "用于在您的机器人中读取和写入变量，变量名称必须与机器人中的变量名称匹配。",
     icon: "mdi:variable-box",
-    iconColor: globalColors.btnActive,
+    iconColor: theme.primaryColor,
     width: '500px',
   },
   {
@@ -68,7 +70,7 @@ export const flowNodeType: IConfig.INode[] = [
     key: "database",
     desc: "用户可以在开发人员控制的数据库中读取和写入数据。必须事先将表添加到Bot的数据库中。",
     icon: "healthicons:database",
-    iconColor: globalColors.btnActive,
+    iconColor: theme.primaryColor,
     width: '500px',
   },
   {
@@ -76,7 +78,7 @@ export const flowNodeType: IConfig.INode[] = [
     key: "message",
     desc: "支持中间进程中的消息输出以及流式和非流式方法",
     icon: "icon-park-outline:message-one",
-    iconColor: globalColors.btnActive,
+    iconColor: theme.primaryColor,
     width: '500px',
   },
   // {
@@ -87,7 +89,7 @@ export const flowNodeType: IConfig.INode[] = [
   //       key: "chatEntrance",
   //       desc: "当用户发送一个内容后，流程将会从这个模块开始执行。",
   //       icon: "iconoir:input-field",
-  //       iconColor: globalColors.btnActive,
+  //       iconColor: theme.primaryColor,
   //     },
   //   ],
   // },
@@ -118,7 +120,7 @@ export const flowNodeType: IConfig.INode[] = [
   //       key: "knowledgeSearch",
   //       desc: "调用知识库搜索能力，查找有可能与问题相关的内容",
   //       icon: "solar:cloud-storage-bold-duotone",
-  //       iconColor: globalColors.btnActive,
+  //       iconColor: theme.primaryColor,
   //     },
   //     {
   //       label: "问题分类",
@@ -132,7 +134,7 @@ export const flowNodeType: IConfig.INode[] = [
   //       key: "txtExtract",
   //       desc: "可从文本中提取指定的数据，例如：sql语句、搜索关键词、代码等",
   //       icon: "icon-park-outline:tree",
-  //       iconColor: globalColors.btnActive,
+  //       iconColor: theme.primaryColor,
   //     },
   //   ],
   // },
@@ -177,7 +179,7 @@ export const flowNodeType: IConfig.INode[] = [
   //       key: "httpRequest",
   //       desc: "可以发出一个 HTTP 请求，实现更为复杂的操作（联网搜索、数据库查询等）",
   //       icon: "fluent:document-one-page-link-24-regular",
-  //       iconColor: globalColors.btnActive,
+  //       iconColor: theme.primaryColor,
   //     },
   //   ],
   // },
@@ -189,7 +191,7 @@ export const flowNodeType: IConfig.INode[] = [
   //       key: "questionOptimize",
   //       desc: "使用问题优化功能，可以提高知识库连续对话时搜索的精度。使用该功能后，会先利用 AI 根据上下文构建一个或多个新的检索词，这些检索词更利于进行知识库搜索。该模块已内置在知识库搜索模块中，如果您仅进行一次知识库搜索，可直接使用知识库内置的补全功能。",
   //       icon: "oi:timer",
-  //       iconColor: globalColors.btnActive,
+  //       iconColor: theme.primaryColor,
   //     },
   //     {
   //       label: "自定义反馈",
@@ -209,7 +211,7 @@ const defaultConfig: IConfig.INode[] = [
     key: "startGuide",
     desc: "工作流的起始节点，用于设置启动工作流所需的信息。",
     icon: "mdi:ray-start",
-    iconColor: globalColors.btnActive,
+    iconColor: theme.primaryColor,
     width: '700px',
     undeletable: true,  // 不可删除，隐藏右上角按钮
   },
@@ -218,7 +220,7 @@ const defaultConfig: IConfig.INode[] = [
     key: "endFlow",
     desc: "工作流的最后一个节点，用于在工作流运行后返回结果信息。",
     icon: "material-symbols:line-end",
-    iconColor: globalColors.btnActive,
+    iconColor: theme.primaryColor,
     width: '500px',
     undeletable: true,
   },

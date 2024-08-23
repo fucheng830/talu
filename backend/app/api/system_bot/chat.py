@@ -66,7 +66,7 @@ def agent_create_copliot(agent_id, current_user, db):
     llm = ChatOpenAI(model="deepseek-chat", 
                      temperature=0, 
                      streaming=True,
-                     api_key=os.environ.get('OPENAI_API_KEY_PLUS')
+                     api_key=os.environ.get('OPENAI_API_KEY')
                      )
 
     prompt = ChatPromptTemplate.from_messages(
@@ -256,29 +256,7 @@ def chat_with_agent(agent_config, messages, data, db, user):
 
 
     
-@router.post('/conversation/gen_title')
-async def gen_title(request: Request):
-    """修改对话的标题"""
-    data = await request.json()
-    messages = data['messages']
-    contents = ['{}: {}'.format(message['role'], message['content']) for message in messages]
-    prompt = """
-    你是一个bot，你的任务是生成一个标题，这个标题是对以下对话的总结。
-    {}
-    请按照以下要求返回对话标题。
-    1、请直接输出对话标题。
-    2、尽量简洁明了。
-    3、尽量包含对话的主要内容。
-    4、尽量包含对话的亮点。
-    5、尽量包含对话的结论。
-    6、不要出现标点符号。
-    """.format('\n'.join(contents))
-    llm = ChatOpenAI(model="gpt-4o-mini", 
-                     temperature=0, 
-                     streaming=False
-                     )
-    title = llm.predict(prompt)
-    return {'status':'Success', 'data':title}
+
 
 
 

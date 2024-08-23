@@ -50,7 +50,7 @@
 							]"
 							:style="{
 								'background-color':
-									item == data.curTagActive ? globalColors.btnActive : 'white',
+									item == data.curTagActive ? theme.primaryColor : 'white',
 							}"
 						>
 							{{ item }}
@@ -118,11 +118,12 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from "vue";
-import { globalColors } from "@/hooks/useTheme";
 import { renderIcon } from "@/utils/functions";
 import { Icon } from "@iconify/vue";
 import { useBasicLayout } from "@/hooks/useBasicLayout";
+import { useThemeVars } from "naive-ui";
 
+const theme = useThemeVars();
 const { isMobile } = useBasicLayout();
 
 const refTagList = ref();
@@ -156,7 +157,7 @@ const data = reactive({
 						? renderIcon({
 								icon: "typcn:tick",
 								width: 18,
-								color: globalColors.btnActive,
+								color: theme.primaryColor,
 						  })
 						: undefined,
 			},
@@ -168,7 +169,7 @@ const data = reactive({
 						? renderIcon({
 								icon: "typcn:tick",
 								width: 18,
-								color: globalColors.btnActive,
+								color: theme.primaryColor,
 						  })
 						: undefined,
 			},

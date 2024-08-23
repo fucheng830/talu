@@ -6,7 +6,7 @@
 		<div
 			class="absolute w-[90%] max-w-[500px] p-8 rounded-2xl bg-[white] shadow-lg"
 		>
-			<div class="text-center" :style="{ color: globalColors.txtDeep }">
+			<div class="text-center" :style="{ color: theme.textColor1 }">
 				<h3 class="text-[24px] font-bold pb-[8px] pb-6">欢迎来到QuChat！</h3>
 
 				<n-tabs type="segment" v-model:value="data.curTab">
@@ -73,23 +73,23 @@
 							</n-button>
 						</n-form>
 
-						<p :style="{ color: globalColors.txtDeep }">
+						<p :style="{ color: theme.textColor1 }">
 							登录即同意
-							<n-button text :color="globalColors.btnActive">
+							<n-button text :color="theme.primaryColor">
 								《Quchat 服务协议》
 							</n-button>
 						</p>
 
 						<p
 							class="mt-[20px] cursor-pointer text-center"
-							:style="{ color: globalColors.btnActive }"
+							:style="{ color: theme.primaryColor }"
 						>
 							忘记密码？
 						</p>
 
 						<div class="flex items-center justify-center mt-[20px]">
 							<div class="w-1/4 h-[1px] bg-gray-300 mr-2"></div>
-							<p class="text-center" :style="{ color: globalColors.txtDeep }">
+							<p class="text-center" :style="{ color: theme.textColor1 }">
 								第三方登录
 							</p>
 							<div class="w-1/4 h-[1px] bg-gray-300 ml-2"></div>
@@ -198,15 +198,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, reactive, ref } from "vue";
+import { computed, reactive, ref } from "vue";
 import { Icon } from "@iconify/vue";
-import { globalColors } from "@/hooks/useTheme";
 import { FormItemRule, useMessage } from "naive-ui";
 import { api } from "@/api/common";
 import { useAppStore, useUserStore } from "@/store";
 import { onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
+import { useThemeVars } from "naive-ui";
+
+const theme = useThemeVars();
 const msg = useMessage();
 const userStore = useUserStore();
 const appStore = useAppStore();

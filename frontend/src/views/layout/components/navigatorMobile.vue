@@ -105,7 +105,7 @@
                     <span
                       class="cursor-pointer"
                       :style="{
-                        color: globalColors.btnActive,
+                        color: theme.primaryColor,
                       }"
                     >
                       {{ data.userInfo?.user_info?.usable_token}}
@@ -114,7 +114,7 @@
 										<span
 											class="cursor-pointer font-bold"
 											:style="{
-												color: globalColors.btnActive,
+												color: theme.primaryColor,
 											}"
 											@click="routerGo('/vipPay')"
 										>
@@ -148,10 +148,12 @@ import { Icon } from "@iconify/vue";
 import ChatList from "@/views/chat/components/ChatList.vue";
 import { computed, reactive } from "vue";
 import { useNavStore, useUserStore } from "@/store";
-import { globalColors } from "@/hooks/useTheme";
 import imgIconGift from "@/assets/images/nav/icon_gift.png";
 import imgDownload from "@/assets/images/nav/icon_download.png";
 import { useRouter } from "vue-router";
+import { useThemeVars } from "naive-ui";
+
+const theme = useThemeVars();
 
 const { isMobile } = useBasicLayout();
 const navStore = useNavStore();

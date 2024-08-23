@@ -111,8 +111,7 @@
 </template>
 
 <script setup lang="ts">
-import mModal from "@/components/common/mModal";
-import { computed, h, reactive, watch } from "vue";
+import { computed, h, reactive } from "vue";
 import { Icon } from "@iconify/vue";
 import UserSetting from "./UserSetting.vue";
 import Invite from "./Invite.vue";
@@ -122,9 +121,10 @@ import About from "./About.vue";
 import { useBasicLayout } from "@/hooks/useBasicLayout";
 import { useUserStore } from "@/store";
 import { useMessage } from "naive-ui";
-import { globalColors } from "@/hooks/useTheme";
 import { t } from "@/locales";
+import { useThemeVars } from "naive-ui";
 
+const theme = useThemeVars();
 const renderIcon = ({ icon, color = "inherit", width = 22 }) => {
 	return h(Icon, { icon, color, width });
 };
@@ -133,7 +133,6 @@ const { isMobile } = useBasicLayout();
 const userStore = useUserStore();
 const msg = useMessage();
 
-const colorTheme = globalColors.btnActive;
 
 const data = reactive({
 	showModal: false, // 模态框 显示
@@ -201,18 +200,5 @@ defineExpose({
 </script>
 
 <style lang="less" scoped>
-:deep(*) {
-	box-sizing: border-box;
-	--n-bar-color: blue;
-	--n-tab-text-color: grey;
-	--n-tab-text-color-active: black;
 
-	// menu组件 激活状态
-	// v-bind无法生效，暂未使用全局变量
-	// --n-item-color-active: v-bind("globalColors.btnActive");
-	--n-item-color-active: #0653ff; // 激活状态背景色
-	--n-item-color-active-hover: #0653ff; // 激活状态背景色 鼠标悬浮
-	--n-item-text-color-active: whitesmoke; // 激活状态文字色
-	--n-item-text-color-active-hover: whitesmoke; // 激活状态文字色 鼠标悬浮
-}
 </style>

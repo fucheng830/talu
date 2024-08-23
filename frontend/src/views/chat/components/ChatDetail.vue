@@ -1,8 +1,8 @@
 <template>
 	<!-- 遮罩层 -->
 	<div
-		class="flex max-w-[276px]"
-		:class="[data.opt.collapseRight ? 'w-0' : 'w-full', isMobile ? 'h-full absolute bg-black/40 z-40' : 'transition-all duration-500']"
+		class="flex max-w-[276px] transition-width"
+		:class="[data.opt.collapseRight ? 'w-0 overflow-hidden' : 'w-full', isMobile ? 'h-full absolute bg-black/40 z-40' : 'transition-all duration-500']"
 		@click="changeCollapseRight"
 	>
 		<div
@@ -29,9 +29,9 @@
 									placeholder="输入系统提示词"
 									@blur="saveSystemPrompt"
 								/>
-								<span v-else class="text-xs text-gray-500 ml-1">
+								<n-ellipsis v-else class="text-xs text-gray-500 ml-1" :line-clamp="4" style="max-width: 240px;">
 									{{ data.chatInfo?.system_prompt }}
-								</span>
+								</n-ellipsis>
 							</div>
 						</div>
 					</div>
@@ -133,12 +133,10 @@ const { isMobile } = useBasicLayout();
 const chatStore = useChatStore();
 
 
-
 const data = reactive({
 	chatInfo: computed(() => chatStore.currentAgent()),
-	isCheckingMultiple: false, // 历史话题 多选状态
 	opt: {
-		collapseRight: false,
+		collapseRight: true,
 	},
 });
 const systemPrompt = ref(data.chatInfo?.system_prompt || '');
@@ -168,14 +166,6 @@ const memoryRecallOptions = [
 		value: "rag",
 	},
 ];
-
-// 切换历史话题 多选状态
-
-// 切换选择状态
-const handleSelectMultiple = () => {
-	data.isCheckingMultiple = !data.isCheckingMultiple;
-};
-
 // 改变右侧栏 折叠
 const changeCollapseRight = () => {
 	data.opt.collapseRight = !data.opt.collapseRight;
@@ -183,11 +173,14 @@ const changeCollapseRight = () => {
 
 // 移动端时自动隐藏右侧详情栏
 watch(
-	() => isMobile,
-	(val) => {
-		data.opt.collapseRight = val.value;
-	},
-	{ deep: true, immediate: true }
+    () => isMobile,
+    (val) => {
+        console.log('isMobile changed:', val.value);
+        if (val.value) {
+            data.opt.collapseRight = true;
+        }
+    },
+    { deep: true, immediate: true }
 );
 
 // 暴露方法给父组件
@@ -198,4 +191,7 @@ defineExpose({
 </script>
 
 <style lang="less" scoped>
+.transition-width {
+	transition: width 0.5s ease-in-out;
+}
 </style>

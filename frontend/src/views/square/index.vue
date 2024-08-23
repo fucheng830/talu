@@ -26,30 +26,6 @@
 					{{ $t("setting.menu.subTitle5") }}
 				</div>
 
-				<!-- 按钮 -->
-				<!-- <div class="flex justify-center gap-6">
-        <div class="rounded-lg overflow-hidden">
-          <n-button
-            size="large"
-            type="info"
-            :color="globalColors.btnActive"
-            @click="handleGoChat"
-          >
-            <span class="px-5 text-[15px]">与AI对话</span>
-          </n-button>
-        </div>
-        <div class="rounded-lg overflow-hidden">
-          <n-button
-            size="large"
-            type="info"
-            :color="globalColors.btnActive"
-            @click="handleGoCreateai"
-          >
-            <span class="px-5 text-[15px]">创建AI角色</span>
-          </n-button>
-        </div>
-      </div> -->
-
 				<!-- 搜索栏 -->
 				<div class="w-full flex justify-center">
 					<div class="w-[90%] max-w-[40rem]">
@@ -102,7 +78,7 @@
 									:style="{
 										'background-color':
 											item == data.curTagActive
-												? globalColors.btnActive
+												? theme.primaryColor
 												: 'white',
 									}"
 								>
@@ -199,8 +175,7 @@
 
 <script setup lang="ts">
 import { onBeforeUnmount, reactive, ref, watch } from "vue";
-import { globalColors } from "@/hooks/useTheme";
-import { useRouter, useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 import BgTopBar from "@/views/layout/BgTopBar.vue";
 import { useBasicLayout } from "@/hooks/useBasicLayout";
 import { useAgentStore, useUserStore } from "@/store";
@@ -212,7 +187,9 @@ import { api } from "@/api/common";
 
 const agentsStore = useAgentStore();
 const userStore = useUserStore();
-const route = useRoute();
+import { useThemeVars } from "naive-ui";
+
+const theme = useThemeVars();
 
 // 使用 onMounted 生命周期钩子异步获取数据
 onMounted(async () => {

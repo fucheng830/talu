@@ -14,7 +14,7 @@
 					>
 						<Icon
 							icon="gravity-ui:arrow-left"
-							:color="globalColors.btnActive"
+							:color="theme.primaryColor"
 							width="22"
 						/>
 					</div>
@@ -52,7 +52,7 @@
 					<div class="flex justify-center">
 						<Icon
 							icon="ion:cloud-upload"
-							:color="globalColors.btnActive"
+							:color="theme.primaryColor"
 							width="32"
 						/>
 					</div>
@@ -68,7 +68,7 @@
 			<div class="flex justify-end">
 				<n-button
 					:disabled="data.btnNextDisabled"
-					:color="globalColors.btnActive"
+					:color="theme.primaryColor"
 					style="border-radius: 8px"
 					@click="handleNextStep(2)"
 				>
@@ -116,7 +116,7 @@
 									:style="{
 										'border-color':
 											data.formDataHandle.curSplitType == item.value
-												? globalColors.btnActive
+												? theme.primaryColor
 												: '',
 										'box-shadow':
 											data.formDataHandle.curSplitType == item.value
@@ -237,7 +237,7 @@
 									:style="{
 										'border-color':
 											data.formDataHandle.curDrillMode == item.value
-												? globalColors.btnActive
+												? theme.primaryColor
 												: '',
 										'box-shadow':
 											data.formDataHandle.curDrillMode == item.value
@@ -360,7 +360,7 @@
 					</n-button>
 
 					<n-button
-						:color="globalColors.btnActive"
+						:color="theme.primaryColor"
 						style="border-radius: 8px"
 						@click="handleNextStep(3)"
 					>
@@ -386,7 +386,7 @@
 								width="12"
 								:color="
 									data.formDataHandle.curPreview === 'segment'
-										? globalColors.btnActive
+										? theme.primaryColor
 										: ''
 								"
 							/>
@@ -395,7 +395,7 @@
 								:style="{
 									color:
 										data.formDataHandle.curPreview === 'segment'
-											? globalColors.btnActive
+											? theme.primaryColor
 											: '',
 								}"
 								>分段预览</span
@@ -408,7 +408,7 @@
 								width="12"
 								:color="
 									data.formDataHandle.curPreview === 'source'
-										? globalColors.btnActive
+										? theme.primaryColor
 										: ''
 								"
 							/>
@@ -417,7 +417,7 @@
 								:style="{
 									color:
 										data.formDataHandle.curPreview === 'source'
-											? globalColors.btnActive
+											? theme.primaryColor
 											: '',
 								}"
 								>抽取预览</span
@@ -512,7 +512,7 @@
 			/>
 			<!-- 底部按钮栏 -->
 			<div class="flex justify-end mt-4">
-				<n-button :color="globalColors.btnActive" @click="handleUpload">
+				<n-button :color="theme.primaryColor" @click="handleUpload">
 					共 {{ data.docs.length }} 个文件 | 开始上传
 				</n-button>
 			</div>
@@ -523,12 +523,12 @@
 <script setup lang="ts">
 import { computed, h, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { globalColors, globalConfig } from "@/hooks/useTheme";
 import { Icon } from "@iconify/vue";
 import { NProgress, UploadFileInfo } from "naive-ui";
 import { useUserStore } from "@/store";
-import { api } from "@/api/common";
+import { useThemeVars } from "naive-ui";
 
+const theme = useThemeVars();
 
 const route = useRoute();
 const router = useRouter();

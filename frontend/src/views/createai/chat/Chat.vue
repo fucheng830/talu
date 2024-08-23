@@ -87,7 +87,7 @@
 		>
 			<!-- <div
 			class="h-[40px] flex items-center hover:cursor-pointer active:scale-95 overflow-hidden rounded-full transition-all duration-300 flex-none flex items-center justify-center px-3"
-			:style="{ backgroundColor: globalColors.btnActive }"
+			:style="{ backgroundColor: theme.primaryColor }"
 		>
 			<Icon
 				icon="la:brush"
@@ -149,7 +149,7 @@
 									width="28"
 									:color="
 										data.txtInput.length > 0
-											? globalColors.btnActive
+											? theme.primaryColor
 											: `#d2c4fc`
 									"
 								/>
@@ -167,8 +167,7 @@ import { useUserStore, useChatStore } from "@/store";
 import { computed, reactive, watch } from "vue";
 import { fetchChatAPI } from "@/api";
 import { Icon } from "@iconify/vue";
-import TextComponent from "@/views/chat/components/Text.vue";
-import { globalColors } from "@/hooks/useTheme";
+import TextComponent from "@/views/chat/components/Text.vue"
 import { useBasicLayout } from "@/hooks/useBasicLayout";
 import { SvgIcon } from "@/components/common";
 import { useIconRender } from "@/hooks/useIconRender";
@@ -176,7 +175,9 @@ import { copyText } from "@/utils/format";
 import { useDialog } from "naive-ui";
 import iconLogo from "@/assets/logo.png";
 import { t } from "@/locales";
+import { useThemeVars } from "naive-ui";
 
+const theme = useThemeVars();
 const emits = defineEmits(["updateMessages", "deleteMsg"]);
 const props = defineProps({
 	msgList: {

@@ -11,7 +11,6 @@
 				>
 					<Icon
 						icon="gravity-ui:arrow-left"
-						:color="globalColors.btnActive"
 						width="18"
 					/>
 				</div>
@@ -58,7 +57,6 @@
 					<n-button
 						circle
 						size="large"
-						:color="globalColors.btnActive"
 						@click="changeShowAddComponent"
 					>
 						<Icon
@@ -147,7 +145,6 @@
 import myFlow from "@/views/application/vueFlow/index.vue";
 import { reactive, ref } from "vue";
 import { Icon } from "@iconify/vue";
-import { globalColors } from "@/hooks/useTheme";
 import { useRoute, useRouter } from "vue-router";
 import { flowNodeType } from "@/views/application/vueFlow/flowConfig.ts";
 

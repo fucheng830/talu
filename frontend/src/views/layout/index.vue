@@ -41,7 +41,6 @@
 <script setup>
 import { computed, reactive, ref, watch } from "vue";
 import { Icon } from "@iconify/vue";
-import { globalColors } from "@/hooks/useTheme";
 import SettingModel from "@/views/settingModal/index.vue";
 import { useRouter } from "vue-router";
 import InviteUrl from "@/views/layout/components/InviteUrl.vue";

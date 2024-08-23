@@ -69,7 +69,7 @@
 										data.form.permission == item.value ? '#F0F4FF' : '',
 									'border-color':
 										data.form.permission == item.value
-											? globalColors.btnActive
+											? theme.primaryColor
 											: '',
 								}"
 							>
@@ -90,7 +90,7 @@
 			<n-form-item label=" ">
 				<div class="flex items-center gap-4">
 					<!-- 保存 -->
-					<n-button :color="globalColors.btnActive" @click="handleSubmit">
+					<n-button :color="theme.primaryColor" @click="handleSubmit">
 						<span class="px-4"> 保存 </span>
 					</n-button>
 
@@ -126,9 +126,10 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from "vue";
-import { globalColors } from "@/hooks/useTheme";
 import { Icon } from "@iconify/vue";
+import { useThemeVars } from "naive-ui";
 
+const theme = useThemeVars();
 const refForm = ref();
 const data = reactive({
 	form: {

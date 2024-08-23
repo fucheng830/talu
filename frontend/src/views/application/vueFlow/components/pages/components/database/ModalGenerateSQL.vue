@@ -66,7 +66,7 @@
 					<!-- 右侧按钮 -->
 					<n-button
 						quaternary
-						:color="globalColors.btnActive"
+						:color="theme.primaryColor"
 						:loading="data.opt.isSearchingSQL"
 						:disabled="
 							data.form.agent === undefined || data.form.queryTarget === ''
@@ -104,7 +104,9 @@ import { useChatStore } from "@/store";
 import mModal from "@/components/common/mModal/index.vue";
 import logo from "@/assets/logo.png";
 import { Icon } from "@iconify/vue";
-import { globalColors } from "@/hooks/useTheme";
+import { useThemeVars } from "naive-ui";
+
+const theme = useThemeVars();
 
 const chatStore = useChatStore();
 

@@ -106,11 +106,10 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from "vue";
 import { Icon } from "@iconify/vue";
-import { SelectOption, useMessage } from "naive-ui";
 import { useBasicLayout } from "@/hooks/useBasicLayout";
 import { useAppStore, useUserStore } from "@/store";
 import { t } from "@/locales";
-// import { globalColors } from "@/hooks/useTheme";
+
 
 const { isMobile } = useBasicLayout();
 
@@ -118,7 +117,6 @@ const emit = defineEmits(["handleLogout"]);
 
 const appStore = useAppStore();
 const userStore = useUserStore();
-const message = useMessage();
 const userInfo = computed(() => userStore.$state.userInfo);
 // console.log(userInfo.value);
 

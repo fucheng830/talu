@@ -52,19 +52,19 @@
 			<!-- 成为(激活)会员 -->
 			<div class="w-full px-[32px] flex flex-col items-center">
 				<div class="mt-[48px] flex items-center w-full max-w-[1120px]">
-					<div class="h-[1px] flex-1 bg-[#E2E0E2]"></div>
+					<div class="h-[1px] flex-1"></div>
 					<div
 						class="text-[32px] leading-[45px] mx-[24px] font-bold text-[#333639]"
 					>
 						{{ $t("vip.joinVIP") }}
 					</div>
-					<div class="h-[1px] flex-1 bg-[#E2E0E2]"></div>
+					<div class="h-[1px] flex-1"></div>
 				</div>
 			</div>
 
 			<!-- 激活按钮 -->
 			<div class="mt-[16px] flex justify-center items-center">
-				<n-button color="blue" size="large" round @click="changeModalShow">
+				<n-button size="large" round @click="changeModalShow">
 					<div class="px-3 flex-center font-bold">
 						<Icon icon="octicon:key-16" width="18" />
 						<span class="ml-2"> {{ $t("vip.joinVIPKey") }} </span>
@@ -100,11 +100,11 @@
 											>
 												<Icon
 													icon="dashicons:yes"
-													:color="globalColors.btnActive"
+													:color="theme.primaryColor"
 													:width="18"
 												/>
 												<span class="ml-4 mr-1"> {{ curAbility.label }}: </span>
-												<span :style="{ color: globalColors.btnActive }">
+												<span :style="{ color: theme.primaryColor }">
 													<!-- 不同能力 福利 -->
 													<span v-if="curAbility.key == 'roleCreatePro'">
 														{{ $t("vip.support") }}
@@ -152,7 +152,6 @@
 									<!-- 购买按钮 -->
 									<div class="mt-[12px]">
 										<n-button
-											color="blue"
 											size="large"
 											style="border-radius: 8px"
 											@click="payEvent(item)"
@@ -188,7 +187,6 @@ import BgTopBar from "@/views/layout/BgTopBar.vue";
 import { computed, reactive, ref } from "vue";
 import imgDownload from "@/assets/images/nav/icon_download.png";
 import { Icon } from "@iconify/vue";
-import { globalColors } from "@/hooks/useTheme";
 import ActivateVip from "./components/ActivateVip.vue";
 import ScanQrModal from "./components/ScanQrModal.vue";
 import PayCheck from "./components/PayCheck.vue";
@@ -197,7 +195,9 @@ import { useUserStore } from "@/store";
 import { api } from "@/api/common";
 import { useMessage } from "naive-ui";
 import { t } from "@/locales";
+import { useThemeVars } from "naive-ui";
 
+const theme = useThemeVars();
 const { isMobile } = useBasicLayout();
 const userStore = useUserStore();
 const message = useMessage();

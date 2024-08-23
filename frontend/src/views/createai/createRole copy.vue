@@ -45,7 +45,7 @@
           class="relative bg-[#F9F9FA] rounded-lg mb-[24px] mx-[16px] mt-[16px] p-[20px]"
         >
           <h3 class="font-bold text-[16px] flex items-center relative">
-            <i class="w-[6px] h-[18px] rounded-[3px] mr-[12px]" :class="[`bg-[${globalColors.btnActive}]`]">
+            <i class="w-[6px] h-[18px] rounded-[3px] mr-[12px]" :class="[`bg-[${theme.primaryColor}]`]">
             </i>
             <span> 角色设定 </span>
           </h3>
@@ -186,7 +186,7 @@
                     >
                       <span
                         :style="{
-                          color: globalColors.btnActive,
+                          color: theme.primaryColor,
                         }"
                       >
                         {{ data.userChat }}
@@ -248,7 +248,7 @@
                         >
                           <span
                             class="flex items-center gap-1 text-[14px] font-normal text-[black]"
-                            :class="[`hover:text-[${globalColors.btnActive}]`]"
+                            :class="[`hover:text-[${theme.primaryColor}]`]"
                           >
                             <Icon icon="pepicons-pencil:cloud-up" width="24" />
                             从本地上传
@@ -263,7 +263,7 @@
                         >
                           <span
                             class="flex items-center gap-1 text-[14px] font-normal text-[black]"
-                            :class="[`hover:text-[${globalColors.btnActive}]`]"
+                            :class="[`hover:text-[${theme.primaryColor}]`]"
                           >
                             <Icon icon="ion:folder-outline" width="24" />
                             选择已有知识库
@@ -283,7 +283,7 @@
           <h3
             class="font-bold text-[16px] flex items-center relative mb-[18px]"
           >
-            <i class="w-[6px] h-[18px] rounded-[3px] mr-[12px]" :class="[`bg-[${globalColors.btnActive}]`]">
+            <i class="w-[6px] h-[18px] rounded-[3px] mr-[12px]" :class="[`bg-[${theme.primaryColor}]`]">
             </i>
             角色资料
           </h3>
@@ -362,14 +362,15 @@
 import { reactive, ref } from "vue";
 import { Icon } from "@iconify/vue";
 import { useRouter } from "vue-router";
-import { globalColors } from "@/hooks/useTheme";
 import RoundButton from "@/components/common/RoundButton/index.vue";
 import IconTip from "@/components/common/IconTip/index.vue";
 import Preview from "@/views/createai/components/Preview.vue";
 import Upload from "@/views/knowledge/components/Upload.vue";
 import { useBasicLayout } from "@/hooks/useBasicLayout";
 import { useNavStore } from "@/store";
+import { useThemeVars } from "naive-ui";
 
+const theme = useThemeVars();
 const { isMobile } = useBasicLayout();
 const router = useRouter();
 const navStore = useNavStore();
