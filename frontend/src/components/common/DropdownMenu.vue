@@ -5,7 +5,9 @@
       :options="formattedOptions"
       :render-option="renderOption"
       @select="handleSelect"
+      v-model:show="dropdownVisible"
       class="w-64"
+      :style="{ maxHeight: '500px', overflowY: 'auto' }" 
     >
       <span class="select-none">{{ selectedOption ? selectedOption.label : 'Select an Option' }}</span>
     </n-dropdown>
@@ -13,14 +15,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, h} from 'vue';
+import { ref, computed, h } from 'vue';
 import { NDropdown } from 'naive-ui';
-import OpenAI from '/public/OpenAI.svg';
-import { useChatStore } from "@/store";
+import { useChatStore, useSettingStore } from "@/store";
 
 const chatStore = useChatStore();
+const settingStore = useSettingStore();
 
-const currentAgent = computed(() => chatStore.currentAgent())
+const currentAgent = computed(() => chatStore.currentAgent());
+const llmConfig = computed(() => settingStore.llmConfig);
 
 interface Option {
   label: string;
@@ -30,27 +33,29 @@ interface Option {
   group: string;
 }
 
-const options = ref<Option[]>([
-  { label: 'GPT-4o Mini', key: 'gpt-4o-mini', maxToken: '128K', icon: OpenAI, group: 'OpenAI' },
-  { label: 'GPT-4o', key: 'gpt-4o', maxToken: '256K', icon: OpenAI, group: 'OpenAI' },
-  { label: 'GPT-4 Turbo', key: 'gpt-4-turbo', maxToken: '512K', icon: OpenAI, group: 'OpenAI' },
-  { label: 'Claude 3.5 Sonnet', key: 'claude-3-5-sonnet', maxToken: '200K', icon: OpenAI, group: 'Claude' },
-  { label: 'Claude 3 Opus', key: 'claude-3-opus', maxToken: '200K', icon: OpenAI, group: 'Claude' },
-  { label: 'Claude 3 Haiku', key: 'claude-3-haiku', maxToken: '200K', icon: OpenAI, group: 'Claude' },
-  { label: 'Gemini 1.5 Pro', key: 'gemini-1-5-pro', maxToken: '2M', icon: OpenAI, group: 'Gemini' },
-  { label: 'Gemini 1.5 Flash', key: 'gemini-1-5-flash', maxToken: '1M', icon: OpenAI, group: 'Gemini' },
-  { label: 'DeepSeek V2', key: 'deepseek-v2', maxToken: '128K', icon: OpenAI, group: 'DeepSeek' },
-  { label: 'DeepSeek Coder V2', key: 'deepseek-coder-v2', maxToken: '128K', icon: OpenAI, group: 'DeepSeek' }
-]);
+const selectedOption = ref<Option | null>(null);
+const dropdownVisible = ref(false); // Add a reactive variable to control dropdown visibility
 
-const selectedOption = ref<Option | null>(options.value.find(option => option.key === currentAgent.value?.llm.model) || options.value[0]);
-
+const formatMaxToken = (maxToken: number): string => {
+  if (maxToken >= 1000) {
+    return `${(maxToken / 1000).toFixed(0)}k`; // 转换为千
+  }
+  return maxToken.toString(); // 小于1000的直接返回
+};
 
 const formattedOptions = computed(() => {
   const formatted: any[] = [];
   let lastGroup = '';
 
-  options.value.forEach((option) => {
+  llmConfig.value.forEach((config) => {
+    const option: Option = {
+      label: config.model_name,
+      key: config.model_name,
+      maxToken: formatMaxToken(config.max_token),
+      icon: config.icon_url || '/ChatGPT.jpg',
+      group: config.model_provider
+    };
+
     if (option.group !== lastGroup) {
       formatted.push({
         type: 'group',
@@ -68,6 +73,11 @@ const formattedOptions = computed(() => {
     });
   });
 
+  // 设置默认选项
+  if (!selectedOption.value && formatted.length > 0) {
+    selectedOption.value = formatted.find(option => option.key === currentAgent.value?.llm.model) || formatted[0];
+  }
+
   return formatted;
 });
 
@@ -77,7 +87,7 @@ const renderOption = (props: { node: any, option: any }) => {
   }
   return h('div', {
     class: 'flex justify-between items-center px-4 py-2 cursor-pointer hover:bg-gray-300',
-    onClick: () => handleSelect(props.option.key)
+    onClick: () => handleSelect(props.option.key) // Ensure this calls handleSelect
   }, [
     h('div', { class: 'flex items-center' }, [
       h('img', { src: props.option.icon, class: 'w-4 h-4 mr-2' }),
@@ -89,12 +99,12 @@ const renderOption = (props: { node: any, option: any }) => {
 
 const handleSelect = (key: string) => {
   console.log('Selected:', key);
-  selectedOption.value = options.value.find(option => option.key === key) || null;
+  selectedOption.value = formattedOptions.value.find(option => option.key === key) || null;
   currentAgent.value.llm.model = key;
   chatStore.uploadLocalAgentSetting(currentAgent.value);
+
+  dropdownVisible.value = false; // Close the dropdown after selecting an option
 };
-
-
 </script>
 
 <style scoped>
@@ -110,7 +120,13 @@ const handleSelect = (key: string) => {
   cursor: pointer;
 }
 
-.hover:bg-gray-300:hover {
+.hover\:bg-gray-300:hover {
   background-color: #e5e7eb;
+}
+
+/* 限制下拉框的最大高度并添加滚动条 */
+.n-dropdown {
+  max-height: 200px; /* 根据需要调整高度 */
+  overflow-y: auto; /* 允许垂直滚动 */
 }
 </style>

@@ -280,6 +280,7 @@ class LLMConfig(Base):
     is_local = Column(Boolean, nullable=False)  # 是否为本地模型
     supports_multimodal = Column(Boolean, nullable=False)  # 是否支持多模态
     library_package = Column(String(100), nullable=False)  # 库包名称
+    max_token = Column(Integer)  # 最大token数
 
 
 

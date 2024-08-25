@@ -37,7 +37,7 @@ const defaultAgent = {
     "description": "Chatting casually",
     "opening_question": [],
     "tools": [],
-    "avatar": "https://site.123qiming.com/image/3f40de780cb29eb51519a0ce4c7f5d08.png",
+    "avatar": "/chatbot.png",
     "system_prompt": "你是一个聊天机器人，请根据用户的问题，提供简洁明了的回答。",
     "knowledge": [],
     "voice": null,

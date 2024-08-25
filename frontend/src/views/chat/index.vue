@@ -7,16 +7,16 @@
 			class="flex flex-col h-full box-border relative overflow-hidden duration-500 ease-in-out border-l"
 			:class="[data.opt.collapseLeft ? 'w-0' : 'w-[276px]']"
 		>
-			<div class="w-full p-4 flex justify-center align-center">
-				<!-- 点击跳转路由到/createai/createRole-->
-				<n-button
-					class="btn-radius"
-					style="background-color: #fff"
-					@click="router.push('/createai/createRole')"
-				>
-					<span class="px-[3rem]"> {{ $t("chat.createAgent") }} </span>
-				</n-button>
-			</div>
+		<div class="w-full p-4 flex justify-center items-center">
+			<!-- 点击跳转路由到/createai/createRole-->
+			<n-button
+				style="background-color: #fff; width: 100%; padding-top: 1rem; padding-bottom: 1rem;"
+				@click="router.push('/createai/createRole')"
+			>
+			<Icon icon="fluent:add-12-filled"/>
+			<span class="pl-1">{{$t('chat.createAgent')}}</span>
+			</n-button>
+		</div>
 
 			<!-- 聊天对象列表 -->
 			<ChatList @changeAgent="changeAgent"/>
@@ -102,7 +102,7 @@
 import { computed, reactive, ref } from "vue";
 import { Icon } from "@iconify/vue";
 import { useBasicLayout } from "@/hooks/useBasicLayout";
-import { useChatStore, useNavStore, useUserStore } from "@/store";
+import { useChatStore, useNavStore, useUserStore, useSettingStore } from "@/store";
 import { useRoute, useRouter } from "vue-router";
 import Chat from "@/views/chat/components/Chat.vue";
 import DropdownMenu from "@/components/common/DropdownMenu.vue";
@@ -122,7 +122,9 @@ const btnDeactiveColor = computed(() => theme.value.btnDeative || '#D4D4D4'); //
 const chatStore = useChatStore();
 const navStore = useNavStore();
 const userStore = useUserStore();
+const settingStore = useSettingStore();
 const router = useRouter();
+
 
 const route = useRoute();
 
@@ -177,6 +179,7 @@ onMounted(() => {
 	if (id) {
 		changeAgent(String(id));
 	}
+	settingStore.fetchLLMConfig();
 });
 </script>
 

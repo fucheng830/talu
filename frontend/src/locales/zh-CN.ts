@@ -64,7 +64,7 @@ export default {
     type: '类型',
   },
   chat: {
-    createAgent: '创建 AI智能体',
+    createAgent: '创建',
     chatHistory: '历史对话',
     newTopics: '新话题',
     placeholderPC: '来说点什么吧...(Shift + Enter = 换行)',

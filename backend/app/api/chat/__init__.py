@@ -27,6 +27,15 @@ def callback(*args, **kwargs):
     print(args, kwargs)
 
 
+@router.post('/llm')
+def get_llm_config(db: Session = Depends(get_db)):
+    """获取llm配置"""
+    llm_config = db.query(LLMConfig).order_by(LLMConfig.model_provider).all()
+    return llm_config
+
+
+
+
 @router.post('/{id}/v1/chat/completions')
 async def chat(id:str, 
                 request: Request, 

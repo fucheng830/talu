@@ -145,6 +145,7 @@ const apiURL = [
   '/delete_agent',
   '/wechat_login',
   '/search_agent',
+  '/llm',
 ]
 
 function generateApiFunctions(list: string[]) {
