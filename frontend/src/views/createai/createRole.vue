@@ -612,15 +612,12 @@ import {
 	useDialog,
 	useMessage,
 } from "naive-ui";
-import { globalConfig } from "@/hooks/useTheme";
 import SaveAgent from "@/views/createai/components/SaveAgent.vue";
 import { useStateStore, useUserStore } from "@/store";
-import IconTip from "@/components/common/IconTip/index.vue";
 import AddAction from "@/views/createai/components/AddAction.vue";
 import Chat from "@/views/createai/chat/Chat.vue";
 import { getFormattedDate } from "@/utils/functions";
 import { useBasicLayout } from "@/hooks/useBasicLayout";
-import iconLogo from "@/assets/logo.png";
 // import { createAgent } from "@/views/createai/langChainUtils.ts";
 import { api } from "@/api/common";
 import { v4 as uuidv4 } from "uuid";
@@ -754,7 +751,7 @@ const dataChat = reactive({
 		// 对话记录
 		msgList: [
 			{
-				avatar: iconLogo,
+				avatar: '/chatbot.png',
 				content: t("createai.defaultStarter"),
 				dateTime: new Date().toLocaleString(),
 				error: false,

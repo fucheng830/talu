@@ -19,7 +19,7 @@
 							<n-avatar
 								round
 								size="medium"
-								:src="(item?.avatar?.length > 0 && item?.avatar) || iconLogo"
+								:src="(item?.avatar?.length > 0 && item?.avatar) || '/chatbot.png'"
 							/>
 						</div>
 						<!-- 聊天区 -->
@@ -41,29 +41,6 @@
 									:loading="item.loading"
 									:as-raw-text="!item.isShowRaw"
 								/>
-
-								<!-- 右下角工具栏 -->
-								<div class="flex flex-col">
-									<button
-										v-if="item.role != 'user'"
-										class="mb-2 transition text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-300"
-										@click="handleRegenerate(index)"
-									>
-										<SvgIcon icon="ri:restart-line" />
-									</button>
-									<NDropdown
-										:trigger="isMobile ? 'click' : 'hover'"
-										:placement="item.role != 'user' ? 'right' : 'left'"
-										:options="data.opt.options(item)"
-										@select="(val) => handleSelect(val, item, index)"
-									>
-										<button
-											class="transition text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-200"
-										>
-											<SvgIcon icon="ri:more-2-fill" />
-										</button>
-									</NDropdown>
-								</div>
 							</div>
 						</div>
 					</div>
@@ -85,26 +62,6 @@
 		<div
 			class="sticky bottom-0 p-4 w-full max-w-screen-xl m-auto flex items-end justify-between space-x-2"
 		>
-			<!-- <div
-			class="h-[40px] flex items-center hover:cursor-pointer active:scale-95 overflow-hidden rounded-full transition-all duration-300 flex-none flex items-center justify-center px-3"
-			:style="{ backgroundColor: theme.primaryColor }"
-		>
-			<Icon
-				icon="la:brush"
-				width="28"
-				color="white"
-				style="transform: rotate(180deg)"
-			/>
-			<span
-				class="ml-1 duration-300 transition-all text-white whitespace-nowrap overflow-hidden"
-				:class="[data.isInputing ? 'w-0' : 'w-[48px]']"
-			>
-				新话题
-			</span>
-		</div> -->
-			<!-- <n-button text @click="handleClear">
-				<Icon icon="ph:trash" width="24" style="margin-bottom: 0.5rem" />
-			</n-button> -->
 			<div class="flex flex-col flex-1 h-full">
 				<n-input
 					v-model:value="data.txtInput"
@@ -121,25 +78,11 @@
 					@focus="handleInputFocus"
 					@blur="handleInputBlur"
 					@keypress.prevent.enter="handleInputEnter"
-					style="border-radius: 20px"
 				>
-					<!-- 左侧 前缀 -->
-					<template #prefix>
-						<div
-							class="h-full border-r pr-1 cursor-pointer flex flex-col justify-center"
-							@click.stop="handleUpload"
-						>
-							<!-- 上传按钮 -->
-							<Icon icon="tabler:upload" width="22" color="#7e7e7e" />
-						</div>
-					</template>
 
 					<!-- 发送按钮 -->
 					<template #suffix>
 						<div class="h-full flex items-center">
-							<div class="pr-2 cursor-pointer flex flex-col justify-center">
-								<Icon icon="material-symbols:mic" width="22" color="#7e7e7e" />
-							</div>
 							<div
 								class="pl-[2px] border-l cursor-pointer flex flex-col justify-center"
 								@click="handleSend"
@@ -163,17 +106,14 @@
 </template>
 
 <script setup lang="ts">
-import { useUserStore, useChatStore } from "@/store";
-import { computed, reactive, watch } from "vue";
+import { useUserStore } from "@/store";
+import { computed, reactive } from "vue";
 import { fetchChatAPI } from "@/api";
 import { Icon } from "@iconify/vue";
 import TextComponent from "@/views/chat/components/Text.vue"
 import { useBasicLayout } from "@/hooks/useBasicLayout";
 import { SvgIcon } from "@/components/common";
 import { useIconRender } from "@/hooks/useIconRender";
-import { copyText } from "@/utils/format";
-import { useDialog } from "naive-ui";
-import iconLogo from "@/assets/logo.png";
 import { t } from "@/locales";
 import { useThemeVars } from "naive-ui";
 
@@ -192,12 +132,10 @@ const props = defineProps({
 
 const decoder = new TextDecoder("utf-8");
 const userStore = useUserStore();
-const chatStore = useChatStore();
 const { isMobile } = useBasicLayout();
 const { iconRender } = useIconRender();
-const dialog = useDialog();
 
-const defaultAvatar = "http://images.aitop66.com/https://site.123qiming.com/image/3f40de780cb29eb51519a0ce4c7f5d08.png"; // replace with actual path
+const defaultAvatar = "/chatbot.png"; // replace with actual path
 
 const data = reactive({
 	userInfo: computed(() => userStore.$state.userInfo),
@@ -283,7 +221,7 @@ async function generate(index: number) {
 		role: "assistant",
 		error: false,
 		loading: true,
-		avatar: (data.agent?.avatar?.length > 0 && data.agent?.avatar) || iconLogo,
+		avatar: (data.agent?.avatar?.length > 0 && data.agent?.avatar) || defaultAvatar,
 		isShowRaw: true,
 	};
 
@@ -408,66 +346,6 @@ const handleStop = () => {
 		controller.abort();
 		data.loading = false;
 	}
-};
-
-// 重新生成
-const handleRegenerate = (index: number) => {
-	generate(index);
-};
-
-// 删除
-const handleDelete = (index: number) => {
-	if (data.loading) return;
-
-	dialog.warning({
-		title: t("chat.titleDeleteMessage"),
-		content: t("chat.comfirmDeleteMessage"),
-		positiveText: t("common.confirm"),
-		negativeText: t("common.cancel"),
-		onPositiveClick: () => {
-			// 删除当前消息
-			// chatStore.deleteChatMessage(index);
-			emits("deleteMsg", index);
-		},
-	});
-};
-
-// 点击下拉列表 (更多操作)
-const handleSelect = (
-	key: "copyText" | "delete" | "toggleRenderType",
-	item: any,
-	index: number
-) => {
-	switch (key) {
-		// 切换显示原文
-		case "toggleRenderType":
-			if (item.isShowRaw == undefined) return (item.isShowRaw = true);
-			item.isShowRaw = !item.isShowRaw;
-			return;
-
-		// 复制
-		case "copyText":
-			copyText({ text: item.content ?? "" });
-			return;
-
-		// 删除
-		case "delete":
-			handleDelete(index);
-	}
-};
-
-// 清空聊天记录
-const handleClear = () => {
-	dialog.warning({
-		title: t("chat.clearChat"),
-		content: t("chat.comfirmClearChat"),
-		positiveText: t("common.confirm"),
-		negativeText: t("common.cancel"),
-		onPositiveClick: () => {
-			// 删除当前消息
-			chatStore.clearMessages();
-		},
-	});
 };
 </script>
 
