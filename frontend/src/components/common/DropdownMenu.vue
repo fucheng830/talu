@@ -47,31 +47,33 @@ const formattedOptions = computed(() => {
   const formatted: any[] = [];
   let lastGroup = '';
 
-  llmConfig.value.forEach((config) => {
-    const option: Option = {
-      label: config.model_name,
-      key: config.model_name,
-      maxToken: formatMaxToken(config.max_token),
-      icon: config.icon_url || '/ChatGPT.jpg',
-      group: config.model_provider
-    };
+  if (llmConfig.value && Array.isArray(llmConfig.value)) {
+    llmConfig.value.forEach((config) => {
+      const option: Option = {
+        label: config.model_name,
+        key: config.model_name,
+        maxToken: formatMaxToken(config.max_token),
+        icon: config.icon_url || '/ChatGPT.jpg',
+        group: config.model_provider
+      };
 
-    if (option.group !== lastGroup) {
+      if (option.group !== lastGroup) {
+        formatted.push({
+          type: 'group',
+          label: option.group,
+          key: `${option.group}-group`
+        });
+        lastGroup = option.group;
+      }
+
       formatted.push({
-        type: 'group',
-        label: option.group,
-        key: `${option.group}-group`
+        label: option.label,
+        key: option.key,
+        icon: option.icon,
+        maxToken: option.maxToken
       });
-      lastGroup = option.group;
-    }
-
-    formatted.push({
-      label: option.label,
-      key: option.key,
-      icon: option.icon,
-      maxToken: option.maxToken
     });
-  });
+  }
 
   // 设置默认选项
   if (!selectedOption.value && formatted.length > 0) {
