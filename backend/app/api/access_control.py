@@ -54,3 +54,23 @@ def access_control(current_user: dict = Depends(get_current_user), db: Session =
     access_control.check_membership()
     access_control.check_token()
     access_control.check_vip_limit()
+
+"""
+
+from fastapi import APIRouter, Request, Depends
+from sqlalchemy.orm import Session
+from .access_control import access_control
+
+router = APIRouter()
+
+# 使用示例
+@router.post("/chat/{agent_id}/{agent_type}")
+async def app_chat(agent_id: str, 
+                   agent_type: str, 
+                   request: Request, 
+                   db: Session = Depends(get_db), 
+                   current_user: dict = Depends(get_current_user),
+                   _ = Depends(access_control)):  # 使用权限控制依赖
+    data = await request.json()
+    messages = data['messages']
+"""

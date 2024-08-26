@@ -58,17 +58,7 @@ def load_agent(config, db):
 
         agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True, max_iterations=5)
     else:
-        prompt = ChatPromptTemplate.from_messages(
-        [
-            (
-                "system",
-                system_prompt,
-            ),
-            MessagesPlaceholder(variable_name="chat_history", optional=True),
-            ("user", "{input}")
-        ]
-        )
-        agent_executor = prompt | llm
+        raise ValueError("No tools found in the configuration file.")
 
     return agent_executor 
 

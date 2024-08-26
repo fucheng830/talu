@@ -15,7 +15,9 @@
 				<template v-if="data.form.avatar === null">
 					<div
 						class="flex w-[34px] h-[34px] items-center justify-center rounded-full border-2"
-						:class="[data.form.avatar === null ? '' : 'border-dashed']"
+						:class="[
+														data.form.avatar === null ? 'border-dashed' : '',
+													]"
 					></div>
 				</template>
 				<!-- 已选择头像时 -->
@@ -111,7 +113,7 @@
 												<div
 													class="flex w-[74px] h-[74px] items-center justify-center rounded-full border-2"
 													:class="[
-														data.form.avatar === null ? '' : 'border-dashed',
+														data.form.avatar === null ? 'border-dashed' : '',
 													]"
 												>
 													<!-- 未选择头像时 -->
@@ -122,7 +124,7 @@
 													<template v-else>
 														<n-avatar
 															round
-															:size="74"
+															:size="70"
 															:src="data.form.avatar"
 														/>
 													</template>
@@ -644,7 +646,7 @@ const data = reactive({
 		name: "New Agent", // 名称
 		description: "", // 描述
 		system_prompt: "", // 介绍
-		avatar: "", // 头像
+		avatar: null, // 头像
 		// avatar: "https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg",
 		// author: "Author", // 作者
 		opening_text: "", // 开头语

@@ -7,7 +7,7 @@ from ...models import *
 from ..tool import context_tools
 from langchain.tools.render import format_tool_to_openai_function
 
-model_name = "deepseek-chat"
+
 
 def agent_create_copliot(agent_id, current_user, db):
     """问答入口"""

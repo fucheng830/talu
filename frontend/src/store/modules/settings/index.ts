@@ -47,5 +47,22 @@ export const useSettingStore = defineStore('setting-store', {
         console.error('获取 LLM 配置失败:', error);
       }
     },
+
+    // 新增异步方法，获取云端tools配置
+    async fetchToolsConfig() {
+      try {
+        // 模拟请求云端接口，假设接口地址为 'https://api.example.com/tools-config'
+        const response = api.tools();
+        // 解析响应数据
+        const toolsConfig = await response;
+
+        console.log(toolsConfig)
+        
+        // 更新状态
+        this.updateSetting({toolsConfig: toolsConfig});
+      } catch (error) {
+        console.error('获取 tools 配置失败:', error);
+      }
+    },
   },
 })

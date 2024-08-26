@@ -16,7 +16,7 @@ from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 import structlog
 from app import initialize_db
-
+import importlib
 
 logger = structlog.get_logger(__name__)
 
@@ -33,8 +33,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-app.include_router(api.chat_router)
 app.include_router(api.user_router)
 app.include_router(api.image_router)
 app.include_router(api.agent_router)
@@ -42,6 +40,24 @@ app.include_router(api.auth_router)
 app.include_router(api.knowledge_router)
 app.include_router(api.order_router)
 app.include_router(api.chatbot_router)
+app.include_router(api.tool_router)
+
+# 自动导入 api 目录下的所有模块并注册 router
+# def register_routers(package_name: str):
+#     package = importlib.import_module(package_name)
+#     package_path = package.__path__
+
+#     for module_name in os.listdir(package_path[0]):
+#         if module_name.endswith(".py") and module_name != "__init__.py":
+#             module_full_name = f"{package_name}.{module_name[:-3]}"
+#             module = importlib.import_module(module_full_name)
+
+#             # 检查模块中是否有 router
+#             if hasattr(module, 'router'):
+#                 router.include_router(module.router)
+
+# # 调用自动注册函数
+# register_routers("api")
 
 @app.get("/hello_world")
 async def wechat(request: Request):

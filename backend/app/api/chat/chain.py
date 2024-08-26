@@ -1,5 +1,5 @@
 import json
-
+import time
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_openai import ChatOpenAI
 from sse_starlette.sse import EventSourceResponse
@@ -47,13 +47,10 @@ def load_executor(**config):
 
     llm_config = config.get("llm", {'model': 'gpt-4o-mini', 'temperature': 0.5})
 
-    prompt = config.get("prompt", "{input}")
-
     prompt_template = ChatPromptTemplate.from_messages(
         [
             ("system", system_prompt),
             MessagesPlaceholder("msgs"),
-            ("user", prompt),
         ]
     )
     llm = ChatOpenAI(**llm_config)
@@ -61,31 +58,35 @@ def load_executor(**config):
     return agent_executor
 
 
-async def stream_chat(agent_executor, messages, input_text, callback):
+async def stream_chat(agent_executor, messages, callback):
+    start_time = time.time()
     try:
         final_output = ""
         async for chunk in agent_executor.astream(
-            {"input": input_text, "msgs": messages}
+            {"msgs": messages}
         ):
             if chunk:
                 row_data = sse_json(chunk.content)
                 final_output += chunk.content
                 yield json.dumps(row_data)
+
     except Exception as e:
         yield json.dumps(sse_json(str(e), finish_reason="error"))
     finally:
         yield json.dumps(sse_json("", finish_reason="stop"))
+        execution_time = time.time() - start_time
+        print(f"执行链时间: {execution_time:.4f}秒")
         callback(final_output)
 
 
-def execute_chain(agent_executor, messages, input_text, callback, stream=True):
+def execute_chain(agent_executor, messages, callback, stream=True):
     if stream:
         return EventSourceResponse(
-            stream_chat(agent_executor, messages, input_text, callback),
+            stream_chat(agent_executor, messages, callback),
             media_type="text/event-stream",
         )
     else:
-        output = agent_executor.invoke({"input": input_text, "msgs": messages})
+        output = agent_executor.invoke({"msgs": messages})
         return sse_json(output["output"])
 
 

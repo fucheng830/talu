@@ -271,17 +271,33 @@ async function generate(index: number) {
 		return;
 	}
 
+
+
 	try {
+		// 获取上下文数量
+		const contextCount = data.agent?.context.n; // 假设 agent 有 contextCount 属性
+		let contextMessages; // 在外部定义 contextMessages
+
+		if (contextCount) {
+			const messagesToRetrieve = Math.min(contextCount, props.messages.length); // 取较小值
+			contextMessages = props.messages.slice(-messagesToRetrieve); // 获取最近的上下文消息
+		} else {
+			// 没有限制
+			contextMessages = props.messages; // 直接使用所有消息
+		}
+
 		const { body, status } = await fetchChatAPI(
-			{ messages: [props.messages[index-1]], 
-			 stream: true, 
-			 conversation_id: props.conversation_id,
-			 config: data.agent
+			{ 
+				messages: contextMessages, 
+				stream: true, 
+				conversation_id: props.conversation_id,
+				config: data.agent 
 			},
 			data.agent.id,
 			access_token,
 			controller.signal
 		);
+
 		if (status === 200) {
 			const reader = body?.getReader();
 			await readStream(reader, status, index);

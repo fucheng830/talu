@@ -34,7 +34,7 @@
 				<!-- 左侧 -->
 				<div class="flex items-center">
 				 <!-- 折叠按钮 -->
-				 <div class="flex items-center gap-4 mr-4">
+				 <div class="flex items-center gap-4 mr-2">
 					<n-button text @click="changeCollapseLeft">
 						<Icon
 							icon="mdi:arrow-collapse-left"
@@ -47,7 +47,7 @@
 				<!-- Agent展示 -->
 				<div class="flex items-center space-x-2">
 					<!-- 头像 -->
-					<div class="rounded-full overflow-hidden w-10 h-10">
+					<div class="rounded-full overflow-hidden w-9 h-9">
 						<img :src=data.curChatInfo.agent?.avatar alt="Avatar" class="w-full h-full object-cover">
 					</div>
 					<!-- 名称和描述 -->
@@ -55,9 +55,8 @@
 						<div class="flex items-center space-x-1">
 						<span class="font-semibold">{{ data.curChatInfo.agent?.name }}</span>
 						<DropdownMenu />
-
 						</div>
-						<p class="text-xs">{{ data.curChatInfo.agent?.description }}</p>
+						<span class="text-xs">{{ data.curChatInfo.agent?.description }}</span>
 					</div>
 				</div>
 				 </div>

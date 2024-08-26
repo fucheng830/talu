@@ -34,24 +34,17 @@ def get_llm_config(db: Session = Depends(get_db)):
     return llm_config
 
 
-
-
 @router.post('/{id}/v1/chat/completions')
 async def chat(id:str, 
-                request: Request, 
-                   db: Session = Depends(get_db), 
-                   current_user: dict = Depends(get_current_user)):
+               request: Request, 
+               db: Session = Depends(get_db), 
+               current_user: dict = Depends(get_current_user)):
     """问答入口"""
     # 获取输入数据
     params = await request.json()
     user_id = current_user['user_id']
-    
     # agent配置
     agent_config = params.get('config', {})
-    # 上下文配置
-    context = agent_config.get('context', {})
-    context_compress_strage = context.get('memory_recall', 'keep_last')
-    max_context_len = context.get('n', 3)
 
 
     # 对agent进行路由
@@ -66,16 +59,8 @@ async def chat(id:str,
         agent_executor = load_agent_from_db(id, db)
 
     messages = params['messages']
-
-    if params.get('conversation_id'):
-        conversation_id = params.get('conversation_id')
-        return conversation_chat(agent_executor, conversation_id, user_id, messages[0], context_compress_strage, max_context_len, db)
-
-    else:
-        input = messages.pop(-1)
-        # 输入
-        messages = [convert_dict_to_message(r) for r in params['messages']]
-        return api_chat_complete(input, messages, agent_executor)
+    messages = [convert_dict_to_message(message) for message in messages]
+    return conversation_chat(agent_executor, user_id, messages, db)
 
         
 def load_agent_from_db(agent_id: str, db: Session):
@@ -85,57 +70,37 @@ def load_agent_from_db(agent_id: str, db: Session):
     return load_agent(agent_config, db)
 
 
-def conversation_chat(agent_executor, conversation_id, user_id, question, context_compress_strage, max_context_len, db):
+import time
+
+def conversation_chat(agent_executor, user_id, messages, db):
     """问答入口
     params:
-        conversation_id 对话id
         stream 是否使用流的方式输出内容，默认为：True
-        max_context_len 最大上下文长度，默认为：3
-        context_compress_strage 上下文压缩策略，'keep_last' or 'rag' or 'summary'，默认为：'keep_last'
         user_id: 用户ID
     """
-    conversation = db.query(Conversation).filter_by(id=conversation_id).first()
-
-    if not conversation:
-        conversation = Conversation(user_id=user_id, id=conversation_id)
-        db.add(conversation)
-        db.commit()
-       
-    prompt_embedding = embeddings_model.embed_query(question['content'])
-    messages = load_context_message(context_compress_strage, conversation_id, max_context_len, prompt_embedding, user_id, db)
-    messages = [{"content": msg.content, "role": msg.role} for msg in messages]
-    messages = [convert_dict_to_message(message) for message in messages]
- 
-    new_message = Message(
-        conversation_id=conversation_id,
-        user_id=user_id,
-        content=question['content'],
-        embedding=prompt_embedding,
-        role="user"
-    )
-    db.add(new_message)
-    db.commit()
-
+    # 定义插入答案的函数
     def insert_answer(output):
-        new_message = Message(
-            conversation_id=conversation_id,
-            user_id=user_id,
-            content=output,
-            embedding=embeddings_model.embed_query(output),
-            role="assistant"
-        )
-        db.add(new_message)
-        db.commit()
+        print('output:', output)
+        # start_time = time.time()
 
-    return execute_chain(agent_executor, messages, question, insert_answer, stream=True)
+        # new_message = Message(
+        #     user_id=user_id,
+        #     content=output,
+        #     role="assistant"
+        # )
+        # db.add(new_message)
+        # db.commit()
+        # insert_assistant_message_time = time.time() - start_time
+        # print(f"插入助手消息时间: {insert_assistant_message_time:.4f}秒")
+
+    # 执行链
+    
+    result = execute_chain(agent_executor, messages, insert_answer, stream=True)
+    return result
 
 
 
-def api_chat_complete():
-    """
-    给api调用的对话
-    """
-    pass
+
         
 
 

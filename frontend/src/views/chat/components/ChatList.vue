@@ -6,7 +6,7 @@
 				<template v-for="item in data.chatList" :key="item.id">
 					<div
 						@click="setChatActive(item)"
-						class="chat-item-wrap w-full overflow-hidden grid grid-cols-[minmax(0,1fr)_1rem] px-[12px] py-[10px] rounded-md hover:cursor-pointer mb-1 items-center relative"
+						class="chat-item-wrap w-full overflow-hidden grid grid-cols-[minmax(0,1fr)_1rem] px-[10px] py-[10px] rounded-md hover:cursor-pointer mb-1 items-center relative"
 						:class="[item.id == data.curActiveChat ? `bg-[#F4F4F4]`: '']"
 					>
 						<div class="relative w-full flex">
@@ -87,7 +87,6 @@ import { t } from "@/locales";
 const { isMobile } = useBasicLayout();
 const navStore = useNavStore();
 const chatStore = useChatStore();
-const theme = useThemeVars();
 // 定义 emit 事件
 const emit = defineEmits(['changeAgent']);
 

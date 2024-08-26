@@ -8,30 +8,41 @@
 		>
 			<!-- 左侧栏 pc端 -->
 			<div v-if="!isMobile" class="flex flex-col py-4 w-[210px] border-r">
-				<!-- 知识库信息 -->
-				<div class="flex flex-col gap-[14px] p-[14px] pt-0 border-b mb-[14px]">
-					<div class="flex items-center gap-2">
-						<!-- 标题 -->
-						<span
-							class="w-full font-bold overflow-hidden text-ellipsis whitespace-nowrap text-xl"
-						>
-							{{ data.curKnowledge?.name }}
-						</span>
+			<!-- 返回 知识库首页 -->
+			<div
+				class="flex items-center gap-3 px-3 cursor-pointer hover:bg-[#F4F4F7] rounded-lg"
+					@click="router.push('/knowledge')"
+					:style="{ 'background-color': 'white' }"
+				>
+					<!-- 返回图标 箭头 左 -->
+					<div
+						class="p-1 rounded-full"
+						:style="{ 'box-shadow': '1px 1px 9px rgba(0,0,0,.15)' }"
+					>
+						<Icon
+							icon="gravity-ui:arrow-left"
+							:color="theme.primaryColor"
+							width="22"
+						/>
 					</div>
-
-					<!-- 知识库类型 -->
-					<div class="flex">
-						<div
+					<div
 							class="flex items-center gap-1 border bg-[#F4F4F7] border-[#E8EBF0] rounded-lg py-[6px] px-[14px] text-[12px]"
 						>
-							<Icon
+						<Icon
 								icon="mingcute:storage-fill"
 								color="#8A95A7"
 								width="19"
 								class="pb-[2px]"
 							/>
-							<span>{{ $t("knowledge.commonKnowledge") }}</span>
-						</div>
+					<span>{{ data.curKnowledge?.name }}</span>
+					</div>
+
+				</div>
+				<!-- 知识库信息 -->
+				<div class="flex flex-col gap-[14px] p-[14px] pt-0 border-b mb-[14px]">
+					<!-- 知识库类型 -->
+					<div class="flex">
+
 					</div>
 				</div>
 
@@ -64,26 +75,6 @@
 							</span>
 						</div>
 					</template>
-				</div>
-
-				<!-- 返回 知识库首页 -->
-				<div
-					class="flex items-center gap-3 px-3 py-2 cursor-pointer hover:bg-[#F4F4F7] rounded-lg"
-					@click="router.push('/knowledge')"
-					:style="{ 'background-color': 'white' }"
-				>
-					<!-- 返回图标 箭头 左 -->
-					<div
-						class="p-1 rounded-full"
-						:style="{ 'box-shadow': '1px 1px 9px rgba(0,0,0,.15)' }"
-					>
-						<Icon
-							icon="gravity-ui:arrow-left"
-							:color="theme.primaryColor"
-							width="22"
-						/>
-					</div>
-					<span>{{ $t("knowledge.knowledgeList") }}</span>
 				</div>
 			</div>
 

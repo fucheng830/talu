@@ -65,14 +65,14 @@
 			class="mt-[2rem] grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
 		>
 			<!-- 单个插件 -->
-			<template v-for="item in data.pluginList" :key="item?.uuid">
+			<template v-for="item in data.pluginList" :key="item?.id">
 				<div
-					class="flex flex-col p-4 bg-white rounded-lg shadow-[0_6px_8px_0_rgba(28,31,35,.06)] cursor-pointer"
+					class="flex flex-col p-4 bg-white rounded-lg shadow-[0_6px_8px_0_rgba(28,31,35,.06)] cursor-pointer m-2"
 				>
 					<!-- 头像 -->
 					<n-avatar
 						:size="36"
-						src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
+						:src="item.avatar" 
 					/>
 
 					<!-- 名称 -->
@@ -84,31 +84,22 @@
 					<div class="text-[14px] text-[grey]">{{ item.author }}</div>
 
 					<!-- 描述 -->
-					<div class="text-[14px] text-[grey] mt-2">{{ item.desc }}</div>
+					<div class="text-[14px] text-[grey] mt-2">{{ item.description }}</div> <!-- 修改为 description -->
 
 					<!-- 底部栏 -->
 					<div
 						class="flex items-center gap-4 mt-[3rem] text-[12px] text-[#383743]/[.35]"
 					>
 						<!-- 使用次数 -->
-						<div class="flex items-center gap-1">
+						<!-- 这个部分可以根据需要来决定是否显示 -->
+						<!-- <div class="flex items-center gap-1">
 							<Icon
 								icon="material-symbols:person-outline"
 								width="16"
 								color="rgba(56, 55, 67, 0.35)"
 							/>
 							<span>{{ item.used }}</span>
-						</div>
-
-						<!-- 收藏量 -->
-						<div class="flex items-center gap-1">
-							<Icon
-								icon="mingcute:star-line"
-								width="14"
-								color="rgba(56, 55, 67, 0.35)"
-							/>
-							<span>{{ item.collected }}</span>
-						</div>
+						</div> -->
 					</div>
 				</div>
 			</template>
@@ -122,10 +113,12 @@ import { renderIcon } from "@/utils/functions";
 import { Icon } from "@iconify/vue";
 import { useBasicLayout } from "@/hooks/useBasicLayout";
 import { useThemeVars } from "naive-ui";
+import { useSettingStore } from "@/store";
 
 const theme = useThemeVars();
 const { isMobile } = useBasicLayout();
-
+const settingStore = useSettingStore();
+const rootUrl = "@/assets/images/";
 const refTagList = ref();
 const data = reactive({
 	sort: "popular", // 当前排序方式
@@ -136,17 +129,7 @@ const data = reactive({
 	txtSearch: "", // 搜索关键词
 	curTagActive: "推荐", // 当前筛选
 	tagList: ["推荐", "照片"], // 筛选栏
-	pluginList: [
-		{
-			uuid: "1",
-			icon: "@/assets/logo.png",
-			name: "插件1",
-			author: "作者1",
-			desc: "这是插件1的介绍",
-			used: 281, // 使用次数
-			collected: 240, // 收藏量
-		},
-	], // 插件列表
+	pluginList: computed(()=>settingStore.$state.toolsConfig), // 插件列表
 	opt: {
 		sort: [
 			{
@@ -197,7 +180,7 @@ const handleWheelHorizontal = (event) => {
 };
 
 onMounted(() => {
-	// todo 对接接口，搜索所有插件
+	settingStore.fetchToolsConfig();
 });
 </script>
 

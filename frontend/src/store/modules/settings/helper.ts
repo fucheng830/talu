@@ -7,6 +7,7 @@ const LOCAL_NAME = 'settingsStorage'
 export interface SettingsState {
   systemMessage: string // 系统消息
   llmConfig?: any // LLM 配置
+  toolsConfig?: any // 工具配置
 }
 
 // 默认设置函数
