@@ -15,13 +15,13 @@
 						<!-- 标签左侧标线 -->
 						<div
 							class="w-[6px] h-[50px] rounded-[3px] mr-[24px]"
-							:class="[`bg-[${theme.primaryColor}]`]"
+							:style="{ 'background-color': theme.primaryColor }"
 						></div>
 						<div class="flex flex-col">
 							<!-- 标题 -->
 							<span
 								class="font-bold"
-								:class="[!isMobile ? 'text-[28px]' : 'text-[22px]']"
+								:class="[!isMobile ? 'text-[22px]' : 'text-[22px]']"
 							>
 								{{ $t("knowledge.createKnowledge") }}
 							</span>

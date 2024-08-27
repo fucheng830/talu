@@ -84,11 +84,15 @@
 					<div class="text-[14px] text-[grey]">{{ item.author }}</div>
 
 					<!-- 描述 -->
-					<div class="text-[14px] text-[grey] mt-2">{{ item.description }}</div> <!-- 修改为 description -->
+					<div class="text-[14px] text-[grey] mt-2" style="height: 40px; overflow: hidden;">
+						<n-ellipsis :line-clamp="2">
+							{{ item.description }}
+  						</n-ellipsis>
+					</div>
 
 					<!-- 底部栏 -->
 					<div
-						class="flex items-center gap-4 mt-[3rem] text-[12px] text-[#383743]/[.35]"
+						class="flex items-center gap-4 text-[12px] text-[#383743]/[.35]"
 					>
 						<!-- 使用次数 -->
 						<!-- 这个部分可以根据需要来决定是否显示 -->

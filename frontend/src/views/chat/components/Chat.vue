@@ -19,7 +19,7 @@
 						<n-avatar round size="medium" :src="item.avatar" />
 					</div>
 					<!-- 聊天区 -->
-					<div class="overflow-hidden text-[15px] items-start">
+					<div class="overflow-hidden items-start">
 						<!-- 聊天内容 -->
 						<div
 							class="flex flex-col gap-1"
@@ -244,9 +244,21 @@ const handleSend = (txtInput: string, fileData: Chat.FileData) => {
 async function generate(index: number) {
 	if (data.loading) return;
 
+	// 获取上下文数量
+	const contextCount = data.agent?.context.n; // 假设 agent 有 contextCount 属性
+	let contextMessages; // 在外部定义 contextMessages
+
+	if (contextCount) {
+		const messagesToRetrieve = Math.min(contextCount, props.messages.length); // 取较小值
+		contextMessages = props.messages.slice(-messagesToRetrieve); // 获取最近的上下文消息
+	} else {
+		// 没有限制
+		contextMessages = props.messages; // 直接使用所有消息
+	}
+
 	props.messages[index] = {
 		dateTime: new Date().toLocaleString(),
-		content: `${t("chat.thinking")}...`,
+		content: '',
 		role: "assistant",
 		error: false,
 		loading: true,
@@ -274,18 +286,6 @@ async function generate(index: number) {
 
 
 	try {
-		// 获取上下文数量
-		const contextCount = data.agent?.context.n; // 假设 agent 有 contextCount 属性
-		let contextMessages; // 在外部定义 contextMessages
-
-		if (contextCount) {
-			const messagesToRetrieve = Math.min(contextCount, props.messages.length); // 取较小值
-			contextMessages = props.messages.slice(-messagesToRetrieve); // 获取最近的上下文消息
-		} else {
-			// 没有限制
-			contextMessages = props.messages; // 直接使用所有消息
-		}
-
 		const { body, status } = await fetchChatAPI(
 			{ 
 				messages: contextMessages, 

@@ -1,3 +1,4 @@
+<!-- 消息气泡模块 -->
 <script lang="ts" setup>
 // 引入Vue相关的函数
 import { computed, ref } from "vue";
@@ -68,9 +69,9 @@ mdi.use(mdKatex, {
 const wrapClass = computed(() => {
     return [
         "text-wrap",
-        "min-w-[20px]",
+        "min-w-[10px]",
         "rounded-md",
-        isMobile.value ? "p-2" : "px-3 py-2",
+        isMobile.value ? "p-2" : "px-3 py-1",
         props.inversion ? `bg-[#f4f6f8] text-[black]` : "text-[black]",
         props.inversion ? "dark:bg-[#a1dc95]" : "dark:bg-[#1e1e20]",
         props.inversion ? "message-request" : "message-reply",
