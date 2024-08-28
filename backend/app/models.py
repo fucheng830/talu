@@ -226,9 +226,7 @@ class Image(Base):
 # Agent
 class AgentCategory(Base):
     __tablename__ = 'agent_category'
-    
-    id = Column(UUID(as_uuid=True), primary_key=True)
-    name = Column(String(50), nullable=False)
+    name = Column(String(50), nullable=False, primary_key=True)
     description = Column(Text)
 
 

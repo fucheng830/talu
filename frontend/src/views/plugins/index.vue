@@ -67,7 +67,7 @@
 			<!-- 单个插件 -->
 			<template v-for="item in data.pluginList" :key="item?.id">
 				<div
-					class="flex flex-col p-4 bg-white rounded-lg shadow-[0_6px_8px_0_rgba(28,31,35,.06)] cursor-pointer m-2"
+					class="flex flex-col p-4 bg-white rounded-lg cursor-pointer m-2 border"
 				>
 					<!-- 头像 -->
 					<n-avatar
@@ -196,7 +196,7 @@ onMounted(() => {
 	height: 32px;
 	line-height: 32px;
 	text-align: center;
-	border-radius: 16px;
+	border-radius: 2px;
 	transition: all 0.4s;
 }
 </style>
