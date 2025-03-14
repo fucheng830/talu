@@ -17,6 +17,7 @@ import redis
 from random import randint
 import requests
 import os
+from ...services.wechat_service import wechat_service
 
 
 """
@@ -90,14 +91,7 @@ def _check_refree(refree, db):
         logger.error(e)
 
 def get_qy_access_token(redis_conn):
-    # 获取 access_token 的代码
-    import requests
-    import os
-    AppId = os.environ.get("CORP_ID")
-    AppSecret = os.environ.get("CORP_SECRET")
-    WECHAT_SERVICE_URL = os.environ.get("WECHAT_SERVICE_URL")
-    res = requests.post(f'{WECHAT_SERVICE_URL}/token', json={'appid':AppId, 'secret':AppSecret})
-    return res.content.decode('utf-8')
+    return wechat_service.get_access_token()
 
 
 @router.post('/login')
@@ -118,7 +112,7 @@ def login(login_data: LoginData, db: Session = Depends(get_db)):
 def register(register_data: RegisterData, db: Session = Depends(get_db), redis_conn=Depends(get_redis_conn)): 
     """注册""" 
     _m = db.query(User).filter_by(email=register_data.email).first()  # 查询数据库，检查邮箱是否已经被注册
-    if _m:  
+    if (_m):  
         # 如果邮箱已经被注册
         return {'status': 'Fail', 'message': '邮箱已经被注册', 'data': 0} # 返回失败信息
     else:  # 如果邮箱未被注册
@@ -316,16 +310,10 @@ class WechatLoginData(BaseModel):
 @router.post("/wechat_login")
 def wechat_login(data: WechatLoginData, db: Session = Depends(get_db)):
     import json
+    access_info = json.loads(get_key(data.code)) if get_key(data.code) else None
 
-    APPID = os.environ['WECHAT_APPID']
-    SECRET = os.environ['WECHAT_APP_SECRET']
-
-    cache = get_key(data.code)
-
-    if cache:
-        access_info = json.loads(cache)
-    else:
-        url = f'https://api.weixin.qq.com/sns/oauth2/access_token?appid={APPID}&secret={SECRET}&code={data.code}&grant_type=authorization_code'
+    if not access_info:
+        url = wechat_service.get_oauth_url(data.code)
         res = requests.get(url)
         if res.status_code == 200:
             access_info = res.json()

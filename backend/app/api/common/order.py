@@ -14,6 +14,7 @@ from ...schemas import *
 from ...models import *
 from ...database import get_db
 from ...utils import *
+from ...services.wechat_service import wechat_service
 
 router = APIRouter()
 
@@ -55,16 +56,15 @@ def validate_signature(data: dict, pubkey: str) -> bool:
     pass
 
 
-@router.post('/wechat_pay/payback')
+@router.post('/wechat_pay_callback')
 async def wechat_pay_callback(request: Request, db: Session = Depends(get_db)):
     """微信支付回调函数"""
     # 读取请求体中的XML数据
     xml_str = await request.body()
     data = trans_xml_to_dict(xml_str.decode('utf-8'))
 
-    # # 验证签名确保请求是从微信发来的
-    # if not validate_signature(data, os.environ.get('WECHAT_PUBKEY')):
-    #     raise HTTPException(status_code=400, detail="Invalid signature")
+    if not wechat_service.validate_signature(data):
+        raise HTTPException(status_code=400, detail="Invalid signature")
     return update_order_status_and_user(data, db)
 
 
@@ -221,17 +221,15 @@ async def wechat(request: Request, db: Session = Depends(get_db), current_user: 
         spbill_create_ip=user_ip,
         trade_type = trade_type,
         openid=openid,
-        appid=appid,
-        mch_id=mch_id,
+        appid=wechat_service.app_id,
+        mch_id=wechat_service.mch_id,
         body=body,
-        notify_url='{}/wechat_pay/payback'.format(os.environ['STATIC_URL']),
+        notify_url=f'{wechat_service.static_url}/wechat_pay/payback',
         scene_info=scene_info,
-        pub_key=pub_key
+        pub_key=wechat_service.pub_key
     )
     print(order_params)
-    res = wechat_pay(
-            **order_params
-    )
+    res = wechat_service.get_pay_config(order_params)
 
     if user.vip_end_time and user.vip_end_time > datetime.now():
         start_date = user.vip_end_time
