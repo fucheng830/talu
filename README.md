@@ -1,3 +1,50 @@
+# Talu - AI Agents Platform
+
+## Architecture Overview
+
+### Frontend (Vue.js)
+- **Views Layer**
+  - User Management (login, registration, profile)
+  - Agent Management (creation, configuration)
+  - Knowledge Base Management
+  - Task Management and Workflows 
+  - Payment and Billing Interface
+
+- **Core Components**
+  - Agent Builder
+  - Workflow Designer
+  - Knowledge Base Editor
+  - Chat Interface
+  - Payment Processing
+
+### Backend (FastAPI)
+- **Core Services**
+  - Authentication Service
+  - Agent Service
+  - Knowledge Base Service
+  - Workflow Service
+  - Payment Service
+  - Plugin System
+
+- **Database Layer**
+  - PostgreSQL with pgvector for embeddings
+  - User data
+  - Agent configurations
+  - Knowledge base
+  - Transaction records
+
+- **External Integrations**
+  - Payment Gateways
+  - WeChat, Enterprise WeChat
+  - ByteDance (Douyin/TikTok)
+  - Email/SMS Services
+
+## System Requirements
+- Python 3.8+
+- Node.js 16+
+- PostgreSQL 13+
+- Redis (for caching)
+
 # talu
 
 ## 项目介绍
@@ -57,7 +104,6 @@
 - 支付：实现用户支付功能，接收和处理用户的付款请求。集成支付网关或支付服务提供商的 API，支持各种支付方式，如信用卡支付、支付宝、微信支付等。
 - 扣费：根据用户的服务使用情况，扣除相应的费用。根据定义的计费规则和费率，检测和计算用户的服务使用量，并进行费用扣除操作。
 - 充值：用户可以通过充值渠道向账户充值资金，以便支付服务费用。支持充值渠道的接入和充值记录的管理，包括跟踪和验证充值操作。
-
 
 ## 扩展
 支持以下渠道
